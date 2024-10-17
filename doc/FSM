@@ -1,0 +1,131 @@
+digraph FSM {
+    rankdir=LR;
+    node [shape=circle];
+
+    // Define states
+    start [label="FSM Start" shape=doublecircle style=filled fillcolor=lightblue];
+    not [label="!" shape=doublecircle];
+    notequals [label="!=" shape=doublecircle];
+    quote [label="\"" shape=doublecircle];
+    sharp [label="#" shape=circle];
+    linecomment [label="comment" shape=doublecircle];
+    percent [label="%" shape=doublecircle];
+    ampersand [label="&" shape=doublecircle];
+    singlequote [label="\'" shape=doublecircle];
+    multiplication [label="*" shape=doublecircle];
+    plus [label="+" shape=doublecircle];
+    negative [label="-" shape=doublecircle];
+    dot [label="." shape=doublecircle];
+    division [label="/" shape=doublecircle];
+    colon [label=":" shape=doublecircle];
+    LT [label="<" shape=doublecircle];
+    LTE [label="<=" shape=doublecircle];
+    equal [label="=" shape=doublecircle];
+    doubleequal [label="==" shape=doublecircle];
+    GT [label=">" shape=doublecircle];
+    GTE [label=">=" shape=doublecircle];
+    questionmark [label="?" shape=doublecircle];
+
+    semicolon [label=";" shape=doublecircle];
+    comma [label="," shape=doublecircle];
+    newline [label="\\n" shape=doublecircle];
+    Lbracket [label="(" shape=doublecircle];
+    Rbracket [label=")" shape=doublecircle];
+    Lcurly [label="{" shape=doublecircle];
+    Rcurly [label="}" shape=doublecircle];
+    Lsquare [label="[" shape=doublecircle];
+    Rsquare [label="]" shape=doublecircle];
+    newline [label="\\n" shape=doublecircle];
+
+    backshlash [label="\\ " shape=doublecircle];
+    exponent [label="^" shape=doublecircle];
+    or [label="|" shape=doublecircle];
+    wave [label="~" shape=doublecircle];
+
+    identifier [label="identifier" shape=doublecircle];
+    space_variable [label="" shape=circle];
+    space_variable_percent [label="variable" shape=doublecircle];
+
+    integer [label="integer" shape=doublecircle]
+    integerdecimal [label="P1" shape=circle]
+    decimal [label="decimal" shape=doublecircle]
+    integerE [label="P2" shape=circle]
+    decimalE [label="P3" shape=circle]
+    integerEsign [label="P4" shape=circle]
+    decimalEsign [label="P5" shape=circle]
+    integerExponent [label="integer exponent" shape=doublecircle]
+    decimalExponent [label="decimal exponent" shape=doublecircle]
+
+
+
+    // Define transitions
+    start -> not [label="!"];
+    not -> notequals [label="="];
+    start -> quote [label="\""];
+    start -> sharp [label="#"];
+    sharp -> sharp [label=""];
+    sharp -> linecomment [label="\\n"];
+
+    start -> percent [label="%"];
+    percent -> space_variable [label="a-z, 0-9, space"]
+    space_variable -> space_variable [label="a-z, 0-9, space"]
+    space_variable -> space_variable_percent [label="%"]
+
+    start -> ampersand [label="&"];
+    start -> singlequote [label="\'"];
+    start -> multiplication [label="*"];
+    start -> plus [label="+"];
+    start -> negative [label="-"];
+    start -> dot [label="."];
+    start -> division [label="/"];
+    start -> colon [label=":"];
+    start -> LT [label="<"];
+    LT -> LTE [label="="];
+    start -> equal [label="="];
+    equal -> doubleequal [label="="];
+    start -> GT [label=">"];
+    GT -> GTE [label="="];
+    start -> questionmark [label="?"];
+    start -> semicolon [label=";"];
+    start -> comma [label=","];
+    start -> newline [label="\\n"];
+    start -> Lbracket [label="("];
+    start -> Rbracket [label=")"];
+    start -> Lcurly [label="{"];
+    start -> Rcurly [label="}"];
+    start -> Lsquare [label="["];
+    start -> Rsquare [label="]"];
+
+    start -> backshlash[label="\\ "];
+    start -> exponent [label="^"];
+    start -> or [label="|"];
+    start -> wave [label="~"];
+
+
+    // Identifiers
+    start -> identifier [label="a-z"];
+    identifier -> identifier [label="a-z, 0-9"];
+
+    // Numbers
+    start -> integer [label="0-9"]
+    integer -> integer [label="0-9"]
+    integer -> integerdecimal [label="."]
+    integerdecimal -> decimal [label="0-9"]
+    decimal -> decimal [label="0-9"]
+
+    decimal -> decimalE [label="e"]
+    integer -> integerE [label="e"]
+
+    integerE -> integerEsign [label="+ -"]
+    integerE -> integerExponent [label="0-9"]
+    integerEsign -> integerExponent [label="0-9"]
+
+    decimalE -> decimalEsign [label="+ -"]
+    decimalE -> decimalExponent [label="0-9"]
+    decimalEsign -> decimalExponent [label="0-9"]
+
+
+    // Center the start state
+    { rank=Center; start; }
+}
+

@@ -1,0 +1,5 @@
+[tool.ruff]
+ignore = ["F405", "F403"]
+[tool.ruff_lsp]
+ignore = ["F405", "F403"]
+
