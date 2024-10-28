@@ -1,0 +1,43 @@
+%token identifier number string boolean expression
+%%
+body : statement body
+     | 'function' identifier '(' parameter_list ')' '{' nested_body '}'
+     | /*eps*/ ;
+
+nested_body : statement nested_body
+            | /*eps*/ ;
+
+statement : identifier identifier_action
+          | control_structure ;
+
+identifier_action : assignment
+                  | function_call ;
+
+assignment : '=' expression ';' ;
+
+function_call : '(' parameter_list ')' ';' ;
+
+parameter_list : /*eps*/
+               | identifier parameter_list_prime ;
+
+parameter_list_prime : /*eps*/
+                     | ',' identifier parameter_list_prime ;
+
+argument_list : /*eps*/
+              | expression argument_list_prime ;
+
+argument_list_prime : /*eps*/
+                    | ',' expression argument_list_prime ;
+
+control_structure : 'if' '(' expression ')' '{' nested_body '}' else
+                  | 'for' '(' identifier assignment expression three_argument ')' '{' nested_body '}' ;
+
+else : /*eps*/
+| 'else' elif '{' nested_body '}' ;
+
+elif : /*eps*/
+| 'if' '(' expression ')' ;
+
+three_argument : /*eps*/
+| ';' expression ';' identifier assignment ;
+

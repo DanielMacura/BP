@@ -1,5 +1,4 @@
-digraph FSM {
-    rankdir=LR;
+digraph FSM {    rankdir=LR;
     node [shape=circle];
 
     // Define states
