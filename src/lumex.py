@@ -1,6 +1,10 @@
 from lex import Lexer
+from parse import Parser
+from lumerical_grammar import lumerical_grammar
+
 print("LUMEX")
 
-lex = Lexer("x= 3 + 1\n?x")
-for token in lex.tokens():
-    print(token)
+
+lexer = Lexer("x(a,b,c)")
+parser = Parser(lumerical_grammar, lexer)
+parser.parse()

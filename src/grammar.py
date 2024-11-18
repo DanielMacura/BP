@@ -1,6 +1,5 @@
 from symbol import Epsilon, Terminal, NonTerminal
-from typing import List
-from dataclasses import dataclass
+from typing import List, Set
 from tokens import *
 
 
@@ -24,7 +23,7 @@ class Production:
     def __init__(
         self,
         LHS: NonTerminal,
-        RHS: List[NonTerminal | Terminal],
+        RHS: List[NonTerminal | Terminal] | Epsilon,
         nullable: bool = False,
         increment_number=True,
     ) -> None:
@@ -36,14 +35,29 @@ class Production:
         self.number = Production.number
 
     def __str__(self) -> str:
-        return f"{self.LHS}\t: {(' '.join([str(x) for x in self.RHS]))}\n"
+        return f"{self.LHS}\t-> {(' '.join([str(x) for x in self.RHS])) if not isinstance(self.RHS,Epsilon) else 'epsilon'}\n"
 
 
 class Grammar:
+    """The :py:class:`Grammar` is defined by a list of productions. It allows multiple operations, such as adding rules, checking if a :py:class:`NonTerminal` is nullable and returning all terminals.
+
+    :param productions: List of productions defining a grammar.
+    """
+
     def __init__(self) -> None:
         self.productions: List[Production] = []
+        self.nullable_nonterminals: Set[NonTerminal] = set()
 
     def append(self, prod: Production):
+        if prod.RHS == Epsilon():
+            self.nullable_nonterminals |= {prod.LHS}
+            prod.nullable = True
+            for previous in self.productions:
+                if previous.LHS == prod.LHS:
+                    previous.nullable = True
+        else:
+            if prod.LHS in self.nullable_nonterminals:
+                prod.nullable = True
         self.productions.append(prod)
 
     def isNullable(self, nonterminal: NonTerminal) -> bool:
@@ -53,15 +67,39 @@ class Grammar:
 
         raise ValueError("Did not find Nonterninal as a LHS of any rule.")
 
-    def terminals(self) -> List[Terminal]:
+    def terminals(self) -> Set[Terminal]:
         """List all terminals which are subclasses of Token or Literal.
         Even terminals not in any RHS of any production in the grammar are listed.
 
         :return: All terminals.
         """
-        terminals = []
+        terminals = set()
         for production in self.productions:
+            if isinstance(production.RHS, Epsilon):
+                continue
             for symbol in production.RHS:
                 if isinstance(symbol, Terminal):
-                    terminals.append(symbol)
+                    terminals.add(symbol)
         return terminals
+
+    def nonTerminals(self) -> Set[NonTerminal]:
+        """List all terminals which are subclasses of Token or Literal.
+        Even terminals not in any RHS of any production in the grammar are listed.
+
+        :return: All terminals.
+        """
+        nonTerminals = set()
+        for production in self.productions:
+            nonTerminals.add(production.LHS)
+            if isinstance(production.RHS, Epsilon):
+                continue
+            for symbol in production.RHS:
+                if isinstance(symbol, NonTerminal):
+                    nonTerminals.add(symbol)
+        return nonTerminals
+
+    def __repr__(self) -> str:
+        string = ""
+        for production in self.productions:
+            string += str(production.number) + str(production)
+        return string

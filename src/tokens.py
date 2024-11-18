@@ -9,13 +9,20 @@ class Token(Terminal):
     :param lexeme_pattern: Regex pattern that represents the token.
     """
 
+    lexeme_pattern: str
+
     def __init__(self):
         self.line_no: None | int = None
         self.lexeme: None | str = None
-        self.lexeme_pattern: None | str = None
 
     def __str__(self) -> str:
-        return self.__class__.__name__ + ":" + self.lexeme if self.lexeme else self.__class__.__name__
+        return self.__class__.__name__
+
+    def __hash__(self):
+        return hash(str(self))
+
+    def __eq__(self, other: object) -> bool:
+        return super().__eq__(other)
 
 
 class Literal(Token):
@@ -24,138 +31,150 @@ class Literal(Token):
     :param value:
     """
 
-    def __init__(self):
+    def __init__(self, lexeme:str|None=None):
         super().__init__()
         self.value = None
+        self.lexeme = lexeme
 
     def __str__(self) -> str:
-        return self.__class__.__name__
+        return (
+            self.__class__.__name__ + ":" + self.lexeme
+            if self.lexeme
+            else self.__class__.__name__
+        )
+
+    def __hash__(self):
+        return hash(str(self))
+
+    def __eq__(self, other: object) -> bool:
+        return super().__eq__(other)
+
+
+class Expression(Token):
+    lexeme_pattern = r""
+
 
 class Identifier(Literal):
-    pass
+    lexeme_pattern = r"[A-Za-z][A-Za-z0-9]*"
 
 
 class Integer(Literal):
-    pass
+    lexeme_pattern = r"[0-9]+"
 
 
 class Float(Literal):
-    pass
+    lexeme_pattern = r"[0-9]\.[0-9]+"
 
 
 class String(Literal):
-    pass
-
-
-class Variable(Literal):
-    pass
+    lexeme_pattern = r'"(?:\\"|[^"])*"'
 
 
 # Mathematical operators
 class Plus(Token):
-    pass
+    lexeme_pattern = r"\+"
 
 
 class Minus(Token):
-    pass
+    lexeme_pattern = r"-"
 
 
 class Divide(Token):
-    pass
+    lexeme_pattern = r"\\"
 
 
 class Multiply(Token):
-    pass
+    lexeme_pattern = r"\*"
 
 
 # Comparison
 class Equal(Token):
-    pass
+    lexeme_pattern = r"\="
 
 
 class NotEqual(Token):
-    pass
+    lexeme_pattern = r"\!\="
 
 
 class DoubleEqual(Token):
-    pass
+    lexeme_pattern = r"\=\="
 
 
 class GT(Token):
-    pass
+    lexeme_pattern = r"\>"
 
 
 class GTE(Token):
-    pass
+    lexeme_pattern = r"\>\="
 
 
 class LT(Token):
-    pass
+    lexeme_pattern = r"\<"
 
 
 class LTE(Token):
-    pass
+    lexeme_pattern = r"\<\="
 
 
 # Brackets
 class LeftBracket(Token):
-    pass
+    lexeme_pattern = r"\("
 
 
 class RightBracket(Token):
-    pass
+    lexeme_pattern = r"\)"
 
 
 class LeftCurly(Token):
-    pass
+    lexeme_pattern = r"\{"
 
 
 class RightCurly(Token):
-    pass
+    lexeme_pattern = r"\}"
 
 
 # Special characters
-class EOF(Token):
-    pass
-
-
-class Comment(Literal):
-    pass
+# class EOF(Token):
+#     pass
+#
+#
+# class Comment(Literal):
+#     pass
 
 
 class Questionmark(Token):
-    pass
+    lexeme_pattern = r"\?"
 
 
 class Semicolon(Token):
-    pass
+    lexeme_pattern = r"\;"
 
 
 class Comma(Token):
-    pass
+    lexeme_pattern = r"\,"
 
 
 # Whitespace
 class Space(Token):
-    pass
+    lexeme_pattern = r"[\t ]+"
 
 
 class NewLine(Token):
-    pass
+    lexeme_pattern = r"\r?\n"
 
 
 # Keywords
 class Function(Token):
-    pass
+    lexeme_pattern = r"function"
 
 
 class For(Token):
-    pass
+    lexeme_pattern = r"for"
 
 
 class If(Token):
-    pass
+    lexeme_pattern = r"if"
 
 
 class Else(Token):
-    pass
+    lexeme_pattern = r"else"

@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 
-
 @dataclass
-class Symbol:
+class Symbol():
     def __hash__(self):
         return hash(str(self))
     def __eq__(self, other: object) -> bool:
