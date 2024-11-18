@@ -21,6 +21,7 @@ extensions = [
     "sphinx_autodoc_typehints",
     "sphinx_rtd_theme",
     "sphinx.ext.inheritance_diagram",
+    "sphinx.ext.imgmath",
 ]
 
 templates_path = ['_templates']
@@ -37,3 +38,8 @@ autodoc_default_options = {
     'member-order': 'bysource',
     'special-members': '__init__',
 }
+imgmath_image_format = 'svg'
+
+imgmath_use_preview = True  # Optional: To enable LaTeX preview for inline math
+imgmath_add_tooltips = True  # Optional: To show LaTeX code as tooltips
+imgmath_font_size = 16

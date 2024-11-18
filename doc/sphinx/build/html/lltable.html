@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LL Table &mdash; LUMEX  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="_static/doctools.js?v=9bcbadda"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Symbol" href="symbol.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            LUMEX
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="lexer.html">Lexer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="grammar.html">Grammar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tokens.html">Tokens</a></li>
+<li class="toctree-l1"><a class="reference internal" href="symbol.html">Symbol</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">LL Table</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#lltable.LLTable"><code class="docutils literal notranslate"><span class="pre">LLTable</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#lltable.LLTable.__init__"><code class="docutils literal notranslate"><span class="pre">LLTable.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lltable.LLTable.ComputeFirstSets"><code class="docutils literal notranslate"><span class="pre">LLTable.ComputeFirstSets()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lltable.LLTable.FirstClosure"><code class="docutils literal notranslate"><span class="pre">LLTable.FirstClosure()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lltable.LLTable.ComputeFolowSets"><code class="docutils literal notranslate"><span class="pre">LLTable.ComputeFolowSets()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lltable.LLTable.FollowClosure"><code class="docutils literal notranslate"><span class="pre">LLTable.FollowClosure()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lltable.LLTable.ComputeSelectSets"><code class="docutils literal notranslate"><span class="pre">LLTable.ComputeSelectSets()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lltable.LLTable.Predict"><code class="docutils literal notranslate"><span class="pre">LLTable.Predict()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lltable.LLTable.ComputeTable"><code class="docutils literal notranslate"><span class="pre">LLTable.ComputeTable()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">LUMEX</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">LL Table</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/lltable.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ll-table">
+<h1>LL Table<a class="headerlink" href="#ll-table" title="Link to this heading"></a></h1>
+<p>This module constructs a LL(1) table from a provided LL(1) grammar.</p>
+<p>To begin, the FIRST sets are computed by <code class="xref py py-meth docutils literal notranslate"><span class="pre">ComputeFirstSets()</span></code>, following that FOLLOW sets are computed by <code class="xref py py-meth docutils literal notranslate"><span class="pre">ComputeFollowSets()</span></code>.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="lltable.LLTable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lltable.</span></span><span class="sig-name descname"><span class="pre">LLTable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grammar</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lltable.LLTable" title="Link to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="lltable.LLTable.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grammar</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lltable.LLTable.__init__" title="Link to this definition"></a></dt>
+<dd><p>LLTable constructor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>grammar</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="grammar.html#grammar.Grammar" title="grammar.Grammar"><code class="xref py py-class docutils literal notranslate"><span class="pre">Grammar</span></code></a></span>) – LL(1) grammar.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lltable.LLTable.ComputeFirstSets">
+<span class="sig-name descname"><span class="pre">ComputeFirstSets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lltable.LLTable.ComputeFirstSets" title="Link to this definition"></a></dt>
+<dd><p>Generate first sets for all the <code class="xref py py-class docutils literal notranslate"><span class="pre">NonTerminal</span></code> s.
+Calls <a class="reference internal" href="#lltable.LLTable.FirstClosure" title="lltable.LLTable.FirstClosure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">FirstClosure()</span></code></a> for every production.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lltable.LLTable.FirstClosure">
+<span class="sig-name descname"><span class="pre">FirstClosure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">production</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lltable.LLTable.FirstClosure" title="Link to this definition"></a></dt>
+<dd><p>The first set for the production is found by applying the follwing rule to a production in the form of</p>
+<div class="math">
+<p><img src="_images/math/6b908ce5634db75199da1d57d0eaaac850dec025.svg" alt="lhs \rightarrow \alpha \beta \mathcal{B}"/></p>
+</div><p>where <img class="math" src="_images/math/6b9d355e52555306a14d0bf304e30c29d50faaec.svg" alt="lhs" style="vertical-align: 0px"/> is a single nonterminal, <img class="math" src="_images/math/6530a459d025b37e918ad743e8de032333832a7d.svg" alt="\alpha" style="vertical-align: 0px"/> is zero or more <strong>nullable</strong> nonterminals, <img class="math" src="_images/math/ec7fdc98bd4ca40e7e76dc67e1e47e72db81557c.svg" alt="\beta" style="vertical-align: -4px"/> is a single terminal or non-nullable nonterminal and <img class="math" src="_images/math/e17397ebae826d9f04f5e8f88e49197b09ae50b4.svg" alt="\mathcal{B}" style="vertical-align: 0px"/> is a series of terminals and nonterminals.</p>
+<ol class="arabic simple">
+<li><p>FIRST(A), where A is a terminal is {A}.</p></li>
+<li><p>FIRST(<img class="math" src="_images/math/6b9d355e52555306a14d0bf304e30c29d50faaec.svg" alt="lhs" style="vertical-align: 0px"/>) = FIRST(<img class="math" src="_images/math/6530a459d025b37e918ad743e8de032333832a7d.svg" alt="\alpha" style="vertical-align: 0px"/>) and FIRST(<img class="math" src="_images/math/ec7fdc98bd4ca40e7e76dc67e1e47e72db81557c.svg" alt="\beta" style="vertical-align: -4px"/>)</p></li>
+</ol>
+<p>This closure needs to be applied to all productions in the grammar, until they don’t change after aplication.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>production</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="grammar.html#grammar.Production" title="grammar.Production"><code class="xref py py-class docutils literal notranslate"><span class="pre">Production</span></code></a></span>) – Production who’s first set will be computed and added to <code class="xref py py-attr docutils literal notranslate"><span class="pre">firstSets</span></code>.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lltable.LLTable.ComputeFolowSets">
+<span class="sig-name descname"><span class="pre">ComputeFolowSets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lltable.LLTable.ComputeFolowSets" title="Link to this definition"></a></dt>
+<dd><p>Generate follow sets for all the <code class="xref py py-class docutils literal notranslate"><span class="pre">NonTerminal`s.</span> <span class="pre">Called</span> <span class="pre">after</span> <span class="pre">:py:meth:`ComputeFirstSets</span></code>.
+Calls <a class="reference internal" href="#lltable.LLTable.FirstClosure" title="lltable.LLTable.FirstClosure"><code class="xref py py-meth docutils literal notranslate"><span class="pre">FirstClosure()</span></code></a> for every production.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lltable.LLTable.FollowClosure">
+<span class="sig-name descname"><span class="pre">FollowClosure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">production</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lltable.LLTable.FollowClosure" title="Link to this definition"></a></dt>
+<dd><p>The follow set for the production is found with the following steps for any production in the form of</p>
+<div class="math">
+<p><img src="_images/math/84491562472ce98ace8b547be9c7bee99b8037f3.svg" alt="lhs \rightarrow \dots a \alpha \beta \dots"/></p>
+</div><p>where <img class="math" src="_images/math/6b9d355e52555306a14d0bf304e30c29d50faaec.svg" alt="lhs" style="vertical-align: 0px"/> is a single nonterminal, <img class="math" src="_images/math/9fb2cf686048aee66b525a3c7e6d6f9d9eb06fef.svg" alt="a" style="vertical-align: 0px"/> is single  <strong>non</strong>-nullable nonterminal, <img class="math" src="_images/math/6530a459d025b37e918ad743e8de032333832a7d.svg" alt="\alpha" style="vertical-align: 0px"/> is a series of 0 or more nullable nonterminals and <img class="math" src="_images/math/ec7fdc98bd4ca40e7e76dc67e1e47e72db81557c.svg" alt="\beta" style="vertical-align: -4px"/> is a single terminal or <strong>non</strong>-nullable nonterminal.</p>
+<p>FOLLOW(<img class="math" src="_images/math/9fb2cf686048aee66b525a3c7e6d6f9d9eb06fef.svg" alt="a" style="vertical-align: 0px"/>) includes FIRST(<img class="math" src="_images/math/6530a459d025b37e918ad743e8de032333832a7d.svg" alt="\alpha" style="vertical-align: 0px"/>) and FIRST(<img class="math" src="_images/math/ec7fdc98bd4ca40e7e76dc67e1e47e72db81557c.svg" alt="\beta" style="vertical-align: -4px"/>)</p>
+<div class="math">
+<p><img src="_images/math/56f3c65b17cf579c29977bf680b354e15d8e9212.svg" alt="lhs \rightarrow \dots a \alpha"/></p>
+</div><p>where <img class="math" src="_images/math/6b9d355e52555306a14d0bf304e30c29d50faaec.svg" alt="lhs" style="vertical-align: 0px"/> and <img class="math" src="_images/math/9fb2cf686048aee66b525a3c7e6d6f9d9eb06fef.svg" alt="a" style="vertical-align: 0px"/> are nonterminals, <img class="math" src="_images/math/9fb2cf686048aee66b525a3c7e6d6f9d9eb06fef.svg" alt="a" style="vertical-align: 0px"/> may be nullable, and <img class="math" src="_images/math/6530a459d025b37e918ad743e8de032333832a7d.svg" alt="\alpha" style="vertical-align: 0px"/> is a series of zero or more nullable nonterminals. FOLLOW(<img class="math" src="_images/math/6b9d355e52555306a14d0bf304e30c29d50faaec.svg" alt="lhs" style="vertical-align: 0px"/>) is added to FOLLOW(<img class="math" src="_images/math/9fb2cf686048aee66b525a3c7e6d6f9d9eb06fef.svg" alt="a" style="vertical-align: 0px"/>).</p>
+<p>This closure needs to be applied to all productions in the grammar, until they don’t change after aplication.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>production</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="grammar.html#grammar.Production" title="grammar.Production"><code class="xref py py-class docutils literal notranslate"><span class="pre">Production</span></code></a></span>) – Production who’s first set will be computed and added to <code class="xref py py-attr docutils literal notranslate"><span class="pre">firstSets</span></code>.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lltable.LLTable.ComputeSelectSets">
+<span class="sig-name descname"><span class="pre">ComputeSelectSets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lltable.LLTable.ComputeSelectSets" title="Link to this definition"></a></dt>
+<dd><p>Generate select sets for all the <code class="xref py py-class docutils literal notranslate"><span class="pre">NonTerminal`s.</span> <span class="pre">Called</span> <span class="pre">after</span> <span class="pre">:py:meth:`ComputeFollowSets</span></code>.</p>
+<p>If a production is nullable, it’s whole RHS can go to epsilon, then given a production of the form</p>
+<div class="math">
+<p><img src="_images/math/3f22a2f5b7cabacb3544c3432ca6cf21d8c3640f.svg" alt="lhs \rightarrow \alpha"/></p>
+</div><p>where <img class="math" src="_images/math/6530a459d025b37e918ad743e8de032333832a7d.svg" alt="\alpha" style="vertical-align: 0px"/> is series of zero or more nullable nonterminals, SELECT(<img class="math" src="_images/math/6b9d355e52555306a14d0bf304e30c29d50faaec.svg" alt="lhs" style="vertical-align: 0px"/>) is FIRST(<img class="math" src="_images/math/6530a459d025b37e918ad743e8de032333832a7d.svg" alt="\alpha" style="vertical-align: 0px"/>) and FOLLOW(<img class="math" src="_images/math/6b9d355e52555306a14d0bf304e30c29d50faaec.svg" alt="lhs" style="vertical-align: 0px"/>)</p>
+<p>If a production is not nullable, then given</p>
+<div class="math">
+<p><img src="_images/math/2ebad0f0b3c0e954cec08deb10166202b3d89df0.svg" alt="lhs \rightarrow \alpha \beta \dots"/></p>
+</div><p>where <img class="math" src="_images/math/6530a459d025b37e918ad743e8de032333832a7d.svg" alt="\alpha" style="vertical-align: 0px"/> is series of zero or more nullable nonterminals and <img class="math" src="_images/math/ec7fdc98bd4ca40e7e76dc67e1e47e72db81557c.svg" alt="\beta" style="vertical-align: -4px"/> is either <strong>non</strong>-nullable nonterninal or a terminal, then LL(<img class="math" src="_images/math/6b9d355e52555306a14d0bf304e30c29d50faaec.svg" alt="lhs" style="vertical-align: 0px"/>) is FIRST(<img class="math" src="_images/math/6530a459d025b37e918ad743e8de032333832a7d.svg" alt="\alpha" style="vertical-align: 0px"/>) and FIRST(<img class="math" src="_images/math/ec7fdc98bd4ca40e7e76dc67e1e47e72db81557c.svg" alt="\beta" style="vertical-align: -4px"/>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lltable.LLTable.Predict">
+<span class="sig-name descname"><span class="pre">Predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">currentState</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lltable.LLTable.Predict" title="Link to this definition"></a></dt>
+<dd><p>Used to guide the parsing process. When in the state <code class="xref py py-attr docutils literal notranslate"><span class="pre">currentState</span></code>, depending on the current input token, the next valid production is returned.
+If an invalid token for the current state is parsed, None is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>currentState</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="symbol.html#symbol.NonTerminal" title="symbol.NonTerminal"><code class="xref py py-class docutils literal notranslate"><span class="pre">NonTerminal</span></code></a></span>) – The current <code class="xref py py-class docutils literal notranslate"><span class="pre">NonTerminal</span></code> on the top of the <code class="xref py py-class docutils literal notranslate"><span class="pre">Parser</span></code> stack.</p></li>
+<li><p><strong>token</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="tokens.html#tokens.Token" title="tokens.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">Token</span></code></a></span>) – The current input <code class="xref py py-class docutils literal notranslate"><span class="pre">Token</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="grammar.html#grammar.Production" title="grammar.Production"><code class="xref py py-class docutils literal notranslate"><span class="pre">Production</span></code></a> | <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Return a valid <code class="xref py py-class docutils literal notranslate"><span class="pre">Token</span></code> or None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lltable.LLTable.ComputeTable">
+<span class="sig-name descname"><span class="pre">ComputeTable</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lltable.LLTable.ComputeTable" title="Link to this definition"></a></dt>
+<dd><p>Computes the LL table from the SELECT sets for each terminal and nonterminal.</p>
+<p><a class="reference internal" href="#lltable.LLTable.ComputeFirstSets" title="lltable.LLTable.ComputeFirstSets"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ComputeFirstSets()</span></code></a>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">ComputeFollowSets()</span></code> and <a class="reference internal" href="#lltable.LLTable.ComputeSelectSets" title="lltable.LLTable.ComputeSelectSets"><code class="xref py py-meth docutils literal notranslate"><span class="pre">ComputeSelectSets()</span></code></a> are called first.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="symbol.html" class="btn btn-neutral float-left" title="Symbol" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Daniel Mačura.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
