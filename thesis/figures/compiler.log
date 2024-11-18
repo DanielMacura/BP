@@ -2,8 +2,8 @@ This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024/Arch Linux) (prel
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**figures/compiler-stages.tex
-(./figures/compiler-stages.tex
+**figures/compiler.tex
+(./figures/compiler.tex
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
 (/usr/share/texmf-dist/tex/latex/standalone/standalone.cls
@@ -342,8 +342,8 @@ File: l3backend-pdftex.def 2024-02-20 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count286
 \l__pdf_internal_box=\box63
 )
-No file compiler-stages.aux.
-\openout1 = `compiler-stages.aux'.
+No file compiler.aux.
+\openout1 = `compiler.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 3.
 LaTeX Font Info:    ... okay on input line 3.
@@ -382,23 +382,22 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 )) [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (figures/compiler-stages.a
-ux)
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] (figures/compiler.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 12357 strings out of 475448
- 256437 string characters out of 5776782
- 1930187 words of memory out of 5000000
- 34315 multiletter control sequences out of 15000+600000
+ 12330 strings out of 475448
+ 255864 string characters out of 5776782
+ 1927187 words of memory out of 5000000
+ 34288 multiletter control sequences out of 15000+600000
  558069 words of font info for 36 fonts, out of 8000000 for 9000
  360 hyphenation exceptions out of 8191
- 117i,7n,121p,408b,659s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 117i,7n,121p,401b,636s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb>
-Output written on figures/compiler-stages.pdf (1 page, 16397 bytes).
+Output written on figures/compiler.pdf (1 page, 14609 bytes).
 PDF statistics:
  16 PDF objects out of 1000 (max. 8388607)
  10 compressed objects within 1 object stream

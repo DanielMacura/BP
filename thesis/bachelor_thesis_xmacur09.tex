@@ -123,7 +123,7 @@
   date=\today,             % datum odevzdání / submission date
   %Nazev prace / thesis title
   title.cs={Automatický překlad a srovnání simulací mezi Meep a Lumerical},  % název práce v češtině či slovenštině (dle zadání) / thesis title in czech language (according to assignment)
-  title.en={Automatic transpilation and comparison of Lumerical and Meep}, % název práce v angličtině / thesis title in english
+  title.en={Automatic transpilation and comparison of Lumerical and Meep simulations}, % název práce v angličtině / thesis title in english
   %title.length={14.5cm}, % nastavení délky bloku s titulkem pro úpravu zalomení řádku (lze definovat zde nebo níže) / setting the length of a block with a thesis title for adjusting a line break (can be defined here or below)
   %sectitle.length={14.5cm}, % nastavení délky bloku s druhým titulkem pro úpravu zalomení řádku (lze definovat zde nebo níže) / setting the length of a block with a second thesis title for adjusting a line break (can be defined here or below)
   %dectitle.length={14.5cm}, % nastavení délky bloku s titulkem nad prohlášením pro úpravu zalomení řádku (lze definovat zde nebo níže) / setting the length of a block with a thesis title above declaration for adjusting a line break (can be defined here or below)
@@ -198,8 +198,23 @@ Uvedl jsem všechny literární prameny, publikace a další zdroje, ze kterých
 % Nechcete-li, aby se u oboustranného tisku roztahovaly mezery pro zaplnění stránky, odkomentujte následující řádek / If you do not want enlarged spacing for filling of the pages in case of duplex printing, uncomment the following line
 % \raggedbottom
 
-\newtheorem{definition}{Definition}[section]
 \theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+
+\newtheoremstyle{break}% name
+  {9pt}%      Space above, empty = `usual value'
+  {9pt}%      Space below
+  {\itshape}% Body font
+  {}%         Indent amount (empty = no indent, \parindent = para indent)
+  {\bfseries}% Thm head font
+  {.}%        Punctuation after thm head
+  {\newline}% Space after thm head: \newline = linebreak
+  {}%         Thm head spec
+
+\theoremstyle{break}
+\newtheorem{example}{Example}[section]
+
 
 \begin{document}
   % Vysazeni titulnich stran / Typesetting of the title pages

@@ -86,6 +86,9 @@
 \usepackage{color}
 \usepackage{etoolbox}
 \usepackage{enumitem}
+\usepackage{color}
+\usepackage[unicode,colorlinks,hyperindex,plainpages=false,pdftex]{hyperref}
+\usepackage{cleveref}
 
 
 \ifczech
@@ -171,9 +174,10 @@
 %-----------------------------------------------------------------------------
 \iftwoside
 %  \usepackage[left=3.46cm, text={15.2cm,23.47cm}, top=2.5cm, marginparwidth=50pt]{geometry}
-  \usepackage[a4paper]{geometry}
+  \usepackage[a4paper, showframe]{geometry}	%ADDED showframe
   \newgeometry{left=3.46cm, text={15.2cm,23.47cm}, top=2.5cm, marginparwidth=50pt}
 \else
+  \usepackage[showframe]{geometry} %ADDED whole line
   \setlength{\hoffset}{-0.7cm}
   \setlength{\voffset}{-1.5cm}
   \setlength{\textheight}{23.0cm}

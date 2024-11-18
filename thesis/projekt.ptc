@@ -3,12 +3,11 @@
 \contentsline {chapter}{\numberline {2}Introduction}{4}{chapter.2}%
 \contentsline {chapter}{\numberline {3}Review of computational electromagnetics and compilers}{5}{chapter.3}%
 \contentsline {section}{\numberline {3.1}Computational Electromagnetics}{5}{section.3.1}%
-\contentsline {paragraph}{Magnetic monopoles}{5}{section*.6}%
 \contentsline {section}{\numberline {3.2}Formal Languages}{5}{section.3.2}%
 \contentsline {section}{\numberline {3.3}Compilers}{7}{section.3.3}%
 \contentsline {chapter}{\numberline {4}Transpiler implementation}{9}{chapter.4}%
 \contentsline {chapter}{\numberline {5}Evaluation of results}{10}{chapter.5}%
 \contentsline {chapter}{\numberline {6}Conclusion}{11}{chapter.6}%
-\contentsline {chapter}{Bibliography}{12}{chapter*.13}%
+\contentsline {chapter}{Bibliography}{12}{chapter*.12}%
 \ttl@starttoc {chapters@1}
 \contentsfinish 

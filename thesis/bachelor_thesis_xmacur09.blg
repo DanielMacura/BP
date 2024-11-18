@@ -1,0 +1,55 @@
+This is BibTeX, Version 0.99d (TeX Live 2024/Arch Linux)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: bachelor_thesis_xmacur09.aux
+The style file: bib-styles/Pysny/enplain.bst
+Reallocated singl_function (elt_size=8) to 100 items from 50.
+Reallocated singl_function (elt_size=8) to 100 items from 50.
+Reallocated wiz_functions (elt_size=8) to 6000 items from 3000.
+Reallocated singl_function (elt_size=8) to 100 items from 50.
+Reallocated singl_function (elt_size=8) to 100 items from 50.
+Reallocated singl_function (elt_size=8) to 100 items from 50.
+Database file #1: projekt-20-literatura-bibliography.bib
+Warning--empty edition in formal_languages
+Warning--empty edition in dragon
+You've used 2 entries,
+            3768 wiz_defined-function locations,
+            792 strings with 5370 characters,
+and the built_in function-call counts, 576 in all, are:
+= -- 42
+> -- 21
+< -- 0
++ -- 7
+- -- 5
+* -- 32
+:= -- 78
+add.period$ -- 6
+call.type$ -- 2
+change.case$ -- 4
+chr.to.int$ -- 0
+cite$ -- 4
+duplicate$ -- 42
+empty$ -- 77
+format.name$ -- 5
+if$ -- 140
+int.to.chr$ -- 0
+int.to.str$ -- 2
+missing$ -- 0
+newline$ -- 17
+num.names$ -- 2
+pop$ -- 16
+preamble$ -- 1
+purify$ -- 1
+quote$ -- 0
+skip$ -- 23
+stack$ -- 0
+substring$ -- 10
+swap$ -- 6
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 2
+while$ -- 2
+width$ -- 3
+write$ -- 26
+(There were 2 warnings)

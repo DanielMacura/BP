@@ -9,11 +9,13 @@ CO=bachelor_thesis_xmacur09
 
 FIGURES_DIR=figures
 FIGURES=$(wildcard $(FIGURES_DIR)/*.tex)
-FIGURES_PDFS=$(FIGURES:.tex=.pdf)
+FIGURES_PDFS=$(patsubst $(FIGURES_DIR)/%.tex,$(FIGURES_DIR)/%.pdf,$(FIGURES))
 
-all: $(FIGURES_PDFS) $(CO).pdf
+all: clean figures pdf
 
-# Rule to compile all figures in the figures directory
+# Build all figure PDFs first
+figures: $(FIGURES_PDFS)
+
 $(FIGURES_DIR)/%.pdf: $(FIGURES_DIR)/%.tex
 	pdflatex -output-directory=$(FIGURES_DIR) $<
 
@@ -22,7 +24,7 @@ pdf: $(CO).pdf
 $(CO).ps: $(CO).dvi
 	dvips $(CO)
 
-$(CO).pdf: clean
+$(CO).pdf: 
 	pdflatex $(CO)
 	-bibtex $(CO)
 	# makeglossaries $(CO)

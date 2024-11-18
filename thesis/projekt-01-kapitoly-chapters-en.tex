@@ -6,33 +6,40 @@
 % \documentclass[../projekt.tex]{subfiles}
 % \begin{document}
 
-\chapter{Note to the reader}
+\chapter{Note to the Reader}
 Through the thesis, the expression "iff" refers to "if and only if".
 
 \chapter{Introduction}
 \todo{Add motivation for thesis, talk about importance of optics simulations, talk about uses, show examples. Talk about the need to compare simulation software.}
 
-\chapter{Review of computational electromagnetics and compilers}
+\chapter{Review of Computational Electromagnetics and Compilers}
 This chapter aims to give the reader a broad understanding of the subjects of matter. It provides an overview of the physics behind the aforementioned simulations and an introduction to the basic concepts of compiler design and the underlying formal languages. This chapter will not delve into the specifics of each subject at hand but will provide the reader with the foundations necessary to comprehend the rest of this thesis.
 
 \section{Computational Electromagnetics}
+\subsection*{Curl theorem}
+\subsection*{Divergence theorem}
 \subsection*{Maxwell's equations}
-\subsubsection*{Curl theorem}
-\subsubsection*{Divergence theorem}
-\paragraph{Magnetic monopoles}
+\todo{assuming magnetic monopoles dont exist}
+\todo{show all 4 equations}
+\todo{derive partial form form integral form}
+
+
 
 \subsection*{Finite Difference Time Domain}
 \subsection*{Mie Scattering}
 \section{Formal Languages}
+\todo{add text explaining need of formal languages}
 
+\subsection{Alphabets and Languages}
+\todo{add text about languages and alphabets, use English as example}
 
 \begin{definition}[Alphabet]
 \label{def:alphabet}
-Let $\Sigma$ be an \emph{alphabet}, a finite nonempty set of symbols. Then $\Sigma ^{*}$ defines the set of all sequences $w$:
-$$w= a_1 a_2 a_3 \dots a_{n-1} a_n, a_i \in \Sigma \text{ for } i \in \mathbb{N}$$
+Let $\Sigma$ be an \emph{alphabet}, a finite nonempty set of symbols, letters. Then $\Sigma ^{*}$ defines the set of all sequences $w$:
+$$w= a_1 a_2 a_3 \dots a_{n-1} a_n, \in \Sigma \text{ for } n \in \mathbb{N}$$
 \end{definition}
 
-The sequence symbols $w$ is called a \emph{word}. The length of a word is $|w| = n$. The word with a length of 0 is called an \emph{empty word} denoted as $\lambda$.
+The sequence of symbols $w$ is called a \emph{word}. The length of a word is given by the number of symbols $a$, symbolically $|w| = n$. The word with a length of 0 is called an \emph{empty word} denoted as $\lambda$.
 
 \begin{definition}[Language]
 \label{def:language}
@@ -41,7 +48,6 @@ The set $L$ where $L\subseteq \Sigma^{*}$ is know as the formal language over th
 The words $L = \left\lbrace \lambda, a, b, aa, ab, bb \right\rbrace$ are some words of a language $L$ over the alphabet $\Sigma=\left\lbrace a,b \right\rbrace$.
 Other examples for languages over the alphabet $\Sigma=\left\lbrace a,b \right\rbrace$ might include:
 \begin{itemize}
-
 \item $L_1 = \left\lbrace \lambda \right\rbrace$
 \item $L_2 = \left\lbrace a \right\rbrace$
 \item $L_3 = \left\lbrace aaa \right\rbrace$
@@ -50,15 +56,17 @@ Other examples for languages over the alphabet $\Sigma=\left\lbrace a,b \right\r
 
 
 
-\begin{samepage}
-\begin{large}
-\textbf{Notation conventions}
-\end{large}
+
+\paragraph*{Notation conventions}
+
+
 
 \begin{itemize}
-\item Iteration
+\item Iteration\\
 Let $a^i; a \in \Sigma \text{and} i \in \mathbb{Z}$ be the iteration of a character $a$, where $|a^i| = i$.
-Examples bellow.
+Example bellow:
+
+
 \begin{itemize}
 \item $a^0 = \lambda$
 \item $a^1 = a$
@@ -67,15 +75,21 @@ Examples bellow.
 \end{itemize}
 
 
-\item Concatenation
+
+\item Concatenation\\
 Let $w \cdot w^{'}; w, w^{'} \in \Sigma^{*}$ be the concatenation of the words $w$ and $w^{'}$.
 
 $w = a_1 a_2 a_3 \dots a_n ; w^{'} = a^{'}_1 a^{'}_2 a^{'}_3 \dots a^{'}_m; n,m \in \mathbb{Z}$ then
 
 $w\cdot w^{'} = w w^{'} = a_1 a_2 a_3 \dots a_n a^{'}_1 a^{'}_2 a^{'}_3 \dots a^{'}_m$
+
+
 \item \todo{Kleene star}
+\item Symbol count\\
+The number of occurrences of $a$ in $w$, where $a \in \Sigma, w \in \Sigma^{*}$, noted as $|w|_{a}$.
+
 \end{itemize}
-\end{samepage}
+
 
 Languages are often defined by grammars.
 \begin{definition}[Grammar]
@@ -110,6 +124,26 @@ such that $v_0 = V$ and $v_z = W$ where each is rewritten from the previous word
 The length of a derivation is given by $z$. 
 \end{definition}
 
+\paragraph{Chomsky Hierarchy}
+\todo{introduce chomsky hierarchy so you can later show DFA = NFA = $\mathcal{L}_3$}
+
+\subsection{Regular Languages}
+\subsubsection{Automata}
+\subsubsection{Regular Expressions}
+
+\todo{show equivalence DFA = NFA = $\mathcal{L}_3$}
+
+
+\begin{definition}[Finite State Machine]
+\label{def:FSM}
+\end{definition}
+
+
+\begin{definition}[Regular Expressions]
+\label{def:regular_exp}
+\end{definition}
+
+
 
 
 
@@ -119,9 +153,9 @@ The length of a derivation is given by $z$.
 Compilers are complex algorithms, \emph{programs}, that translate a human readable input known as \emph{source code} into a representation more suitable for computers to run. The introduction of compilers 
 
 
-Today's world undeniably relies on software more than ever before. It is imperative for developers to be able to efficiently write software. Software today is written in programming languages, high-level human-readable notations for defining how a program should run. However, before a program can be run on a system, it has to be translated (or \emph{compiled}) into low-level machine code, which computers can run. The computer program that facilitates this translation is called a \emph{compiler}. See \ref{fig:compiler}.
+Today's world undeniably relies on software more than ever before. It is imperative for developers to be able to efficiently write software. Software today is written in programming languages, high-level human-readable notations for defining how a program should run. However, before a program can be run on a system, it has to be translated (or \emph{compiled}) into low-level machine code, which computers can run. The computer program that facilitates this translation is called a \emph{compiler}. See \cref{fig:compiler}.
 
-\begin{figure}
+\begin{figure}[h]
   \caption{Figure describing the compiler as a single unit.}
   \label{fig:compiler}
   \centering
@@ -130,10 +164,10 @@ Today's world undeniably relies on software more than ever before. It is imperat
 
 
 
-Compilers are complex programs. It is helpful to break them down into parts, each handling different tasks, which are chained together to form a compiler. Modern compilers are composed of many phases, such as the \emph{Lexical Analyzer}, \emph{Syntax Analyzer}, \emph{Semantic Analyzer}, \emph{Intermediate Code Generator}, \emph{Machine-Independent Code Optimizer}, \emph{Code Generator}, \emph{Machine-Dependent Code Optimizer} \cite{dragon}, however this chapter covers the components relevant to this thesis. See relevant stages in \ref{fig:compiler-stages}.
+Compilers are complex programs. It is helpful to break them down into parts, each handling different tasks, which are chained together to form a compiler. Modern compilers are composed of many phases, such as the \emph{Lexical Analyzer}, \emph{Syntax Analyzer}, \emph{Semantic Analyzer}, \emph{Intermediate Code Generator}, \emph{Machine-Independent Code Optimizer}, \emph{Code Generator}, \emph{Machine-Dependent Code Optimizer} \cite{dragon}, however this chapter covers the components relevant to this thesis. See relevant stages in \cref{fig:compiler-stages}.
 
 
-\begin{figure}
+\begin{figure}[h]
   \caption{Figure describing the compiler stages.}
   \label{fig:compiler-stages}
   \centering
@@ -146,21 +180,25 @@ The first stage of a compiler is lexical analysis, also known as a \emph{lexer} 
 %Lexical analysis may be further divided into two distinct stages, however they are often implemented together. These stages are the \emph{scanner} and \emph{evaluator}.
 
 
-\subsection*{Regular Expressions}
-A compact way to represent the patterns accepting tokens are \emph{regular expressions}. Regular expressions are an algebraic definition of patterns, they specify \emph{regular languages}, $\mathcal{L}_3$
+\subsubsection*{Regular Expressions}
+A compact way to represent the patterns accepting tokens are \emph{regular expressions}, which were introduced in \cref{def:regular_exp}. Regular expressions are an algebraic definition of patterns, they specify \emph{regular languages}, $\mathcal{L}_3$
+
+\subsection*{Syntactic Analysis}
+
+\subsubsection*{LL Parser}
+
+\subsection*{Semantic Analysis}
+
+\subsection*{Code Generation}
 
 
-\subsection*{Formal grammars}
-\subsection*{LL parsing}
-
-
-\chapter{Transpiler implementation}
+\chapter{Transpiler Implementation}
 \todo{mention lexer regex implementation}
 \todo{mention LL table calculation according to theory}
 \todo{write about transformation of ast}
 
 
-\chapter{Evaluation of results}
+\chapter{Evaluation of Results}
 \todo{talk about methodology}
 \todo{test examples analyticall vs FDTD}
 \chapter{Conclusion}

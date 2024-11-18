@@ -1,0 +1,15 @@
+\documentclass[tikz,border=2mm]{standalone}
+
+\begin{document}
+\begin{tikzpicture}[>=stealth, every node/.style={align=center}]
+
+% Nodes
+\node[draw, rectangle, minimum width=3cm, minimum height=1cm] (compiler) at (0,0) {Compiler};
+
+
+% Edges
+\draw[->] (-4, 0) -- (compiler.west) node[midway, above] {Source code};
+\draw[->] (compiler.east) -- (4, 0) node[midway, above] {Target code};
+
+\end{tikzpicture}
+\end{document}
