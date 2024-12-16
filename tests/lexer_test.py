@@ -1,23 +1,24 @@
 import pytest
 from lex import Lexer
-from tokens import Equal, Identifier, Integer, Plus, Questionmark, Space, NewLine
+from tokens import Equal, Identifier, Integer, Plus, Questionmark,Semicolon # Space, NewLine
 
 
 @pytest.mark.parametrize(
     "src,expected",
     [
         (
-            "x= 3 + 1\n?x",
+            "x= 3 + 1;\n?x",
             [
                 Identifier("x"),
                 Equal(),
-                Space(),
+                # Space(),
                 Integer("3"),
-                Space(),
+                # Space(),
                 Plus(),
-                Space(),
+                # Space(),
                 Integer("1"),
-                NewLine(),
+                Semicolon(),
+                # NewLine(),
                 Questionmark(),
                 Identifier("x"),
             ],

@@ -89,6 +89,7 @@
 \usepackage{color}
 \usepackage[unicode,colorlinks,hyperindex,plainpages=false,pdftex]{hyperref}
 \usepackage{cleveref}
+\usepackage{booktabs}
 
 
 \ifczech

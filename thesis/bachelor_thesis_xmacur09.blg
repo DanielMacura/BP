@@ -9,47 +9,48 @@ Reallocated singl_function (elt_size=8) to 100 items from 50.
 Reallocated singl_function (elt_size=8) to 100 items from 50.
 Reallocated singl_function (elt_size=8) to 100 items from 50.
 Database file #1: projekt-20-literatura-bibliography.bib
-Warning--empty edition in formal_languages
-Warning--empty edition in dragon
-You've used 2 entries,
+Warning--empty edition in Linz2016Introduction
+Warning--empty edition in Salomaa1987Formal
+Warning--empty edition in chomsky1956three
+You've used 4 entries,
             3768 wiz_defined-function locations,
-            792 strings with 5370 characters,
-and the built_in function-call counts, 576 in all, are:
-= -- 42
-> -- 21
-< -- 0
-+ -- 7
-- -- 5
-* -- 32
-:= -- 78
-add.period$ -- 6
-call.type$ -- 2
-change.case$ -- 4
-chr.to.int$ -- 0
-cite$ -- 4
-duplicate$ -- 42
-empty$ -- 77
-format.name$ -- 5
-if$ -- 140
+            812 strings with 5807 characters,
+and the built_in function-call counts, 1404 in all, are:
+= -- 108
+> -- 46
+< -- 7
++ -- 22
+- -- 17
+* -- 79
+:= -- 185
+add.period$ -- 15
+call.type$ -- 4
+change.case$ -- 9
+chr.to.int$ -- 7
+cite$ -- 7
+duplicate$ -- 96
+empty$ -- 181
+format.name$ -- 7
+if$ -- 336
 int.to.chr$ -- 0
-int.to.str$ -- 2
+int.to.str$ -- 4
 missing$ -- 0
-newline$ -- 17
-num.names$ -- 2
-pop$ -- 16
+newline$ -- 32
+num.names$ -- 4
+pop$ -- 34
 preamble$ -- 1
 purify$ -- 1
 quote$ -- 0
-skip$ -- 23
+skip$ -- 52
 stack$ -- 0
-substring$ -- 10
-swap$ -- 6
-text.length$ -- 0
+substring$ -- 54
+swap$ -- 19
+text.length$ -- 4
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
-warning$ -- 2
-while$ -- 2
-width$ -- 3
-write$ -- 26
-(There were 2 warnings)
+warning$ -- 3
+while$ -- 11
+width$ -- 5
+write$ -- 54
+(There were 3 warnings)

@@ -1,8 +1,7 @@
 import pytest
 import pandas as pd
-from precedence_table import precedence_table
+from precedence_table import PrecedenceTable
 
-def test_precedence_init():
-    print(precedence_table)
-    precedence_table.to_excel("~/output.xlsx")
-    assert False
+# def test_precedence_init():
+#     PrecedenceTable.to_excel("~/output.xlsx")
+#     assert False

@@ -20,6 +20,20 @@ elseNT = NonTerminal("else")
 elifNT = NonTerminal("elif")
 triple_argument_for = NonTerminal("triple_argument_for")
 
+# Expressions
+
+expression = NonTerminal("expression")
+equality = NonTerminal("equality")
+equality_prime = NonTerminal("equality_prime")
+comparison = NonTerminal("comparison")
+comparison_prime = NonTerminal("comparison_prime")
+term = NonTerminal("term")
+term_prime = NonTerminal("term_prime")
+factor = NonTerminal("factor")
+factor_prime = NonTerminal("factor_prime")
+unary = NonTerminal("unary")
+primary = NonTerminal("primary")
+
     
 
 lumerical_grammar.append(Production(body, [statement, body]))
@@ -54,7 +68,7 @@ lumerical_grammar.append(Production(statement, [Identifier(), identifier_action]
 lumerical_grammar.append(Production(statement, [control_structure]))
 lumerical_grammar.append(Production(identifier_action, [assignment]))
 lumerical_grammar.append(Production(identifier_action, [function_call]))
-lumerical_grammar.append(Production(assignment, [Equal(), Expression(), Semicolon()]))
+lumerical_grammar.append(Production(assignment, [Equal(), expression, Semicolon()]))
 lumerical_grammar.append(
     Production(
         function_call, [LeftBracket(), parameter_list, RightBracket(), Semicolon()]
@@ -77,14 +91,14 @@ lumerical_grammar.append(Production(parameter_list_prime, Epsilon()))
 lumerical_grammar.append(
     Production(
         argument_list,
-        [Expression(), argument_list_prime],
+        [expression, argument_list_prime],
     )
 )
 lumerical_grammar.append(Production(argument_list, Epsilon()))
 lumerical_grammar.append(
     Production(
         argument_list_prime,
-        [Comma(), Expression(), argument_list_prime],
+        [Comma(), expression, argument_list_prime],
     )
 )
 
@@ -95,7 +109,7 @@ lumerical_grammar.append(
         [
             If(),
             LeftBracket(),
-            Expression(),
+            expression,
             RightBracket(),
             LeftCurly(),
             nested_body,
@@ -112,7 +126,7 @@ lumerical_grammar.append(
             LeftBracket(),
             Identifier(),
             assignment,
-            Expression(),
+            expression,
             triple_argument_for,
             RightBracket(),
             LeftCurly(),
@@ -131,14 +145,42 @@ lumerical_grammar.append(Production(elseNT, Epsilon()))
 lumerical_grammar.append(
     Production(
         elifNT,
-        [If(), LeftBracket(), Expression(), RightBracket()],
+        [If(), LeftBracket(), expression, RightBracket()],
     )
 )
 lumerical_grammar.append(Production(elifNT, Epsilon()))
 lumerical_grammar.append(
     Production(
         triple_argument_for,
-        [Semicolon(), Expression(), Semicolon(), Identifier(), assignment],
+        [Semicolon(), expression, Semicolon(), Identifier(), assignment],
     )
 )
 lumerical_grammar.append(Production(triple_argument_for, Epsilon()))
+
+# Expressions
+lumerical_grammar.append(Production(expression, [equality]))
+lumerical_grammar.append(Production(equality, [comparison, equality_prime]))
+lumerical_grammar.append(Production(equality_prime, [NotEqual(), comparison, equality_prime]))
+lumerical_grammar.append(Production(equality_prime, [DoubleEqual(), comparison, equality_prime]))
+lumerical_grammar.append(Production(equality_prime, Epsilon()))
+lumerical_grammar.append(Production(comparison, [term, comparison_prime]))
+lumerical_grammar.append(Production(comparison_prime, [GT(), term, comparison_prime]))
+lumerical_grammar.append(Production(comparison_prime, [GTE(), term, comparison_prime]))
+lumerical_grammar.append(Production(comparison_prime, [LT(), term, comparison_prime]))
+lumerical_grammar.append(Production(comparison_prime, [LTE(), term, comparison_prime]))
+lumerical_grammar.append(Production(comparison_prime, Epsilon()))
+lumerical_grammar.append(Production(term, [factor, term_prime]))
+lumerical_grammar.append(Production(term_prime,[Minus(), factor, term_prime]))
+lumerical_grammar.append(Production(term_prime,[Plus(), factor, term_prime]))
+lumerical_grammar.append(Production(term_prime,Epsilon()))
+lumerical_grammar.append(Production(factor, [unary, factor_prime]))
+lumerical_grammar.append(Production(factor_prime, [Divide(), unary, factor_prime]))
+lumerical_grammar.append(Production(factor_prime, [Multiply(), unary, factor_prime]))
+lumerical_grammar.append(Production(factor_prime, Epsilon()))
+lumerical_grammar.append(Production(unary, [Not(), unary]))
+lumerical_grammar.append(Production(unary, [Minus(), unary]))
+lumerical_grammar.append(Production(unary, [primary]))
+lumerical_grammar.append(Production(primary, [Integer()]))
+lumerical_grammar.append(Production(primary, [Float()]))
+lumerical_grammar.append(Production(primary, [String()]))
+lumerical_grammar.append(Production(primary, [LeftBracket(), expression, RightBracket()]))

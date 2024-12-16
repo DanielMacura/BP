@@ -21,7 +21,7 @@ class Lexer:
         self.token_lexeme_pairs = [
             (subclass.lexeme_pattern, subclass)
             for subclass in Token.__subclasses__() + Literal.__subclasses__()
-            if subclass.__name__ != "Literal" and subclass.__name__ != "Expression"
+            if subclass.__name__ != "Literal"
         ]
 
     def advance(self) -> Token | None:
@@ -34,7 +34,7 @@ class Lexer:
         longestMatchToken = None
         for pair in self.token_lexeme_pairs:
             pattern, expressionToken = pair
-            print(pair, self.source[self.cursor:], self.cursor)
+            print(pair, self.source[self.cursor :], self.cursor)
             regex = re.compile(pattern)
             match = regex.match(self.source, self.cursor)
             if match:

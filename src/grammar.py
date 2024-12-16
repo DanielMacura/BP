@@ -83,10 +83,9 @@ class Grammar:
         return terminals
 
     def nonTerminals(self) -> Set[NonTerminal]:
-        """List all terminals which are subclasses of Token or Literal.
-        Even terminals not in any RHS of any production in the grammar are listed.
+        """List all nonterminals.
 
-        :return: All terminals.
+        :return: All nonterminals.
         """
         nonTerminals = set()
         for production in self.productions:

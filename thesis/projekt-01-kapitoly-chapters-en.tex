@@ -7,13 +7,15 @@
 % \begin{document}
 
 \chapter{Note to the Reader}
-Through the thesis, the expression "iff" refers to "if and only if".
+Through the thesis, the expression "iff" refers to "if and only if".\\
+Except if explicitely stated otherwise, the following notation conventions apply throughout the thesis. 
+In the context of regular languages, lower case latin alphabet letters, such as $a, b, c, \dots$, reffer to terminal symbols. Upper case latin alphabet letters, such as $A, B, C,\dots$, denote nonternminal symbols.
 
 \chapter{Introduction}
 \todo{Add motivation for thesis, talk about importance of optics simulations, talk about uses, show examples. Talk about the need to compare simulation software.}
 
-\chapter{Review of Computational Electromagnetics and Compilers}
-This chapter aims to give the reader a broad understanding of the subjects of matter. It provides an overview of the physics behind the aforementioned simulations and an introduction to the basic concepts of compiler design and the underlying formal languages. This chapter will not delve into the specifics of each subject at hand but will provide the reader with the foundations necessary to comprehend the rest of this thesis.
+\chapter{Review of Relevant Literature}
+This chapter aims to give the reader a broad understanding of the subjects of matter. It provides an overview of the physics behind the aforementioned simulations and an introduction to the basic concepts of compiler design and the underlying formal language theory. This chapter will not delve into the specifics of each subject at hand but will provide the reader with the foundations necessary to comprehend the rest of this thesis.
 
 \section{Computational Electromagnetics}
 \subsection*{Curl theorem}
@@ -26,11 +28,11 @@ This chapter aims to give the reader a broad understanding of the subjects of ma
 
 
 \subsection*{Finite Difference Time Domain}
-\subsection*{Mie Scattering}
-\section{Formal Languages}
-\todo{add text explaining need of formal languages}
+\section{Formal Language Theory}
+Humans use languges like English or Slovak every day to comunicate information, these languages are reffered to as \emph{natural languages}. \todo{sentance about a general definition of language from a dictionary} How ever a more riggorous definition of languges and the tools to operate on them is required. That is what the notion of formal language theory will introduce in the following sections.
 
 \subsection{Alphabets and Languages}
+
 \todo{add text about languages and alphabets, use English as example}
 
 \begin{definition}[Alphabet]
@@ -43,7 +45,7 @@ The sequence of symbols $w$ is called a \emph{word}. The length of a word is giv
 
 \begin{definition}[Language]
 \label{def:language}
-The set $L$ where $L\subseteq \Sigma^{*}$ is know as the formal language over the alphabet $\Sigma$. 
+The set $L$ where $L\subseteq \Sigma^{*}$ is know as the \emph{formal language} over the alphabet $\Sigma$. 
 \end{definition}
 The words $L = \left\lbrace \lambda, a, b, aa, ab, bb \right\rbrace$ are some words of a language $L$ over the alphabet $\Sigma=\left\lbrace a,b \right\rbrace$.
 Other examples for languages over the alphabet $\Sigma=\left\lbrace a,b \right\rbrace$ might include:
@@ -63,7 +65,7 @@ Other examples for languages over the alphabet $\Sigma=\left\lbrace a,b \right\r
 
 \begin{itemize}
 \item Iteration\\
-Let $a^i; a \in \Sigma \text{and} i \in \mathbb{Z}$ be the iteration of a character $a$, where $|a^i| = i$.
+  Let $a^i; a \in \Sigma \text{ and } i \in \mathbb{Z}$ be the \emph{iteration} of a character $a$, where $|a^i| = i$.\\
 Example bellow:
 
 
@@ -77,9 +79,9 @@ Example bellow:
 
 
 \item Concatenation\\
-Let $w \cdot w^{'}; w, w^{'} \in \Sigma^{*}$ be the concatenation of the words $w$ and $w^{'}$.
+  Let $w \cdot w^{'}; w, w^{'} \in \Sigma^{*}$ be the \emph{concatenation} of the words $w$ and $w^{'}$.
 
-$w = a_1 a_2 a_3 \dots a_n ; w^{'} = a^{'}_1 a^{'}_2 a^{'}_3 \dots a^{'}_m; n,m \in \mathbb{Z}$ then
+$w = a_1 a_2 a_3 \dots a_n ; w^{'} = a^{'}_1 a^{'}_2 a^{'}_3 \dots a^{'}_m; n,m \in \mathbb{Z}$ then  
 
 $w\cdot w^{'} = w w^{'} = a_1 a_2 a_3 \dots a_n a^{'}_1 a^{'}_2 a^{'}_3 \dots a^{'}_m$
 
@@ -90,11 +92,18 @@ The number of occurrences of $a$ in $w$, where $a \in \Sigma, w \in \Sigma^{*}$,
 
 \end{itemize}
 
+\subsection{Grammars}
+Linguists reffer to grammar as a set of rules that specify how a natural language is formed. Due to the polysemous and vague nature of natural language, it is not suited for the description of unambiguous systems. Due to the inherit need to strictly describe languages, various language defining mechanizms are introduced. Many of these mechanizms are interchangable, and may describe the same languages. How ever, not all mechanizms have to be able to describe languages formed from other mechanizms.
 
-Languages are often defined by grammars.
+The concept of a grammar is a powerfull tool for describing languages\cite[p. 52]{Linz2016Introduction}. A simple sentence in English consists of a single independent clause. A clause is typically formed by a subject and a predicate. This can be written as follows.
+$$ \left< clause \right> \rightarrow \left< subject \right> \left< predicate \right> $$
+
+We can further define the $\left< subject \right>$ and $\left< predicate \right>$. One of the possible subjects is a noun phrase, and the predicate may be a simple verb.
+$$\left< subject \right> \rightarrow \left< determiner \right> \left< premodifier \right>\left< noun \right>\left< postmodifier \right>$$
+$$\left< predicate \right> \rightarrow \left< verb \right>$$
 \begin{definition}[Grammar]
 \label{def:grammar}
-\cite{formal_languages}
+\cite{Salomaa1987Formal}
 Let an ordered quadruple $G$ define a grammar such that: $G=\left(N, \Sigma, P, S \right)$, where:
 \begin{enumerate}
 \item $N$ is a finite set of \emph{nonternminal} symbols
@@ -124,14 +133,45 @@ such that $v_0 = V$ and $v_z = W$ where each is rewritten from the previous word
 The length of a derivation is given by $z$. 
 \end{definition}
 
-\paragraph{Chomsky Hierarchy}
-\todo{introduce chomsky hierarchy so you can later show DFA = NFA = $\mathcal{L}_3$}
+Grammars are often represented using formalisms, these formalisms often set restrictions on the left and right hand sides of productions. These restrictions further impose limits on the set of languages a grammar may produce, this is known as the \emph{expressive power} of a grammar. 
+
+\paragraph{Chomsky hierarchy}
+When working with formal grammars, the need to compare their expressive power arose. Linguist Noam Chomsky introduced the now so called \emph{Chomsky hierarchy}\cite{chomsky1956three}. A set of four classes, each more expressive than the previous, see \cref{fig:chomsky-hierarchy}.
+
+
+
+\begin{figure}[h]
+  \caption{Description of Chomsky hierarchy.}
+  \label{fig:chomsky-hierarchy}
+  \centering
+  \includegraphics[width=0.75\textwidth]{figures/chomsky-hierarchy.pdf}
+\end{figure}
+
+The intricaties of each class are not necessary in the context of this thesis, how ever relugar laguages will be used heavily throughout the rest of this thesis, so they will be explained more in depth.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}ccl@{}}
+\toprule
+Grammar         & Language               & Restrictions \\ \midrule
+$\mathcal{L}_3$ & Regular                &              \\
+$\mathcal{L}_2$ & Context Free           &              \\
+$\mathcal{L}_1$ & Context Sensitive      &              \\
+$\mathcal{L}_0$ & Recursively Enumerable &              \\ \bottomrule
+\end{tabular}
+\caption{An overview of the Chomsky hierarchy classes.}
+\label{tab:chomsky-hierarchy}
+\end{table}
 
 \subsection{Regular Languages}
 \subsubsection{Automata}
-\subsubsection{Regular Expressions}
+\subsubsection{Regular Expressions} 
+
+
+
 
 \todo{show equivalence DFA = NFA = $\mathcal{L}_3$}
+
 
 
 \begin{definition}[Finite State Machine]
@@ -144,19 +184,16 @@ The length of a derivation is given by $z$.
 \end{definition}
 
 
-
+  
 
 
 \section{Compilers}
 
 
-Compilers are complex algorithms, \emph{programs}, that translate a human readable input known as \emph{source code} into a representation more suitable for computers to run. The introduction of compilers 
-
-
-Today's world undeniably relies on software more than ever before. It is imperative for developers to be able to efficiently write software. Software today is written in programming languages, high-level human-readable notations for defining how a program should run. However, before a program can be run on a system, it has to be translated (or \emph{compiled}) into low-level machine code, which computers can run. The computer program that facilitates this translation is called a \emph{compiler}. See \cref{fig:compiler}.
+Today's world undeniably relies on software more than ever before. It is imperative for developers to be able to efficiently write software. Software today is written in programming languages, high-level human-readable notations for defining how a program should run. However, before a program can be run on a system, it has to be translated (or compiled) into low-level machine code, which computers can run. The computer program that facilitates this translation is called a \emph{compiler}. See \cref{fig:compiler}.
 
 \begin{figure}[h]
-  \caption{Figure describing the compiler as a single unit.}
+  \caption{Description of a compiler as a single unit.}
   \label{fig:compiler}
   \centering
   \includegraphics[width=0.75\textwidth]{figures/compiler.pdf}
@@ -164,11 +201,11 @@ Today's world undeniably relies on software more than ever before. It is imperat
 
 
 
-Compilers are complex programs. It is helpful to break them down into parts, each handling different tasks, which are chained together to form a compiler. Modern compilers are composed of many phases, such as the \emph{Lexical Analyzer}, \emph{Syntax Analyzer}, \emph{Semantic Analyzer}, \emph{Intermediate Code Generator}, \emph{Machine-Independent Code Optimizer}, \emph{Code Generator}, \emph{Machine-Dependent Code Optimizer} \cite{dragon}, however this chapter covers the components relevant to this thesis. See relevant stages in \cref{fig:compiler-stages}.
+Compilers are complex programs. It is helpful to break them down into parts, each handling different tasks, which are chained together to form a compiler. Modern compilers are composed of many phases, such as the Lexical Analyzer, Syntax Analyzer, Semantic Analyzer, Intermediate Code Generator, Machine-Independent Code Optimizer, Code Generator, Machine-Dependent Code Optimizer \cite[p. 5]{dragon}, however this chapter covers the components relevant to this thesis. See relevant stages in \cref{fig:compiler-stages}.
 
 
 \begin{figure}[h]
-  \caption{Figure describing the compiler stages.}
+  \caption{Overview of relevant compiler stages.}
   \label{fig:compiler-stages}
   \centering
   \includegraphics[width=0.75\textwidth]{figures/compiler-stages.pdf}

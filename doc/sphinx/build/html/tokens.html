@@ -58,11 +58,11 @@
 <li class="toctree-l3"><a class="reference internal" href="#tokens.Literal.__init__"><code class="docutils literal notranslate"><span class="pre">Literal.__init__()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#tokens.Expression"><code class="docutils literal notranslate"><span class="pre">Expression</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.Identifier"><code class="docutils literal notranslate"><span class="pre">Identifier</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.Integer"><code class="docutils literal notranslate"><span class="pre">Integer</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.Float"><code class="docutils literal notranslate"><span class="pre">Float</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.String"><code class="docutils literal notranslate"><span class="pre">String</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#tokens.Variable"><code class="docutils literal notranslate"><span class="pre">Variable</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.Plus"><code class="docutils literal notranslate"><span class="pre">Plus</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.Minus"><code class="docutils literal notranslate"><span class="pre">Minus</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.Divide"><code class="docutils literal notranslate"><span class="pre">Divide</span></code></a></li>
@@ -78,8 +78,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#tokens.RightBracket"><code class="docutils literal notranslate"><span class="pre">RightBracket</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.LeftCurly"><code class="docutils literal notranslate"><span class="pre">LeftCurly</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.RightCurly"><code class="docutils literal notranslate"><span class="pre">RightCurly</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#tokens.EOF"><code class="docutils literal notranslate"><span class="pre">EOF</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#tokens.Comment"><code class="docutils literal notranslate"><span class="pre">Comment</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.Questionmark"><code class="docutils literal notranslate"><span class="pre">Questionmark</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.Semicolon"><code class="docutils literal notranslate"><span class="pre">Semicolon</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.Comma"><code class="docutils literal notranslate"><span class="pre">Comma</span></code></a></li>
@@ -93,6 +91,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="symbol.html">Symbol</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lltable.html">LL Table</a></li>
+<li class="toctree-l1"><a class="reference internal" href="precedence_table.html">Precedence Table</a></li>
 </ul>
 
         </div>
@@ -143,7 +142,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Literal">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Literal</span></span><a class="headerlink" href="#tokens.Literal" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Literal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lexeme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tokens.Literal" title="Link to this definition"></a></dt>
 <dd><p>A special <a class="reference internal" href="#tokens.Token" title="tokens.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">Token</span></code></a> that also stores a value generated from it’s lexeme.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -152,165 +151,362 @@
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="tokens.Literal.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#tokens.Literal.__init__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lexeme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tokens.Literal.__init__" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="tokens.Expression">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Expression</span></span><a class="headerlink" href="#tokens.Expression" title="Link to this definition"></a></dt>
+<dd><p>Represents an expression token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match an expression.
+Lexeme pattern: <cite>r””</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="tokens.Identifier">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Identifier</span></span><a class="headerlink" href="#tokens.Identifier" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Identifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lexeme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tokens.Identifier" title="Link to this definition"></a></dt>
+<dd><p>Represents an identifier token (e.g., variable names).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match an identifier, 
+which starts with a letter and can be followed by letters and digits.
+Lexeme pattern: <cite>r”[A-Za-z][A-Za-z0-9]*”</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Integer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Integer</span></span><a class="headerlink" href="#tokens.Integer" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Integer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lexeme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tokens.Integer" title="Link to this definition"></a></dt>
+<dd><p>Represents an integer literal token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match an integer, 
+which consists of one or more digits.
+Lexeme pattern: <cite>r”[0-9]+”</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Float">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Float</span></span><a class="headerlink" href="#tokens.Float" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lexeme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tokens.Float" title="Link to this definition"></a></dt>
+<dd><p>Represents a floating-point literal token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match a float, 
+which consists of a digit, a period, and one or more digits after the period.
+Lexeme pattern: <cite>r”[0-9].[0-9]+”</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.String">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">String</span></span><a class="headerlink" href="#tokens.String" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="tokens.Variable">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Variable</span></span><a class="headerlink" href="#tokens.Variable" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">String</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lexeme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tokens.String" title="Link to this definition"></a></dt>
+<dd><p>Represents a string literal token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match a string, 
+which starts and ends with a double quote and may contain escaped quotes.
+Lexeme pattern: <cite>r’”(?:”|[^”])*”’</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Plus">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Plus</span></span><a class="headerlink" href="#tokens.Plus" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents the ‘+’ operator token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the plus operator.
+Lexeme pattern: <cite>r”+”</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Minus">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Minus</span></span><a class="headerlink" href="#tokens.Minus" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents the ‘-’ operator token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the minus operator.
+Lexeme pattern: <cite>r”-”</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Divide">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Divide</span></span><a class="headerlink" href="#tokens.Divide" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents the division operator token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the division operator.
+Lexeme pattern: <cite>r”&quot;</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Multiply">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Multiply</span></span><a class="headerlink" href="#tokens.Multiply" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents the multiplication operator token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the multiplication operator.
+Lexeme pattern: <cite>r”*”</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Equal">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Equal</span></span><a class="headerlink" href="#tokens.Equal" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents the equality operator token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the equality operator.
+Lexeme pattern: <cite>r”=”</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.NotEqual">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">NotEqual</span></span><a class="headerlink" href="#tokens.NotEqual" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents the not-equal operator token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the not-equal operator.
+Lexeme pattern: <cite>r”!=”</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.DoubleEqual">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">DoubleEqual</span></span><a class="headerlink" href="#tokens.DoubleEqual" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents the double equality operator token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the double equal operator.
+Lexeme pattern: <cite>r”==”</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.GT">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">GT</span></span><a class="headerlink" href="#tokens.GT" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents the ‘greater than’ operator token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the ‘greater than’ operator.
+Lexeme pattern: <cite>r”&gt;”</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.GTE">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">GTE</span></span><a class="headerlink" href="#tokens.GTE" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents the ‘greater than or equal to’ operator token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the ‘greater than or equal to’ operator.
+Lexeme pattern: <cite>r”&gt;=”</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.LT">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">LT</span></span><a class="headerlink" href="#tokens.LT" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents the ‘less than’ operator token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the ‘less than’ operator.
+Lexeme pattern: <cite>r”&lt;”</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.LTE">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">LTE</span></span><a class="headerlink" href="#tokens.LTE" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents the ‘less than or equal to’ operator token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the ‘less than or equal to’ operator.
+Lexeme pattern: <cite>r”&lt;=”</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.LeftBracket">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">LeftBracket</span></span><a class="headerlink" href="#tokens.LeftBracket" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents the left parenthesis ‘(’ token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the left parenthesis.
+Lexeme pattern: <cite>r”(”</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.RightBracket">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">RightBracket</span></span><a class="headerlink" href="#tokens.RightBracket" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents the right parenthesis ‘)’ token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the right parenthesis.
+Lexeme pattern: <cite>r”)”</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.LeftCurly">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">LeftCurly</span></span><a class="headerlink" href="#tokens.LeftCurly" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents the left curly brace ‘{’ token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the left curly brace.
+Lexeme pattern: <cite>r”{”</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.RightCurly">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">RightCurly</span></span><a class="headerlink" href="#tokens.RightCurly" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="tokens.EOF">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">EOF</span></span><a class="headerlink" href="#tokens.EOF" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="tokens.Comment">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Comment</span></span><a class="headerlink" href="#tokens.Comment" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents the right curly brace ‘}’ token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the right curly brace.
+Lexeme pattern: <cite>r”}”</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Questionmark">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Questionmark</span></span><a class="headerlink" href="#tokens.Questionmark" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents the ‘?’ token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the question mark.
+Lexeme pattern: <cite>r”?”</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Semicolon">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Semicolon</span></span><a class="headerlink" href="#tokens.Semicolon" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents the semicolon ‘;’ token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the semicolon.
+Lexeme pattern: <cite>r”;”</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Comma">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Comma</span></span><a class="headerlink" href="#tokens.Comma" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents the comma ‘,’ token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the comma.
+Lexeme pattern: <cite>r”,”</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Space">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Space</span></span><a class="headerlink" href="#tokens.Space" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents whitespace characters (spaces and tabs).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match spaces and tabs.
+Lexeme pattern: <cite>r”[t ]+”</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.NewLine">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">NewLine</span></span><a class="headerlink" href="#tokens.NewLine" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents newline characters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match newline characters.
+Lexeme pattern: <cite>r”r?n”</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Function">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Function</span></span><a class="headerlink" href="#tokens.Function" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents the ‘function’ keyword.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the ‘function’ keyword.
+Lexeme pattern: <cite>r”function”</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.For">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">For</span></span><a class="headerlink" href="#tokens.For" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents the ‘for’ keyword.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the ‘for’ keyword.
+Lexeme pattern: <cite>r”for”</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.If">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">If</span></span><a class="headerlink" href="#tokens.If" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents the ‘if’ keyword.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the ‘if’ keyword.
+Lexeme pattern: <cite>r”if”</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Else">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Else</span></span><a class="headerlink" href="#tokens.Else" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Represents the ‘else’ keyword.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the ‘else’ keyword.
+Lexeme pattern: <cite>r”else”</cite></p>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 

@@ -12,7 +12,7 @@ documentation for details.
 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
 
    lexer
@@ -20,3 +20,4 @@ documentation for details.
    tokens
    symbol
    lltable
+   precedence_table
