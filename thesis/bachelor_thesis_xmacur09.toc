@@ -7,9 +7,9 @@
 \contentsline {subsection}{\numberline {3.2.1}Alphabets and Languages}{5}{subsection.3.2.1}%
 \contentsline {subsection}{\numberline {3.2.2}Grammars}{6}{subsection.3.2.2}%
 \contentsline {paragraph}{Chomsky hierarchy}{7}{section*.8}%
-\contentsline {subsection}{\numberline {3.2.3}Regular Languages}{7}{subsection.3.2.3}%
-\contentsline {subsubsection}{Automata}{7}{section*.9}%
-\contentsline {subsubsection}{Regular Expressions}{7}{section*.10}%
+\contentsline {subsection}{\numberline {3.2.3}Regular Languages}{8}{subsection.3.2.3}%
+\contentsline {subsubsection}{Automata}{8}{section*.9}%
+\contentsline {subsubsection}{Regular Expressions}{8}{section*.10}%
 \contentsline {section}{\numberline {3.3}Compilers}{8}{section.3.3}%
 \contentsline {chapter}{\numberline {4}Transpiler Implementation}{10}{chapter.4}%
 \contentsline {chapter}{\numberline {5}Evaluation of Results}{11}{chapter.5}%
