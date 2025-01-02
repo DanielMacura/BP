@@ -29,7 +29,7 @@ This chapter aims to give the reader a broad understanding of the subjects of ma
 
 \subsection*{Finite Difference Time Domain}
 \section{Formal Language Theory}
-Humans use languges like English or Slovak every day to comunicate information, these languages are reffered to as \emph{natural languages}. \todo{sentance about a general definition of language from a dictionary} How ever a more riggorous definition of languges and the tools to operate on them is required. That is what the notion of formal language theory will introduce in the following sections.
+We use languages like English or Slovak every day to communicate information, these languages are referred to as \emph{natural languages}. The Oxford English Dictionary defines language as a system of spoken or written communication used by a particular country, people, community. How ever a more rigorous definition of languages and the tools to operate on them is required. That is what the notion of formal language theory will introduce in the following sections.
 
 \subsection{Alphabets and Languages}
 
@@ -41,16 +41,16 @@ Let $\Sigma$ be an \emph{alphabet}, a finite nonempty set of symbols, letters. T
 $$w= a_1 a_2 a_3 \dots a_{n-1} a_n, \in \Sigma \text{ for } n \in \mathbb{N}$$
 \end{definition}
 
-The sequence of symbols $w$ is called a \emph{word}. The length of a word is given by the number of symbols $a$, symbolically $|w| = n$. The word with a length of 0 is called an \emph{empty word} denoted as $\lambda$.
+The sequence of symbols $w$ is called a \emph{word}. The length of a word is given by the number of symbols $a$, symbolically $|w| = n$. The word with a length of 0 is called an \emph{empty word} denoted as $\epsilon$.
 
 \begin{definition}[Language]
 \label{def:language}
 The set $L$ where $L\subseteq \Sigma^{*}$ is know as the \emph{formal language} over the alphabet $\Sigma$. 
 \end{definition}
-The words $L = \left\lbrace \lambda, a, b, aa, ab, bb \right\rbrace$ are some words of a language $L$ over the alphabet $\Sigma=\left\lbrace a,b \right\rbrace$.
+The words $L = \left\lbrace \epsilon, a, b, aa, ab, bb \right\rbrace$ are some words of a language $L$ over the alphabet $\Sigma=\left\lbrace a,b \right\rbrace$.
 Other examples for languages over the alphabet $\Sigma=\left\lbrace a,b \right\rbrace$ might include:
 \begin{itemize}
-\item $L_1 = \left\lbrace \lambda \right\rbrace$
+\item $L_1 = \left\lbrace \epsilon \right\rbrace$
 \item $L_2 = \left\lbrace a \right\rbrace$
 \item $L_3 = \left\lbrace aaa \right\rbrace$
 \item $L_4 = \left\lbrace a^i,b^i; i \in \mathbb{N} \right\rbrace$
@@ -70,7 +70,7 @@ Example bellow:
 
 
 \begin{itemize}
-\item $a^0 = \lambda$
+\item $a^0 = \epsilon$
 \item $a^1 = a$
 \item $a^2 = aa$
 \item $a^i = a_0 a_1 a_2 \dots a_i; i \in \mathbb{N}$
@@ -93,14 +93,19 @@ The number of occurrences of $a$ in $w$, where $a \in \Sigma, w \in \Sigma^{*}$,
 \end{itemize}
 
 \subsection{Grammars}
-Linguists reffer to grammar as a set of rules that specify how a natural language is formed. Due to the polysemous and vague nature of natural language, it is not suited for the description of unambiguous systems. Due to the inherit need to strictly describe languages, various language defining mechanizms are introduced. Many of these mechanizms are interchangable, and may describe the same languages. How ever, not all mechanizms have to be able to describe languages formed from other mechanizms.
+Linguists refer to grammar as a set of rules that specify how a natural language is formed. Due to the polysemous and vague nature of natural languages, it is not suited for the description of unambiguous systems. The inherit need to strictly describe languages introduced various language defining mechanisms. Many of these mechanisms are interchangeable, and may describe the same languages. How ever, not all mechanisms are able to describe languages formed by other mechanisms.
 
-The concept of a grammar is a powerfull tool for describing languages\cite[p. 52]{Linz2016Introduction}. A simple sentence in English consists of a single independent clause. A clause is typically formed by a subject and a predicate. This can be written as follows.
+The concept of a grammar is a powerful tool for describing languages\cite[p. 52]{Linz2016Introduction}. A simple sentence in English consists of a single independent clause. A clause is typically formed by a subject and a predicate. This can be written as follows.
 $$ \left< clause \right> \rightarrow \left< subject \right> \left< predicate \right> $$
 
 We can further define the $\left< subject \right>$ and $\left< predicate \right>$. One of the possible subjects is a noun phrase, and the predicate may be a simple verb.
-$$\left< subject \right> \rightarrow \left< determiner \right> \left< premodifier \right>\left< noun \right>\left< postmodifier \right>$$
+$$\left< subject \right>   \rightarrow   \left< determiner \right>   \left< premodifier \right>    \left< noun \right>    \left< postmodifier \right>$$
 $$\left< predicate \right> \rightarrow \left< verb \right>$$
+
+Associating the $\left< determiner \right>$ with the article "the", $\left< premodifier \right>$ with "fast" or "slow", $\left< noun \right>$ with "athlete", $\left< postmodifier \right>$ to "from England" or to an empty string and finally associating the $\left< verb \right>$ to "won" or "lost" allows us to write multiple sentences like "The fast athlete from England won" or "The slow athlete lost". These sentences are considered to be \emph{well formed}, as they resulted from following the grammatical rules.
+
+The premise is consecutively replacing $\left< clause \right>$ until only irreducible blocks of the language remain. Generalizing this idea brings about the concept formal grammars.
+
 \begin{definition}[Grammar]
 \label{def:grammar}
 \cite{Salomaa1987Formal}
