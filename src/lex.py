@@ -1,6 +1,9 @@
 import re
+import logging
 from tokens import *
 from typing_extensions import Generator
+
+logger = logging.getLogger(__name__)
 
 
 class Lexer:
@@ -23,6 +26,7 @@ class Lexer:
             for subclass in Token.__subclasses__() + Literal.__subclasses__()
             if subclass.__name__ != "Literal"
         ]
+        logger.info("Initialized Lexer")
 
     def advance(self) -> Token | None:
         """Advances and tries to math the next token from the remaining source. The longest lexeme matching a rule from :py:mod:`grammar`,
@@ -38,23 +42,32 @@ class Lexer:
             regex = re.compile(pattern)
             match = regex.match(self.source, self.cursor)
             if match:
-                print("MATCHHH", match.group(0))
+                logger.debug(f"Matched {match.group(0)}")
                 if longestMatch is None or match.end(0) > longestMatch.end(0):
-                    print("LONGEST MATCHHH", match.group(0))
+                    logger.debug(f"So far longest match is {match.group(0)}")
                     longestMatch = match
                     token: Token = expressionToken()
                     token.lexeme = longestMatch.group(0)
                     longestMatchToken = token
         if longestMatch is not None:
             self.cursor = longestMatch.end(0)
+        if longestMatchToken:
+            logger.info(f"Advanced lexer with token {longestMatchToken} matching {longestMatchToken.lexeme}")
+        else:
+            logger.warning("Did not match any token")
         return longestMatchToken
 
     def tokens(self) -> Generator[Token, None, None]:
         """A generator that returns the next token. Calls :py:meth:`advance` until it returns None.
 
+        Whitespace tokens are ignored.
+
         :return: All tokens.
         """
         token = self.advance()
         while token:
+            if token == Space() or token == NewLine():
+                token = self.advance()
+                continue
             yield token
             token = self.advance()

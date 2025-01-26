@@ -1,4 +1,4 @@
-from symbol import Epsilon, Terminal, NonTerminal
+from symbol import Epsilon, Terminal, NonTerminal, Action
 from typing import List, Set
 from tokens import *
 
@@ -23,7 +23,7 @@ class Production:
     def __init__(
         self,
         LHS: NonTerminal,
-        RHS: List[NonTerminal | Terminal] | Epsilon,
+        RHS: List[NonTerminal | Terminal | Action] | Epsilon,
         nullable: bool = False,
         increment_number=True,
     ) -> None:

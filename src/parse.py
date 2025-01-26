@@ -1,24 +1,30 @@
-from operator import contains
 from queue import LifoQueue
 from collections import deque
 from typing import Deque
 from lltable import LLTable
 from symbol import Epsilon, NonTerminal, Terminal
-from lumerical_grammar import body
 from lex import Lexer
 from grammar import Grammar
-from tokens import Token
-from precedence_table import PrecedenceTable, Action
-import pytest
+from tokens import EndOfFile, Token
+from precedence_table import PrecedenceTable
+from symbol import Action
+from ast import AST, Module
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class Parser:
-    """The :py:class:`Parser` class handles the entire parsing process. Top-down parsing is handles by the provided LL table.
-    When an expression is encountered, the parser switches to bottom-up precedence parsing.
+    """The :py:class:`Parser` class handles the entire parsing process. Top-down parsing is handled by the provided LL table.
 
     :param grammar: The grammar according to which the LL table is constructed.
     :param lexer: The lexer provides a stream of tokens to be processed.
     :param table: The LL table.
     :param stack: The stack holds Terminals and NonTerminals, they are added and removed in a FIFO order. They guide the order of the parsing process.
+    :param valueStack: The valueStack holds AST nodes, that have been encountederd and will be consumed by actions at a later point.
+    :param tokenStack: The tokenStack holds already accepted tokens so they can be used in actions.
+    :param ast: Stores the abstract syntax tree, used for resulting code generation.
+    :param current_token: The current input token, call next(Lexer.tokens()) to update. 
     """
 
     def __init__(self, grammar: Grammar, lexer: Lexer) -> None:
@@ -31,84 +37,68 @@ class Parser:
         self.lexer = lexer
         self.table = LLTable(self.grammar)
         self.table.ComputeTable()
-        self.precedence_table = PrecedenceTable()
-        self.precedence_stack: Deque[Token | NonTerminal | Action] = deque()
-        self.stack: LifoQueue[Terminal | NonTerminal] = LifoQueue()
-        self.ast = NonTerminal("body")
-        self.stack.put(NonTerminal("body"))
+        self.stack: LifoQueue[Terminal | NonTerminal | Action] = LifoQueue()
+        self.valueStack: LifoQueue[AST] = LifoQueue()       # Stack for ast nodes
+        self.valueStack.put(Module())
+        self.tokenStack: LifoQueue[Token] = LifoQueue()     # Stack for tokens as input for actions
+        self.ast = Module()
+        self.stack.put(NonTerminal("body"))     # Stack for ll parsing
 
         self.current_token = next(self.lexer.tokens())
+        logger.info("Initialized Parser")
 
     def parse(self):
-        """This method runs the entire parsing process. A parse tree is returned uppon success.
+        """This method runs the entire parsing process. A parse tree is generated uppon success.
 
         :raises TypeError: A incorrect object type was encountederd on the stack.
         """
+        logger.info("START parsing")
         while not self.stack.empty():
             top = self.stack.get()
-            print("Iteration", top, self.current_token)
-            print("queue", list(self.stack.queue))
+            logger.debug(
+                f"Current iteration, top {top}, input token {self.current_token}"
+            )
+            logger.debug(f"Queue {list(self.stack.queue)}")
             match top:
                 # case Action(): # TBD if used
                 #    pass
                 case NonTerminal():
-                    self.ast
-                    what_to_push = self.table.Predict(top, self.current_token)
-                    if what_to_push is None:
-                        raise ValueError(
-                            f"Cannont parse input, failed at {top, self.current_token}"
-                        )
-                    print("pushing")
-                    if what_to_push.RHS == Epsilon():
-                        continue
-                    for symbol in reversed(what_to_push.RHS):
-                        print(symbol)
-                        self.stack.put(symbol)
+                    self.handleNonTerminal(top)
 
                 case Terminal():
-                    if top == self.current_token:
-                        try:
-                            self.current_token = next(self.lexer.tokens())
-                        except StopIteration:
-                            print("Success!")
-                            return
-                    else:
-                        raise ValueError(f"Cannont parse input, failed at {top, }")
+                    self.handleTerminal(top)
+
+                case Action():
+                    self.handleAction(top)
                 case _:
                     raise TypeError(
                         f"Wrong type of object found on stack, {top.__class__}"
                     )
 
-    def top(self) -> tuple[None | Token, int]:
-        """Return the topmost terminal on the stack.
-        If the stack contains no terminals, None is returned instead.
+    def handleNonTerminal(self, top: NonTerminal):
+        what_to_push = self.table.Predict(top, self.current_token)
+        if what_to_push is None:
+            logger.error(f"Failed parsing input, {top, self.current_token}")
+            raise ValueError(
+                f"Failed parsing input NonTerminal, failed at {top, self.current_token}"
+            )
+        if what_to_push.RHS == Epsilon():
+            return
+        logger.debug(f"Pushing {list(reversed(what_to_push.RHS))}")
+        for symbol in reversed(what_to_push.RHS):
+            self.stack.put(symbol)
 
-        :param stack: Stack to be iterated over.
-        :return: Topmost terminal on stack.
-        """
-        for i in range(len(self.precedence_stack)):
-            if isinstance(self.precedence_stack[i], Terminal):
-                return self.precedence_stack[i], i
-        return None, -1
+    def handleTerminal(self, top: Terminal):
+        if top == self.current_token:
+            self.tokenStack.put(self.current_token)
+            if self.current_token != EndOfFile():
+                self.current_token = next(self.lexer.tokens())
+        else:
+            logger.error(f"Failed parsing input Terminal, {top, self.current_token}")
+            raise ValueError(
+                f"Cannont parse input, failed at {top, self.current_token}"
+            )
 
-    def parseBottomUp(self):
-        while True:
-            top, top_index = self.top()
-            precedence = self.precedence_table.getPrecedence(top, self.current_token)
-
-            
-
-            match precedence:
-                case Action.SHIFT_EQ:
-                    self.precedence_stack.append(self.current_token)
-                    self.current_token = next(self.lexer.tokens())
-                case Action.SHIFT_LT:
-                    self.precedence_stack.insert(top_index, Action.SHIFT_LT)
-                    self.precedence_stack.append(self.current_token)
-                    self.current_token = next(self.lexer.tokens())
-
-                case Action.REDUCE:
-                    nonterminal = self.precedence_stack.pop()
-                    if not isinstance(nonterminal, NonTerminal):
-                        raise ValueError(f"Wrong symbol on top of precedence stack, found {nonterminal}.")
-                    
+    def handleAction(self, top: Action):
+        logger.info(f"Applying action {top.name}")
+        top.call(self.valueStack, self.tokenStack)

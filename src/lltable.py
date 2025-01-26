@@ -34,12 +34,11 @@ class LLTable:
         for v, k in self.firstSets.items():
             print(v, k)
 
-
-    def FirstClosure(self, production:Production)->None:
+    def FirstClosure(self, production: Production) -> None:
         """The first set for the production is found by applying the follwing rule to a production in the form of
 
         .. math::
-            lhs \\rightarrow \\alpha \\beta \\mathcal{B} 
+            lhs \\rightarrow \\alpha \\beta \\mathcal{B}
 
         where :math:`lhs` is a single nonterminal, :math:`\\alpha` is zero or more **nullable** nonterminals, :math:`\\beta` is a single terminal or non-nullable nonterminal and :math:`\\mathcal{B}` is a series of terminals and nonterminals.
 
@@ -77,21 +76,21 @@ class LLTable:
                 break
             previousFollowSets = deepcopy(self.followSets)
 
-    def FollowClosure(self, production:Production) -> None:
+    def FollowClosure(self, production: Production) -> None:
         """The follow set for the production is found with the following steps for any production in the form of
 
         .. math::
             lhs \\rightarrow \\dots a \\alpha \\beta \\dots
 
         where :math:`lhs` is a single nonterminal, :math:`a` is single  **non**-nullable nonterminal, :math:`\\alpha` is a series of 0 or more nullable nonterminals and :math:`\\beta` is a single terminal or **non**-nullable nonterminal.
-        
+
         FOLLOW(:math:`a`) includes FIRST(:math:`\\alpha`) and FIRST(:math:`\\beta`)
 
         .. math::
             lhs \\rightarrow \\dots a \\alpha
 
         where :math:`lhs` and :math:`a` are nonterminals, :math:`a` may be nullable, and :math:`\\alpha` is a series of zero or more nullable nonterminals. FOLLOW(:math:`lhs`) is added to FOLLOW(:math:`a`).
-        
+
         This closure needs to be applied to all productions in the grammar, until they don't change after aplication.
 
         :param production: Production who's first set will be computed and added to :py:attr:`firstSets`.
@@ -99,35 +98,16 @@ class LLTable:
         if isinstance(production.RHS, Epsilon):
             print("Epsion prod", production)
             return
-        # foundNonterminal: None | NonTerminal = None
         # First rule application
         for i, symbol in enumerate(production.RHS[:-1]):
             if isinstance(symbol, NonTerminal):
-                next_symbol = production.RHS[i+1]
+                next_symbol = production.RHS[i + 1]
                 if isinstance(next_symbol, Terminal):
                     self.followSets[symbol] |= {next_symbol}
                 elif isinstance(next_symbol, NonTerminal):
                     self.followSets[symbol] |= self.firstSets[next_symbol]
             if isinstance(symbol, Terminal):
                 continue
-
-                # if foundNonterminal is None:
-                #     foundNonterminal = symbol
-                #     continue
-                # else:
-                #     foundNonterminal = symbol
-                #     self.followSets[foundNonterminal] |= self.firstSets[symbol]
-                # if foundNonterminal:
-                #     self.followSets[foundNonterminal] |= self.firstSets[symbol]
-                # if not self.grammar.isNullable(symbol):
-                #     foundNonterminal = None
-                # foundNonterminal = symbol
-
-            # elif isinstance(symbol, Terminal):
-            #     if foundNonterminal:
-            #         self.followSets[foundNonterminal] |= {symbol}
-            #         foundNonterminal = None
-
         # Second rule application
         last_nonterminal: None | NonTerminal = None
         print("Rule", production.LHS, production.RHS, self.followSets[production.LHS])
@@ -144,19 +124,14 @@ class LLTable:
             print("---ADDING", self.followSets[production.LHS], "to", last_nonterminal)
             self.followSets[last_nonterminal] |= self.followSets[production.LHS]
 
-        # if isinstance(production.RHS[-1], NonTerminal):
-        #     self.followSets[production.RHS[-1]] |= self.followSets[production.LHS]
-
-
-
     def ComputeSelectSets(self):
         """Generate select sets for all the :py:class:`NonTerminal`s. Called after :py:meth:`ComputeFollowSets`.
-        
-        If a production is nullable, it's whole RHS can go to epsilon, then given a production of the form 
+
+        If a production is nullable, it's whole RHS can go to epsilon, then given a production of the form
 
         .. math::
             lhs \\rightarrow \\alpha
-        
+
         where :math:`\\alpha` is series of zero or more nullable nonterminals, SELECT(:math:`lhs`) is FIRST(:math:`\\alpha`) and FOLLOW(:math:`lhs`)
 
         If a production is not nullable, then given
@@ -168,22 +143,6 @@ class LLTable:
         """
         selectSets = {prod.number: set() for prod in self.grammar.productions}
         for production in self.grammar.productions:
-            # if production.nullable:
-            #     for symbol in production.RHS:
-            #         selectSets[production.number] |= self.followSets[production.LHS]
-            #         if isinstance(symbol, NonTerminal) and self.grammar.isNullable(symbol):
-            #             selectSets[production.number] |= self.firstSets[symbol]
-            #         else:
-            #             break
-            # else:
-            #     for symbol in production.RHS:
-            #         if isinstance(symbol, NonTerminal):
-            #             selectSets[production.number] |= self.firstSets[symbol]
-            #             if not self.grammar.isNullable(symbol):
-            #                 break
-            #         else:
-            #             selectSets[production.number] |= {symbol}
-            #             break
             if isinstance(production.RHS, Epsilon):
                 selectSets[production.number] |= self.followSets[production.LHS]
                 continue
@@ -204,8 +163,7 @@ class LLTable:
             print(k, v)
         self.selectSets = selectSets
 
-
-    def Predict(self, currentState:NonTerminal, token:Token) -> Production|None:
+    def Predict(self, currentState: NonTerminal, token: Token) -> Production | None:
         """Used to guide the parsing process. When in the state :py:attr:`currentState`, depending on the current input token, the next valid production is returned.
         If an invalid token for the current state is parsed, None is returned.
 
@@ -213,8 +171,8 @@ class LLTable:
         :param token: The current input :py:class:`Token`.
         :return: Return a valid :py:class:`Token` or None.
         """
-        
-        return self.table[currentState][token] 
+
+        return self.table[currentState][token]
 
     def ComputeTable(self):
         """
@@ -226,7 +184,10 @@ class LLTable:
         self.ComputeFolowSets()
         self.ComputeSelectSets()
         print("Selectt\n", self.selectSets)
-        table = {prod.LHS: {token: None for token in self.grammar.terminals()} for prod in self.grammar.productions}
+        table = {
+            prod.LHS: {token: None for token in self.grammar.terminals()}
+            for prod in self.grammar.productions
+        }
         for production in self.grammar.productions:
             for token in self.selectSets[production.number]:
                 table[production.LHS][token] = production
@@ -240,11 +201,19 @@ class LLTable:
         :return: csv string of LL table.
         """
         csv_string = ","
-        header = ','.join(sorted([str(x) for x in self.grammar.terminals()]))
-        csv_string += header + '\n'
-        for row in sorted([x for x in self.grammar.nonTerminals()], key= lambda x: str(x)):
-            csv_string += (str(row) + ',')
-            for token in sorted([x for x in self.grammar.terminals()], key= lambda x: str(x)): 
-                csv_string += (str(self.table[row][token].number) if self.table[row][token] is not None else " ") + ','
-            csv_string += '\n'
+        header = ",".join(sorted([str(x) for x in self.grammar.terminals()]))
+        csv_string += header + "\n"
+        for row in sorted(
+            [x for x in self.grammar.nonTerminals()], key=lambda x: str(x)
+        ):
+            csv_string += str(row) + ","
+            for token in sorted(
+                [x for x in self.grammar.terminals()], key=lambda x: str(x)
+            ):
+                csv_string += (
+                    str(self.table[row][token].number)
+                    if self.table[row][token] is not None
+                    else " "
+                ) + ","
+            csv_string += "\n"
         return csv_string

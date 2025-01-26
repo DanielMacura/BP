@@ -31,15 +31,14 @@ class Literal(Token):
     :param value:
     """
 
-    def __init__(self, lexeme:str|None=None):
+    def __init__(self, lexeme: str | None = None):
         super().__init__()
         self.value = None
         self.lexeme = lexeme
 
     def __str__(self) -> str:
-        return (self.__class__.__name__)
+        return self.__class__.__name__
         return (
-
             self.__class__.__name__ + ":" + self.lexeme
             if self.lexeme
             else self.__class__.__name__
@@ -52,23 +51,15 @@ class Literal(Token):
         return super().__eq__(other)
 
 
-# class Expression(Token):
-#     """
-#     Represents an expression token.
-#
-#     :param lexeme_pattern: The regular expression pattern used to match an expression.
-#                             Lexeme pattern: `r""`
-#     """
-#     lexeme_pattern = r""
-
 class Identifier(Literal):
     """
     Represents an identifier token (e.g., variable names).
 
-    :param lexeme_pattern: The regular expression pattern used to match an identifier, 
+    :param lexeme_pattern: The regular expression pattern used to match an identifier,
                             which starts with a letter and can be followed by letters and digits.
                             Lexeme pattern: `r"[A-Za-z][A-Za-z0-9]*"`
     """
+
     lexeme_pattern = r"[A-Za-z][A-Za-z0-9]*"
 
 
@@ -76,10 +67,11 @@ class Integer(Literal):
     """
     Represents an integer literal token.
 
-    :param lexeme_pattern: The regular expression pattern used to match an integer, 
+    :param lexeme_pattern: The regular expression pattern used to match an integer,
                             which consists of one or more digits.
                             Lexeme pattern: `r"[0-9]+"`
     """
+
     lexeme_pattern = r"[0-9]+"
 
 
@@ -87,10 +79,11 @@ class Float(Literal):
     """
     Represents a floating-point literal token.
 
-    :param lexeme_pattern: The regular expression pattern used to match a float, 
+    :param lexeme_pattern: The regular expression pattern used to match a float,
                             which consists of a digit, a period, and one or more digits after the period.
                             Lexeme pattern: `r"[0-9].[0-9]+"`
     """
+
     lexeme_pattern = r"[0-9]\.[0-9]+"
 
 
@@ -98,10 +91,11 @@ class String(Literal):
     """
     Represents a string literal token.
 
-    :param lexeme_pattern: The regular expression pattern used to match a string, 
+    :param lexeme_pattern: The regular expression pattern used to match a string,
                             which starts and ends with a double quote and may contain escaped quotes.
                             Lexeme pattern: `r'"(?:"|[^"])*"'`
     """
+
     lexeme_pattern = r'"(?:\\"|[^"])*"'
 
 
@@ -113,6 +107,7 @@ class Plus(Token):
     :param lexeme_pattern: The regular expression pattern used to match the plus operator.
                             Lexeme pattern: `r"+"`
     """
+
     lexeme_pattern = r"\+"
 
 
@@ -123,6 +118,7 @@ class Minus(Token):
     :param lexeme_pattern: The regular expression pattern used to match the minus operator.
                             Lexeme pattern: `r"-"`
     """
+
     lexeme_pattern = r"-"
 
 
@@ -131,9 +127,10 @@ class Divide(Token):
     Represents the division operator token.
 
     :param lexeme_pattern: The regular expression pattern used to match the division operator.
-                            Lexeme pattern: `r"\\"`
+                            Lexeme pattern: `r"/"`
     """
-    lexeme_pattern = r"\\"
+
+    lexeme_pattern = r"/"
 
 
 class Multiply(Token):
@@ -143,6 +140,7 @@ class Multiply(Token):
     :param lexeme_pattern: The regular expression pattern used to match the multiplication operator.
                             Lexeme pattern: `r"*"`
     """
+
     lexeme_pattern = r"\*"
 
 
@@ -153,7 +151,9 @@ class Not(Token):
     :param lexeme_pattern: The regular expression pattern used to match the unary not operator.
                             Lexeme pattern: `r"!"`
     """
+
     lexeme_pattern = r"\!"
+
 
 # Comparison operators
 class Equal(Token):
@@ -163,6 +163,7 @@ class Equal(Token):
     :param lexeme_pattern: The regular expression pattern used to match the equality operator.
                             Lexeme pattern: `r"="`
     """
+
     lexeme_pattern = r"\="
 
 
@@ -173,6 +174,7 @@ class NotEqual(Token):
     :param lexeme_pattern: The regular expression pattern used to match the not-equal operator.
                             Lexeme pattern: `r"!="`
     """
+
     lexeme_pattern = r"\!\="
 
 
@@ -183,6 +185,7 @@ class DoubleEqual(Token):
     :param lexeme_pattern: The regular expression pattern used to match the double equal operator.
                             Lexeme pattern: `r"=="`
     """
+
     lexeme_pattern = r"\=\="
 
 
@@ -193,6 +196,7 @@ class GT(Token):
     :param lexeme_pattern: The regular expression pattern used to match the 'greater than' operator.
                             Lexeme pattern: `r">"`
     """
+
     lexeme_pattern = r"\>"
 
 
@@ -203,6 +207,7 @@ class GTE(Token):
     :param lexeme_pattern: The regular expression pattern used to match the 'greater than or equal to' operator.
                             Lexeme pattern: `r">="`
     """
+
     lexeme_pattern = r"\>\="
 
 
@@ -213,6 +218,7 @@ class LT(Token):
     :param lexeme_pattern: The regular expression pattern used to match the 'less than' operator.
                             Lexeme pattern: `r"<"`
     """
+
     lexeme_pattern = r"\<"
 
 
@@ -223,6 +229,7 @@ class LTE(Token):
     :param lexeme_pattern: The regular expression pattern used to match the 'less than or equal to' operator.
                             Lexeme pattern: `r"<="`
     """
+
     lexeme_pattern = r"\<\="
 
 
@@ -234,6 +241,7 @@ class LeftBracket(Token):
     :param lexeme_pattern: The regular expression pattern used to match the left parenthesis.
                             Lexeme pattern: `r"("`
     """
+
     lexeme_pattern = r"\("
 
 
@@ -244,6 +252,7 @@ class RightBracket(Token):
     :param lexeme_pattern: The regular expression pattern used to match the right parenthesis.
                             Lexeme pattern: `r")"`
     """
+
     lexeme_pattern = r"\)"
 
 
@@ -254,6 +263,7 @@ class LeftCurly(Token):
     :param lexeme_pattern: The regular expression pattern used to match the left curly brace.
                             Lexeme pattern: `r"{"`
     """
+
     lexeme_pattern = r"\{"
 
 
@@ -264,6 +274,7 @@ class RightCurly(Token):
     :param lexeme_pattern: The regular expression pattern used to match the right curly brace.
                             Lexeme pattern: `r"}"`
     """
+
     lexeme_pattern = r"\}"
 
 
@@ -275,6 +286,7 @@ class Questionmark(Token):
     :param lexeme_pattern: The regular expression pattern used to match the question mark.
                             Lexeme pattern: `r"?"`
     """
+
     lexeme_pattern = r"\?"
 
 
@@ -285,6 +297,7 @@ class Semicolon(Token):
     :param lexeme_pattern: The regular expression pattern used to match the semicolon.
                             Lexeme pattern: `r";"`
     """
+
     lexeme_pattern = r"\;"
 
 
@@ -295,29 +308,41 @@ class Comma(Token):
     :param lexeme_pattern: The regular expression pattern used to match the comma.
                             Lexeme pattern: `r","`
     """
+
     lexeme_pattern = r"\,"
 
 
 # Whitespace
-# class Space(Token):
-#     """
-#     Represents whitespace characters (spaces and tabs).
-#
-#     :param lexeme_pattern: The regular expression pattern used to match spaces and tabs.
-#                             Lexeme pattern: `r"[\\t ]+"`
-#     """
-#     lexeme_pattern = r"[\t ]+"
-#
-#
-# class NewLine(Token):
-#     """
-#     Represents newline characters.
-#
-#     :param lexeme_pattern: The regular expression pattern used to match newline characters.
-#                             Lexeme pattern: `r"\\r?\\n"`
-#     """
-#     lexeme_pattern = r"\r?\n"
+class Space(Token):
+    """
+    Represents whitespace characters (spaces and tabs).
 
+    :param lexeme_pattern: The regular expression pattern used to match spaces and tabs.
+                            Lexeme pattern: `r"[\\t ]+"`
+    """
+
+    lexeme_pattern = r"[\t ]+"
+
+
+class NewLine(Token):
+    """
+    Represents newline characters.
+
+    :param lexeme_pattern: The regular expression pattern used to match newline characters.
+                            Lexeme pattern: `r"\\r?\\n"`
+    """
+
+    lexeme_pattern = r"\r?\n"
+
+class EndOfFile(Token):
+    """
+    Represents a EOF token at the end of the parsed file. Used to terminate parsing process.
+
+    :param lexeme_pattern: The regular expression pattern used to match the end of a file.
+                            Lexeme pattern: `r"\\Z"`
+    """
+
+    lexeme_pattern = r"\Z"
 
 # Keywords
 class Function(Token):
@@ -327,6 +352,7 @@ class Function(Token):
     :param lexeme_pattern: The regular expression pattern used to match the 'function' keyword.
                             Lexeme pattern: `r"function"`
     """
+
     lexeme_pattern = r"function"
 
 
@@ -337,6 +363,7 @@ class For(Token):
     :param lexeme_pattern: The regular expression pattern used to match the 'for' keyword.
                             Lexeme pattern: `r"for"`
     """
+
     lexeme_pattern = r"for"
 
 
@@ -347,6 +374,7 @@ class If(Token):
     :param lexeme_pattern: The regular expression pattern used to match the 'if' keyword.
                             Lexeme pattern: `r"if"`
     """
+
     lexeme_pattern = r"if"
 
 
@@ -357,5 +385,8 @@ class Else(Token):
     :param lexeme_pattern: The regular expression pattern used to match the 'else' keyword.
                             Lexeme pattern: `r"else"`
     """
+
     lexeme_pattern = r"else"
 
+class ElseIf(Token):
+    lexeme_pattern = r"else\w+if"
