@@ -21,8 +21,10 @@ class StoreToBody(Action):
         """Modify parent node by appending child value to its body.
 
         :param ValueStack: LIFO queue containing AST nodes in order:
+
             - Top: Value to append (function, class, statement)
             - Next: Parent node with body attribute (module, function, etc)
+
         :param TokenStack: Not used in this action (interface consistency)
 
         Note: Parent node must have a `body` attribute (like :class:`ast.Module`)
@@ -91,8 +93,10 @@ class AssignToVariable(Action):
         """Create and push an assignment node to the ValueStack.
 
         :param ValueStack: LIFO queue containing AST elements in reverse order:
+
             - Top: Value to be assigned
             - Next: Target Name node for storage
+
         :param TokenStack: Not used in this action (maintained for interface consistency)
         :returns: None (pushes assignment node to ValueStack)
         """
@@ -164,8 +168,10 @@ class BinaryOperation(Action):
         """Create and push binary operation node to ValueStack.
 
         :param ValueStack: LIFO queue containing AST nodes in reverse order:
+
             - Top: Right operand
             - Next: Left operand
+
         :param TokenStack: Not used in this action (maintained for interface consistency)
         """
         right = ValueStack.get()
@@ -233,11 +239,14 @@ class Comparison(Action):
         """Create or extend comparison node in the AST.
 
         :param ValueStack: LIFO queue containing AST nodes in order:
+
             - Top: Right operand
             - Next: Left operand (might be existing :class:`ast.Compare`)
+
         :param TokenStack: Not used (interface consistency)
 
         Chaining logic:
+
         - If left operand is existing comparison, extends its operators/comparators
         - Otherwise creates new comparison node
 
@@ -274,6 +283,7 @@ class If(Action):
     as an empty list for potential later extension by elif/else handling.
 
     Stack Expectations:
+
     - Top: Body of the if statement (list of AST nodes)
     - Next: Test expression (AST node)
 
@@ -283,6 +293,7 @@ class If(Action):
         """Construct and push an If node to the value stack.
 
         :param ValueStack: LIFO queue containing:
+
             - Top: Body statements (typically a list of AST nodes)
             - Next: Test condition expression (AST node)
 
@@ -302,15 +313,19 @@ class HandleElse(Action):
     Action for attaching else clauses to the appropriate level in nested if/elif structures.
 
     Handles two scenarios:
+
     1. Direct else attachment to existing if node
     2. Implicit elif conversion when else follows a condition without body
 
     Stack Expectations:
+
     - Case 1 (Standard else):
+
         Top: else_body (list of statements)
         Next: ast.If node
 
     - Case 2 (Implicit elif):
+
         Top: else_body (list of statements)
         Next: condition expression
         Next: Parent ast.If node
@@ -325,12 +340,14 @@ class HandleElse(Action):
         :param ValueStack: LIFO queue containing:
             - Top: Else clause body statements
             - Next: Either:
+
                 a) ast.If node (direct else attachment), or
                 b) condition expression followed by ast.If node (implicit elif)
 
         :param TokenStack: Not used in this action
 
         Modifies the AST by:
+
         1. Finding the deepest nested orelse chain
         2. Attaching else body to final if in chain
         3. Handling implicit elif conversion when needed
@@ -357,3 +374,112 @@ class HandleElse(Action):
 
             current.orelse = [ast.If(test=expr, body=[else_body])]
         ValueStack.put(if_node)
+
+
+class HandleAllLoops(Action):
+    def call(self, ValueStack, TokenStack):
+        body = ValueStack.get()
+        loop_data = ValueStack.get()
+
+        if loop_data["type"] == "range":
+            # Construct while loop with initializer and increment
+            node = ast.While(
+                test=loop_data["test"],
+                body=[body] + [loop_data["increment"]],
+                orelse=[],
+            )
+
+        else:  # while-style
+            node = [
+                loop_data["init"],
+                ast.While(
+                    test=loop_data["test"],
+                    body=[body] + [loop_data["step"]],
+                    orelse=[],
+                ),
+            ]
+        ValueStack.put(loop_data["start"])
+        StoreToBody().call(ValueStack, TokenStack)
+        ValueStack.put(node)
+
+
+class CreateRangeCondition(Action):
+    """Handles both start:end and start:step:end ranges"""
+
+    def call(self, ValueStack, TokenStack):
+        end = ValueStack.get()
+        assign_node = ValueStack.get()
+
+        target = assign_node.targets[0]
+        start = assign_node
+        step = ast.Constant(value=1)
+        
+        test = ast.Compare(
+            left=ast.Name(id=target.id, ctx=ast.Load()),
+            ops=[
+                ast.LtE()
+            ],
+            comparators=[end],
+        )
+
+        # Create increment operation
+        increment = ast.AugAssign(target=target, op=ast.Add(), value=step)
+
+        # Store components for loop construction
+        ValueStack.put(
+            {
+                "type": "range",
+                "target": target,
+                "start": start,
+                "end": end,
+                "step": step,
+                "test": test,
+                "increment": increment,
+            }
+        )
+
+class ExtendRangeCondition(Action):
+    def call(self, ValueStack, TokenStack):
+        end = ValueStack.get()
+        loop_data = ValueStack.get()
+
+        step = loop_data["end"]
+        loop_data["step"] = step
+        loop_data["end"] = end
+
+        loop_data["test"].ops=[
+                ast.LtE()
+                if isinstance(step, ast.Constant) and step.value > 0
+                else ast.GtE()
+            ]
+        loop_data["test"].comparators=[end]
+        loop_data["increment"] = ast.AugAssign(target=loop_data["target"], op=ast.Add(), value=step)
+
+        ValueStack.put(loop_data)
+
+
+class CreateWhileCondition(Action):
+    """Handles three-argument for loops (0;x<10;0)"""
+
+    def call(self, ValueStack, TokenStack):
+        step = ValueStack.get()
+        test = ValueStack.get()
+        init = ValueStack.get()
+        target = ValueStack.get()
+
+        return {"init": init, "test": test, "step": step}
+
+class Break(Action):
+    def call(self, ValueStack: LifoQueue[AST], TokenStack: LifoQueue):
+        node = ast.Break()
+
+        ValueStack.put(node)
+
+class Print(Action):
+    def call(self, ValueStack, TokenStack):
+        value = ValueStack.get()
+
+        node = ast.Expr(value=ast.Call(func=ast.Name(id="print", ctx=ast.Load()), args=[value]))
+
+        ValueStack.put(node)
+

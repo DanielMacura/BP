@@ -21,7 +21,8 @@ argument_list_prime = NonTerminal("argument_list_prime")
 control_structure = NonTerminal("control_structure")
 elseNT = NonTerminal("else")
 elifNT = NonTerminal("elif")
-triple_argument_for = NonTerminal("triple_argument_for")
+loop_condition = NonTerminal("loop_condition")
+range_step = NonTerminal("range_step")
 
 # Expressions
 
@@ -62,7 +63,7 @@ lumerical_grammar.append(Production(body, [EndOfFile()]))
 lumerical_grammar.append(
     Production(
         nested_body,
-        [statement, nested_body],
+        [statement, actions.StoreToBody(), nested_body],
     )
 )
 
@@ -70,6 +71,8 @@ lumerical_grammar.append(Production(nested_body, Epsilon()))
 
 lumerical_grammar.append(Production(statement, [Identifier(), actions.StoreVariableName(), identifier_action]))
 lumerical_grammar.append(Production(statement, [control_structure]))
+lumerical_grammar.append(Production(statement, [Questionmark(), expression, actions.Print(), Semicolon()]))
+lumerical_grammar.append(Production(statement, [Break(),actions.Break(), Semicolon()]))
 lumerical_grammar.append(Production(identifier_action, [assignment]))
 lumerical_grammar.append(Production(identifier_action, [function_call]))
 lumerical_grammar.append(Production(assignment, [Equal(), expression, actions.AssignToVariable(), Semicolon()]))
@@ -130,16 +133,52 @@ lumerical_grammar.append(
             For(),
             LeftBracket(),
             Identifier(),
-            assignment,
+            actions.StoreVariableName(),
+            Equal(),
             expression,
-            triple_argument_for,
+            actions.AssignToVariable(),
+            loop_condition,
             RightBracket(),
             LeftCurly(),
             nested_body,
+            actions.HandleAllLoops(),
             RightCurly(),
-        ],
+        ]
     )
 )
+
+lumerical_grammar.append(
+    Production(
+        loop_condition,
+        [
+            Colon(),
+            expression,
+            actions.CreateRangeCondition(),
+            range_step,
+        ]
+    )
+)
+
+lumerical_grammar.append(
+    Production(
+        range_step,
+        [Colon(), expression, actions.ExtendRangeCondition()]
+    )
+)
+lumerical_grammar.append(
+    Production(
+        range_step,
+        Epsilon()
+    )
+)
+
+lumerical_grammar.append(
+    Production(
+        loop_condition,
+        [Semicolon(), expression, Semicolon(), expression, actions.CreateWhileCondition()]
+    )
+)
+
 lumerical_grammar.append(
     Production(
         elseNT,
@@ -154,13 +193,6 @@ lumerical_grammar.append(
     )
 )
 lumerical_grammar.append(Production(elifNT, Epsilon()))
-lumerical_grammar.append(
-    Production(
-        triple_argument_for,
-        [Semicolon(), expression, Semicolon(), Identifier(), assignment],
-    )
-)
-lumerical_grammar.append(Production(triple_argument_for, Epsilon()))
 
 # Expressions
 lumerical_grammar.append(Production(expression, [equality]))
