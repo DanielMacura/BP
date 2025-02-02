@@ -301,6 +301,17 @@ class Semicolon(Token):
     lexeme_pattern = r"\;"
 
 
+class Colon(Token):
+    """
+    Represents the colon ':' token.
+
+    :param lexeme_pattern: The regular expression pattern used to match the colon.
+                            Lexeme pattern: `r":"`
+    """
+
+    lexeme_pattern = r"\:"
+
+
 class Comma(Token):
     """
     Represents the comma ',' token.
@@ -366,6 +377,15 @@ class For(Token):
 
     lexeme_pattern = r"for"
 
+class Break(Token):
+    """
+    Represents the 'break' keyword.
+
+    :param lexeme_pattern: The regular expression pattern used to match the 'break' keyword.
+                            Lexeme pattern: `r"break"`
+    """
+
+    lexeme_pattern = r"break"
 
 class If(Token):
     """
@@ -388,5 +408,3 @@ class Else(Token):
 
     lexeme_pattern = r"else"
 
-class ElseIf(Token):
-    lexeme_pattern = r"else\w+if"
