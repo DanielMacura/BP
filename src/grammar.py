@@ -15,10 +15,12 @@ class Production:
 
     :param LHS: Left-hand-side of the production.
     :param RHS: Right-hand-side of the production.
+    :param RHS_clean: Right-hand-side of the production with no actions, used in LL table generation.
     :param nullable: Specifies if the production is nullable.
     """
 
     number: int = 0
+    RHS_clean: List[NonTerminal | Terminal] | Epsilon = []
 
     def __init__(
         self,
@@ -29,6 +31,12 @@ class Production:
     ) -> None:
         self.LHS = LHS
         self.RHS = RHS
+        if isinstance(self.RHS, Epsilon):
+            self.RHS_clean = Epsilon()
+        else:
+            self.RHS_clean = [
+                item for item in self.RHS if isinstance(item, NonTerminal | Terminal)
+            ]
         self.nullable = nullable
         if increment_number:
             Production.number += 1

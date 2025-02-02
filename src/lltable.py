@@ -51,9 +51,9 @@ class LLTable:
 
         :param production: Production who's first set will be computed and added to :py:attr:`firstSets`.
         """
-        if type(production.RHS) is Epsilon:
+        if type(production.RHS_clean) is Epsilon:
             return
-        for symbol in production.RHS:
+        for symbol in production.RHS_clean:
             if isinstance(symbol, Terminal):
                 self.firstSets[production.LHS] |= {symbol}
                 return
@@ -95,13 +95,13 @@ class LLTable:
 
         :param production: Production who's first set will be computed and added to :py:attr:`firstSets`.
         """
-        if isinstance(production.RHS, Epsilon):
+        if isinstance(production.RHS_clean, Epsilon):
             print("Epsion prod", production)
             return
         # First rule application
-        for i, symbol in enumerate(production.RHS[:-1]):
+        for i, symbol in enumerate(production.RHS_clean[:-1]):
             if isinstance(symbol, NonTerminal):
-                next_symbol = production.RHS[i + 1]
+                next_symbol = production.RHS_clean[i + 1]
                 if isinstance(next_symbol, Terminal):
                     self.followSets[symbol] |= {next_symbol}
                 elif isinstance(next_symbol, NonTerminal):
@@ -110,8 +110,8 @@ class LLTable:
                 continue
         # Second rule application
         last_nonterminal: None | NonTerminal = None
-        print("Rule", production.LHS, production.RHS, self.followSets[production.LHS])
-        for symbol in reversed(production.RHS):
+        print("Rule", production.LHS, production.RHS_clean, self.followSets[production.LHS])
+        for symbol in reversed(production.RHS_clean):
             if isinstance(symbol, NonTerminal):
                 last_nonterminal = symbol
 
@@ -127,7 +127,7 @@ class LLTable:
     def ComputeSelectSets(self):
         """Generate select sets for all the :py:class:`NonTerminal`s. Called after :py:meth:`ComputeFollowSets`.
 
-        If a production is nullable, it's whole RHS can go to epsilon, then given a production of the form
+        If a production is nullable, it's whole RHS_clean can go to epsilon, then given a production of the form
 
         .. math::
             lhs \\rightarrow \\alpha
@@ -143,10 +143,10 @@ class LLTable:
         """
         selectSets = {prod.number: set() for prod in self.grammar.productions}
         for production in self.grammar.productions:
-            if isinstance(production.RHS, Epsilon):
+            if isinstance(production.RHS_clean, Epsilon):
                 selectSets[production.number] |= self.followSets[production.LHS]
                 continue
-            for symbol in production.RHS:
+            for symbol in production.RHS_clean:
                 if production.nullable:
                     if isinstance(symbol, NonTerminal):
                         selectSets[production.number] |= self.firstSets[symbol]
