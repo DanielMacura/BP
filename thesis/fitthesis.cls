@@ -110,6 +110,7 @@
   \else % neni potreba pdfpages / pdfpages is not necessary
     \usepackage[pdftex]{graphicx}
     \usepackage{tikz}
+    \usetikzlibrary{automata,positioning}
   \fi
 \fi
 
