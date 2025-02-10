@@ -32,3 +32,5 @@ class myPrint(ast.stmt):
 
 a = myPrint()
 
+
+print(ast.dump(ast.parse("x = 1\nwhile x <= 10:\n    print(x)\n    x += 2"), indent=4))

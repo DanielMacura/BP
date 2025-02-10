@@ -9,6 +9,7 @@ lumerical_grammar = Grammar()
 
 body = NonTerminal("body")
 nested_body = NonTerminal("nested_body")
+nested_else_body = NonTerminal("nested_else_body")
 function = NonTerminal("function")
 statement = NonTerminal("statement")
 identifier_action = NonTerminal("identifier_action")
@@ -69,6 +70,15 @@ lumerical_grammar.append(
 
 lumerical_grammar.append(Production(nested_body, Epsilon()))
 
+lumerical_grammar.append(
+    Production(
+        nested_else_body,
+        [statement, actions.StoreToElse(), nested_else_body],
+    )
+)
+
+lumerical_grammar.append(Production(nested_else_body, Epsilon()))
+
 lumerical_grammar.append(Production(statement, [Identifier(), actions.StoreVariableName(), identifier_action]))
 lumerical_grammar.append(Production(statement, [control_structure]))
 lumerical_grammar.append(Production(statement, [Questionmark(), expression, actions.Print(), Semicolon()]))
@@ -119,8 +129,8 @@ lumerical_grammar.append(
             expression,
             RightBracket(),
             LeftCurly(),
-            nested_body,
             actions.If(),
+            nested_body,
             RightCurly(),
             elseNT,
         ],
@@ -131,6 +141,7 @@ lumerical_grammar.append(
         control_structure,
         [
             For(),
+            actions.CreateEmptyWhile(),
             LeftBracket(),
             Identifier(),
             actions.StoreVariableName(),
@@ -182,7 +193,7 @@ lumerical_grammar.append(
 lumerical_grammar.append(
     Production(
         elseNT,
-        [Else(), elifNT, LeftCurly(), nested_body,actions.HandleElse(), RightCurly(), elseNT],
+        [Else(), elifNT, LeftCurly(), actions.HandleElse(), nested_else_body,actions.CleanUpElse(), RightCurly(), elseNT],
     )
 )
 lumerical_grammar.append(Production(elseNT, Epsilon()))

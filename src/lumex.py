@@ -1,4 +1,3 @@
-from ast import parse
 from lex import Lexer
 from parse import Parser
 from lumerical_grammar import lumerical_grammar
@@ -15,16 +14,23 @@ def main():
     # lexer = Lexer("x= 1<=12 <= 5 == 2 > 3;")
     # lexer = Lexer("x=-3;")
     # lexer = Lexer("if( 3<x< 5) { y = 2; } ")
-    lexer = Lexer("if( x< 5) { y = 2; } else if (x>3){ y = 1 ;} else if (x>30){ y = 10 ;} else {y = 0;} ")
+    # lexer = Lexer("if( x< 5) { y = 2; } else if (x>3){ y = 1 ; x = 11; ?x;} else if (x>30){ y = 10 ;} else {y = 0;} ")
+    # lexer = Lexer("y=5;\n for(x=-1:-2:-10) {y = 1;}")
+    # lexer = Lexer("y=5;\n for(x=1:10) {y = 1;}")
+    # lexer = Lexer("for(x=1;x>10;x=x+1){y=1;}")
+    # lexer = Lexer("for(x=1:2:10){?x+1; if(x==5){x = 4;}}")
+    lexer = Lexer("for(x=1:2:10){?x+1; break;}")
 
     parser = Parser(lumerical_grammar, lexer)
     parser.parse()
     tree = parser.valueStack.get()
-    logger.info(ast.dump(tree, indent=4))
-    ast.fix_missing_locations(tree)
-    logger.info(ast.unparse(tree))
+    tree = ast.fix_missing_locations(tree) 
+    logger.info("Python AST dump\n" + ast.dump(tree, indent=4))
+    logger.info("Lumerical source\n" + lexer.source + "\n")
+    logger.info("Transpiled Python\n" + ast.unparse(ast.fix_missing_locations(tree)) + "\n")
 
     logger.info("SUCCESS LUMEX")
+    print(ast.unparse(ast.fix_missing_locations(tree)))
 
 
 if __name__ == "__main__":

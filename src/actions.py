@@ -37,6 +37,31 @@ class StoreToBody(Action):
         module.body.append(value)
         ValueStack.put(module)
 
+class StoreToElse(Action):
+    def call(self, ValueStack: LifoQueue[AST], TokenStack: LifoQueue[Token]):
+        value = ValueStack.get()
+        if_node_or_expr = ValueStack.get()
+
+        if isinstance(if_node_or_expr, ast.If):
+            if_node = if_node_or_expr
+            current = if_node
+            while current.orelse and isinstance(current.orelse[0], ast.If):
+                current = current.orelse[0]
+
+            current.orelse.append(value)
+            ValueStack.put(if_node)
+        else:
+            if_node = ValueStack.get()
+            expr = if_node_or_expr
+
+            current = if_node
+            while current.orelse and isinstance(current.orelse[0], ast.If):
+                current = current.orelse[0]
+            current.body.append(value)
+            ValueStack.put(if_node)
+            ValueStack.put(expr)
+
+
 
 class StoreLiteral(Action):
     """Action for storing literals with type conversion to AST Constant nodes.
@@ -300,11 +325,11 @@ class If(Action):
         :param TokenStack: Not used in this action (interface consistency)
 
         """
-        body = ValueStack.get()
+        # body = ValueStack.get()
         expr = ValueStack.get()
-        print("body", body, "expr", expr)
+        # print("body", body, "expr", expr)
 
-        node = ast.If(test=expr, body=[body], orelse=[])
+        node = ast.If(test=expr, body=[], orelse=[])
         ValueStack.put(node)
 
 
@@ -353,54 +378,101 @@ class HandleElse(Action):
         3. Handling implicit elif conversion when needed
 
         """
-        else_body = ValueStack.get()
+        # else_body = ValueStack.get()
         if_node_or_expr = ValueStack.get()
-
+        
         if isinstance(if_node_or_expr, ast.If):
             if_node = if_node_or_expr
-            # Traverse to deepest orelse
-            current = if_node
-            while current.orelse and isinstance(current.orelse[0], ast.If):
-                current = current.orelse[0]
-
-            current.orelse = [else_body]
+            ValueStack.put(if_node)
         else:
             expr = if_node_or_expr
             if_node = ValueStack.get()
 
+
             current = if_node
             while current.orelse and isinstance(current.orelse[0], ast.If):
                 current = current.orelse[0]
 
-            current.orelse = [ast.If(test=expr, body=[else_body])]
+            current.orelse = [ast.If(test=expr, body=[])]
+            ValueStack.put(if_node)
+            ValueStack.put(expr)
+
+        # if isinstance(if_node_or_expr, ast.If):
+        #     if_node = if_node_or_expr
+        #     # Traverse to deepest orelse
+        #     current = if_node
+        #     while current.orelse and isinstance(current.orelse[0], ast.If):
+        #         current = current.orelse[0]
+        #
+        #     current.orelse = [else_body]
+        # else:
+        #     expr = if_node_or_expr
+        #     if_node = ValueStack.get()
+        #
+        #     current = if_node
+        #     while current.orelse and isinstance(current.orelse[0], ast.If):
+        #         current = current.orelse[0]
+        #
+        #     current.orelse = [ast.If(test=expr, body=[else_body])]
+        # ValueStack.put(if_node)
+
+class CleanUpElse(Action):
+    def call(self, ValueStack, TokenStack):
+        if_node_or_expr = ValueStack.get()
+        
+        if isinstance(if_node_or_expr, ast.If):
+            if_node = if_node_or_expr
+        else:
+            expr = if_node_or_expr
+            if_node = ValueStack.get()
+
         ValueStack.put(if_node)
+
+class CreateEmptyWhile(Action):
+    def call(self, ValueStack, TokenStack):
+        """
+        Used to create an empty loop, for statements can be pushed to the body.
+        """
+        node = ast.While(test=None, body=[])
+
+        ValueStack.put(node)
 
 
 class HandleAllLoops(Action):
     def call(self, ValueStack, TokenStack):
-        body = ValueStack.get()
-        loop_data = ValueStack.get()
+        # body = ValueStack.get()
+        # loop_data = ValueStack.get()
 
-        if loop_data["type"] == "range":
-            # Construct while loop with initializer and increment
-            node = ast.While(
-                test=loop_data["test"],
-                body=[body] + [loop_data["increment"]],
-                orelse=[],
-            )
+        while_node = ValueStack.get()
+        increment_node = ValueStack.get()
+        start_node = ValueStack.get()
 
-        else:  # while-style
-            node = [
-                loop_data["init"],
-                ast.While(
-                    test=loop_data["test"],
-                    body=[body] + [loop_data["step"]],
-                    orelse=[],
-                ),
-            ]
-        ValueStack.put(loop_data["start"])
+        # if loop_data["type"] == "range":
+        #     # Construct while loop with initializer and increment
+        #     node = ast.While(
+        #         test=loop_data["test"],
+        #         body=[body] + [loop_data["increment"]],
+        #         orelse=[],
+        #     )
+
+        # else:  # while-style
+        #     node = [
+        #         loop_data["init"],
+        #         ast.While(
+        #             test=loop_data["test"],
+        #             body=[body] + [loop_data["step"]],
+        #             orelse=[],
+        #         ),
+        #     ]
+
+        # First push the starting variable value above the While loop
+        # ValueStack.put(loop_data["start"])
+        ValueStack.put(start_node)
         StoreToBody().call(ValueStack, TokenStack)
-        ValueStack.put(node)
+        ValueStack.put(while_node)
+        ValueStack.put(increment_node)
+        StoreToBody().call(ValueStack, TokenStack)
+
 
 
 class CreateRangeCondition(Action):
@@ -409,6 +481,7 @@ class CreateRangeCondition(Action):
     def call(self, ValueStack, TokenStack):
         end = ValueStack.get()
         assign_node = ValueStack.get()
+        while_node:ast.While = ValueStack.get()
 
         target = assign_node.targets[0]
         start = assign_node
@@ -423,39 +496,58 @@ class CreateRangeCondition(Action):
         )
 
         # Create increment operation
-        increment = ast.AugAssign(target=target, op=ast.Add(), value=step)
+        increment_node = ast.AugAssign(target=target, op=ast.Add(), value=step)
+
+        while_node.test = test
+        ValueStack.put(assign_node)
+        ValueStack.put(increment_node)
+        ValueStack.put(while_node)
+
+
 
         # Store components for loop construction
-        ValueStack.put(
-            {
-                "type": "range",
-                "target": target,
-                "start": start,
-                "end": end,
-                "step": step,
-                "test": test,
-                "increment": increment,
-            }
-        )
+        # ValueStack.put(
+        #     {
+        #         "type": "range",
+        #         "target": target,
+        #         "start": start,
+        #         "end": end,
+        #         "step": step,
+        #         "test": test,
+        #         "increment": increment,
+        #     }
+        # )
 
 class ExtendRangeCondition(Action):
     def call(self, ValueStack, TokenStack):
         end = ValueStack.get()
-        loop_data = ValueStack.get()
+        # loop_data = ValueStack.get()
+        while_node:ast.While = ValueStack.get()
+        increment_node:ast.AugAssign = ValueStack.get()
+        
+        increment_node.value = while_node.test.comparators[0]
 
-        step = loop_data["end"]
-        loop_data["step"] = step
-        loop_data["end"] = end
+        # step = loop_data["end"]
+        # loop_data["step"] = step
+        # loop_data["end"] = end
 
-        loop_data["test"].ops=[
-                ast.LtE()
-                if isinstance(step, ast.Constant) and step.value > 0
-                else ast.GtE()
-            ]
-        loop_data["test"].comparators=[end]
-        loop_data["increment"] = ast.AugAssign(target=loop_data["target"], op=ast.Add(), value=step)
+        while_node.test.comparators = [end]
+        
+        # TODO FIXME
+        if isinstance(increment_node, ast.Constant) and increment_node.value > 0 :
+            while_node.test.ops = [ast.GtE()]
+        # loop_data["test"].ops=[
+        #         ast.LtE()
+        #         if isinstance(step, ast.Constant) and step.value > 0
+        #         else ast.GtE()
+        #     ]
 
-        ValueStack.put(loop_data)
+        # loop_data["test"].comparators=[end]
+        # loop_data["increment"] = ast.AugAssign(target=loop_data["target"], op=ast.Add(), value=step)
+
+        # ValueStack.put(loop_data)
+        ValueStack.put(increment_node)
+        ValueStack.put(while_node)
 
 
 class CreateWhileCondition(Action):

@@ -6,7 +6,6 @@ from symbol import Epsilon, NonTerminal, Terminal
 from lex import Lexer
 from grammar import Grammar
 from tokens import EndOfFile, Token
-from precedence_table import PrecedenceTable
 from symbol import Action
 from ast import AST, Module
 import logging
@@ -59,6 +58,7 @@ class Parser:
                 f"Current iteration, top {top}, input token {self.current_token}"
             )
             logger.debug(f"Queue {list(self.stack.queue)}")
+            logger.debug(f"valueStack {list(self.valueStack.queue)}\n\n")
             match top:
                 # case Action(): # TBD if used
                 #    pass
@@ -100,5 +100,5 @@ class Parser:
             )
 
     def handleAction(self, top: Action):
-        logger.info(f"Applying action {top.name}")
+        logger.debug(f"Applying action {type(top).__name__}")
         top.call(self.valueStack, self.tokenStack)
