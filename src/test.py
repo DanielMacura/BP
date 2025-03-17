@@ -33,4 +33,5 @@ class myPrint(ast.stmt):
 a = myPrint()
 
 
-print(ast.dump(ast.parse("x = 1\nwhile x <= 10:\n    print(x)\n    x += 2"), indent=4))
+# print(ast.dump(ast.parse("x = 1\nwhile x <= 10:\n    print(x)\n    x += 2"), indent=4))
+print(ast.dump(ast.parse("import meep as mp\nblock=mp.Block()\nblock.center=mp.Vector3(block.center.x,1,2)"), indent=4))

@@ -1,7 +1,9 @@
-from ast import AST, USub
+from ast import AST, USub, keyword
 import ast
 from queue import LifoQueue
 from symbol import Action
+from symtable import SymbolTable
+from symtable import Record
 from tokens import Token
 from typing import Literal
 import logging
@@ -17,7 +19,12 @@ class StoreToBody(Action):
     appending the child value to its `body` attribute.
     """
 
-    def call(self, ValueStack: LifoQueue, TokenStack: LifoQueue[Token]):
+    def call(
+        self,
+        ValueStack: LifoQueue,
+        TokenStack: LifoQueue[Token],
+        SymbolTable: SymbolTable,
+    ):
         """Modify parent node by appending child value to its body.
 
         :param ValueStack: LIFO queue containing AST nodes in order:
@@ -30,15 +37,19 @@ class StoreToBody(Action):
         Note: Parent node must have a `body` attribute (like :class:`ast.Module`)
         """
         value = ValueStack.get()
-        print("value", value)
         module = ValueStack.get()
-        print("module", module)
 
         module.body.append(value)
         ValueStack.put(module)
 
+
 class StoreToElse(Action):
-    def call(self, ValueStack: LifoQueue[AST], TokenStack: LifoQueue[Token]):
+    def call(
+        self,
+        ValueStack: LifoQueue[AST],
+        TokenStack: LifoQueue[Token],
+        SymbolTable: SymbolTable,
+    ):
         value = ValueStack.get()
         if_node_or_expr = ValueStack.get()
 
@@ -62,7 +73,6 @@ class StoreToElse(Action):
             ValueStack.put(expr)
 
 
-
 class StoreLiteral(Action):
     """Action for storing literals with type conversion to AST Constant nodes.
 
@@ -83,7 +93,12 @@ class StoreLiteral(Action):
         self.type_map = {"int": int, "float": float, "str": str}
         self.type = self.type_map[type]
 
-    def call(self, ValueStack: LifoQueue[AST], TokenStack: LifoQueue[Token]):
+    def call(
+        self,
+        ValueStack: LifoQueue[AST],
+        TokenStack: LifoQueue[Token],
+        SymbolTable: SymbolTable,
+    ):
         """Process the literal token and push converted value to ValueStack.
 
         :param ValueStack: LIFO queue holding AST nodes during parsing
@@ -94,6 +109,8 @@ class StoreLiteral(Action):
 
         try:
             converted_value = self.type(literal.lexeme)
+            if self.type == str:
+                converted_value = converted_value.strip('"')
         except ValueError as e:
             logger.error(
                 f"Type conversion failed for '{literal.lexeme}' → "
@@ -114,7 +131,12 @@ class AssignToVariable(Action):
     target-value structure where ``name = value``.
     """
 
-    def call(self, ValueStack: LifoQueue[AST], TokenStack: LifoQueue[Token]):
+    def call(
+        self,
+        ValueStack: LifoQueue[AST],
+        TokenStack: LifoQueue[Token],
+        SymbolTable: SymbolTable,
+    ):
         """Create and push an assignment node to the ValueStack.
 
         :param ValueStack: LIFO queue containing AST elements in reverse order:
@@ -140,7 +162,12 @@ class StoreVariableName(Action):
     for use in assignment targets. Captures variable names from the token stream.
     """
 
-    def call(self, ValueStack: LifoQueue[AST], TokenStack: LifoQueue[Token]):
+    def call(
+        self,
+        ValueStack: LifoQueue[AST],
+        TokenStack: LifoQueue[Token],
+        SymbolTable: SymbolTable,
+    ):
         """Process variable name token and create storage-context Name node.
 
         :param ValueStack: LIFO queue where the created Name node will be pushed
@@ -183,13 +210,18 @@ class BinaryOperation(Action):
         if op_type not in self.OP_NAMES:
             allowed = ", ".join(t.__name__ for t in self.OP_NAMES)
             raise ValueError(
-                f"Unsupported operator {op_type.__name__}. " f"Allowed types: {allowed}"
+                f"Unsupported operator {op_type.__name__}. Allowed types: {allowed}"
             )
 
         self.op = op
         self.op_name = self.OP_NAMES[op_type]
 
-    def call(self, ValueStack: LifoQueue[AST], TokenStack: LifoQueue[Token]):
+    def call(
+        self,
+        ValueStack: LifoQueue[AST],
+        TokenStack: LifoQueue[Token],
+        SymbolTable: SymbolTable,
+    ):
         """Create and push binary operation node to ValueStack.
 
         :param ValueStack: LIFO queue containing AST nodes in reverse order:
@@ -209,7 +241,12 @@ class BinaryOperation(Action):
 
 
 class UnarySubtract(Action):
-    def call(self, ValueStack: LifoQueue[AST], TokenStack: LifoQueue[Token]):
+    def call(
+        self,
+        ValueStack: LifoQueue[AST],
+        TokenStack: LifoQueue[Token],
+        SymbolTable: SymbolTable,
+    ):
         operand = ValueStack.get()
         print(operand)
 
@@ -260,7 +297,12 @@ class Comparison(Action):
         self.op = op
         self.symbol = self.OP_SYMBOLS[op_type]
 
-    def call(self, ValueStack: LifoQueue[AST], TokenStack: LifoQueue[Token]):
+    def call(
+        self,
+        ValueStack: LifoQueue[AST],
+        TokenStack: LifoQueue[Token],
+        SymbolTable: SymbolTable,
+    ):
         """Create or extend comparison node in the AST.
 
         :param ValueStack: LIFO queue containing AST nodes in order:
@@ -314,7 +356,12 @@ class If(Action):
 
     """
 
-    def call(self, ValueStack: LifoQueue[AST], TokenStack: LifoQueue[Token]):
+    def call(
+        self,
+        ValueStack: LifoQueue[AST],
+        TokenStack: LifoQueue[Token],
+        SymbolTable: SymbolTable,
+    ):
         """Construct and push an If node to the value stack.
 
         :param ValueStack: LIFO queue containing:
@@ -358,7 +405,12 @@ class HandleElse(Action):
     :raises ValueError: If stack contents don't match expected patterns
     """
 
-    def call(self, ValueStack: LifoQueue[AST], TokenStack: LifoQueue[Token]):
+    def call(
+        self,
+        ValueStack: LifoQueue[AST],
+        TokenStack: LifoQueue[Token],
+        SymbolTable: SymbolTable,
+    ):
         """
         Process else clause and modify AST structure accordingly.
 
@@ -380,14 +432,13 @@ class HandleElse(Action):
         """
         # else_body = ValueStack.get()
         if_node_or_expr = ValueStack.get()
-        
+
         if isinstance(if_node_or_expr, ast.If):
             if_node = if_node_or_expr
             ValueStack.put(if_node)
         else:
             expr = if_node_or_expr
             if_node = ValueStack.get()
-
 
             current = if_node
             while current.orelse and isinstance(current.orelse[0], ast.If):
@@ -416,10 +467,11 @@ class HandleElse(Action):
         #     current.orelse = [ast.If(test=expr, body=[else_body])]
         # ValueStack.put(if_node)
 
+
 class CleanUpElse(Action):
-    def call(self, ValueStack, TokenStack):
+    def call(self, ValueStack, TokenStack, SymbolTable: SymbolTable):
         if_node_or_expr = ValueStack.get()
-        
+
         if isinstance(if_node_or_expr, ast.If):
             if_node = if_node_or_expr
         else:
@@ -428,8 +480,9 @@ class CleanUpElse(Action):
 
         ValueStack.put(if_node)
 
+
 class CreateEmptyWhile(Action):
-    def call(self, ValueStack, TokenStack):
+    def call(self, ValueStack, TokenStack, SymbolTable: SymbolTable):
         """
         Used to create an empty loop, for statements can be pushed to the body.
         """
@@ -439,7 +492,7 @@ class CreateEmptyWhile(Action):
 
 
 class HandleAllLoops(Action):
-    def call(self, ValueStack, TokenStack):
+    def call(self, ValueStack, TokenStack, SymbolTable: SymbolTable):
         # body = ValueStack.get()
         # loop_data = ValueStack.get()
 
@@ -468,30 +521,27 @@ class HandleAllLoops(Action):
         # First push the starting variable value above the While loop
         # ValueStack.put(loop_data["start"])
         ValueStack.put(start_node)
-        StoreToBody().call(ValueStack, TokenStack)
+        StoreToBody().call(ValueStack, TokenStack, SymbolTable)
         ValueStack.put(while_node)
         ValueStack.put(increment_node)
-        StoreToBody().call(ValueStack, TokenStack)
-
+        StoreToBody().call(ValueStack, TokenStack, SymbolTable)
 
 
 class CreateRangeCondition(Action):
     """Handles both start:end and start:step:end ranges"""
 
-    def call(self, ValueStack, TokenStack):
+    def call(self, ValueStack, TokenStack, SymbolTable: SymbolTable):
         end = ValueStack.get()
         assign_node = ValueStack.get()
-        while_node:ast.While = ValueStack.get()
+        while_node: ast.While = ValueStack.get()
 
         target = assign_node.targets[0]
         start = assign_node
         step = ast.Constant(value=1)
-        
+
         test = ast.Compare(
             left=ast.Name(id=target.id, ctx=ast.Load()),
-            ops=[
-                ast.LtE()
-            ],
+            ops=[ast.LtE()],
             comparators=[end],
         )
 
@@ -502,8 +552,6 @@ class CreateRangeCondition(Action):
         ValueStack.put(assign_node)
         ValueStack.put(increment_node)
         ValueStack.put(while_node)
-
-
 
         # Store components for loop construction
         # ValueStack.put(
@@ -518,13 +566,14 @@ class CreateRangeCondition(Action):
         #     }
         # )
 
+
 class ExtendRangeCondition(Action):
-    def call(self, ValueStack, TokenStack):
+    def call(self, ValueStack, TokenStack, SymbolTable: SymbolTable):
         end = ValueStack.get()
         # loop_data = ValueStack.get()
-        while_node:ast.While = ValueStack.get()
-        increment_node:ast.AugAssign = ValueStack.get()
-        
+        while_node: ast.While = ValueStack.get()
+        increment_node: ast.AugAssign = ValueStack.get()
+
         increment_node.value = while_node.test.comparators[0]
 
         # step = loop_data["end"]
@@ -532,9 +581,9 @@ class ExtendRangeCondition(Action):
         # loop_data["end"] = end
 
         while_node.test.comparators = [end]
-        
+
         # TODO FIXME
-        if isinstance(increment_node, ast.Constant) and increment_node.value > 0 :
+        if isinstance(increment_node, ast.Constant) and increment_node.value > 0:
             while_node.test.ops = [ast.GtE()]
         # loop_data["test"].ops=[
         #         ast.LtE()
@@ -553,7 +602,7 @@ class ExtendRangeCondition(Action):
 class CreateWhileCondition(Action):
     """Handles three-argument for loops (0;x<10;0)"""
 
-    def call(self, ValueStack, TokenStack):
+    def call(self, ValueStack, TokenStack, SymbolTable: SymbolTable):
         step = ValueStack.get()
         test = ValueStack.get()
         init = ValueStack.get()
@@ -561,17 +610,215 @@ class CreateWhileCondition(Action):
 
         return {"init": init, "test": test, "step": step}
 
+
 class Break(Action):
-    def call(self, ValueStack: LifoQueue[AST], TokenStack: LifoQueue):
+    def call(
+        self,
+        ValueStack: LifoQueue[AST],
+        TokenStack: LifoQueue,
+        SymbolTable: SymbolTable,
+    ):
         node = ast.Break()
 
         ValueStack.put(node)
 
+
 class Print(Action):
-    def call(self, ValueStack, TokenStack):
+    def call(self, ValueStack, TokenStack, SymbolTable: SymbolTable):
         value = ValueStack.get()
 
-        node = ast.Expr(value=ast.Call(func=ast.Name(id="print", ctx=ast.Load()), args=[value]))
+        node = ast.Expr(
+            value=ast.Call(func=ast.Name(id="print", ctx=ast.Load()), args=[value])
+        )
 
         ValueStack.put(node)
 
+
+class Imports(Action):
+    def call(
+        self,
+        ValueStack: LifoQueue[AST],
+        TokenStack: LifoQueue,
+        SymbolTable: SymbolTable,
+    ):
+        node = ast.Import(names=[ast.alias("meep", "mp")])
+
+        ValueStack.put(node)
+
+
+class AddFDTD(Action):
+    def call(
+        self,
+        ValueStack: LifoQueue[AST],
+        TokenStack: LifoQueue,
+        SymbolTable: SymbolTable,
+    ):
+        node = ast.Assign(
+            targets=[ast.Name(id="sim", ctx=ast.Store())],
+            value=ast.Call(
+                func=ast.Name(id="mp.Simulation", ctx=ast.Load()), args=[], keywords=[]
+            ),
+        )
+        ValueStack.put(node)
+
+
+# class SetProperty(Action):
+#     def call(self, ValueStack, TokenStack: LifoQueue, symtable: SymbolTable):
+#         value = ValueStack.get()  # A ast.Const
+#         name: ast.Constant = ValueStack.get()  # ast.Const with str
+#         logger.debug(f" test {str(value.value)}, {name.value}, {type(name.value)}")
+#
+#         match name.value:
+#             case "name":
+#                 logger.debug("Set name")
+#                 node = ast.Assign(
+#                     targets=[ast.Name(id=value.value)],
+#                     value=ast.Name(id=symtable.selected[0].name, ctx=ast.Store()),
+#                 )
+#                 symtable.selected[0].name = value.value
+#                 ValueStack.put(node)
+#
+#             case "x" | "y" | "z":
+#                 logger.debug(f"Set {name.value}")
+#                 # Block.center = mp.Vector3(block.center.x, block.center.y, value)
+#                 node = ast.Assign(
+#                     targets=[
+#                         ast.Attribute(
+#                             value=ast.Name(
+#                                 id=symtable.selected[0].name, ctx=ast.Load()
+#                             ),
+#                             attr="center",
+#                             ctx=ast.Store(),
+#                         )
+#                     ],
+#                     value=ast.Call(
+#                         func=ast.Attribute(
+#                             value=ast.Name(id="mp", ctx=ast.Load()),
+#                             attr="Vector3",
+#                             ctx=ast.Load(),
+#                         ),
+#                         args=[
+#                             value
+#                             if name.value == "x"
+#                             else ast.Attribute(
+#                                 value=ast.Attribute(
+#                                     value=ast.Name(
+#                                         id=symtable.selected[0].name, ctx=ast.Load()
+#                                     ),
+#                                     attr="center",
+#                                     ctx=ast.Load(),
+#                                 ),
+#                                 attr="x",
+#                                 ctx=ast.Load(),
+#                             ),
+#                             value
+#                             if name.value == "y"
+#                             else ast.Attribute(
+#                                 value=ast.Attribute(
+#                                     value=ast.Name(
+#                                         id=symtable.selected[0].name, ctx=ast.Load()
+#                                     ),
+#                                     attr="center",
+#                                     ctx=ast.Load(),
+#                                 ),
+#                                 attr="y",
+#                                 ctx=ast.Load(),
+#                             ),
+#                             value
+#                             if name.value == "z"
+#                             else ast.Attribute(
+#                                 value=ast.Attribute(
+#                                     value=ast.Name(
+#                                         id=symtable.selected[0].name, ctx=ast.Load()
+#                                     ),
+#                                     attr="center",
+#                                     ctx=ast.Load(),
+#                                 ),
+#                                 attr="z",
+#                                 ctx=ast.Load(),
+#                             ),
+#                         ],
+#                     ),
+#                 )
+#                 ValueStack.put(node)
+#
+#             case _:
+#                 logger.debug(f"Fallback, {str(name.value)}")
+#
+class SetProperty(Action):
+    def call(self, ValueStack, TokenStack: LifoQueue, symtable: SymbolTable):
+        value = ValueStack.get()
+        name: ast.Constant = ValueStack.get()
+        logger.debug(f" test {str(value.value)}, {name.value}, {type(name.value)}")
+
+        obj_name = symtable.selected[0].name
+        obj_ref = ast.Name(id=obj_name, ctx=ast.Load())
+        mp_vector3 = ast.Attribute(value=ast.Name(id="mp", ctx=ast.Load()), attr="Vector3", ctx=ast.Load())
+
+        def create_vector_component(axis: str, attr: str) -> ast.AST:
+            """Create either new value or reference to existing component"""
+            return (
+                value if axis == target_axis else
+                ast.Attribute(
+                    value=ast.Attribute(value=obj_ref, attr=attr, ctx=ast.Load()),
+                    attr=axis,
+                    ctx=ast.Load()
+                )
+            )
+
+        match name.value:
+            case "name":
+                logger.debug("Set name")
+                node = ast.Assign(
+                    targets=[ast.Name(id=value.value)],
+                    value=ast.Name(id=obj_name, ctx=ast.Store()),
+                )
+                symtable.selected[0].name = value.value
+                ValueStack.put(node)
+
+            case axis if axis in {"x", "y", "z"}:
+                logger.debug(f"Set {axis}")
+                target_axis = axis
+                node = ast.Assign(
+                    targets=[ast.Attribute(value=obj_ref, attr="center", ctx=ast.Store())],
+                    value=ast.Call(
+                        func=mp_vector3,
+                        args=[
+                            create_vector_component(a, "center")
+                            for a in ["x", "y", "z"]
+                        ],
+                    ),
+                )
+                ValueStack.put(node)
+
+            case span if span.endswith(" span"):
+                target_axis = span.split()[0]
+                logger.debug(f"Set {target_axis} span")
+                node = ast.Assign(
+                    targets=[ast.Attribute(value=obj_ref, attr="size", ctx=ast.Store())],
+                    value=ast.Call(
+                        func=mp_vector3,
+                        args=[
+                            create_vector_component(a, "size")
+                            for a in ["x", "y", "z"]
+                        ],
+                    ),
+                )
+                ValueStack.put(node)
+
+            case _:
+                logger.debug(f"Fallback, {str(name.value)}")
+
+
+class AddRect(Action):
+    def call(
+        self, ValueStack: LifoQueue[AST], TokenStack: LifoQueue, symtable: SymbolTable
+    ):
+        symtable.add(Record(record_type="rect"))
+        node = ast.Assign(
+            targets=[ast.Name(id=str(symtable.selected[0].name), ctx=ast.Store())],
+            value=ast.Call(
+                func=ast.Name(id="mp.Block", ctx=ast.Load(), args=[], keywords=[])
+            ),
+        )
+        ValueStack.put(node)

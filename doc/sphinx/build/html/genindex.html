@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Index &mdash; LUMEX  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
 
@@ -42,14 +42,14 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="lexer.html">Lexer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="grammar.html">Grammar</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tokens.html">Tokens</a></li>
 <li class="toctree-l1"><a class="reference internal" href="symbol.html">Symbol</a></li>
+<li class="toctree-l1"><a class="reference internal" href="actions.html">Actions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lltable.html">LL Table</a></li>
-<li class="toctree-l1"><a class="reference internal" href="precedence_table.html">Precedence Table</a></li>
 </ul>
 
         </div>
@@ -81,11 +81,13 @@
 <div class="genindex-jumpbox">
  <a href="#_"><strong>_</strong></a>
  | <a href="#A"><strong>A</strong></a>
+ | <a href="#B"><strong>B</strong></a>
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
+ | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
@@ -95,21 +97,28 @@
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
  
 </div>
 <h2 id="_">_</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="grammar.html#grammar.Grammar.__init__">__init__() (grammar.Grammar method)</a>
+      <li><a href="actions.html#actions.BinaryOperation.__init__">__init__() (actions.BinaryOperation method)</a>
 
       <ul>
+        <li><a href="actions.html#actions.Comparison.__init__">(actions.Comparison method)</a>
+</li>
+        <li><a href="actions.html#actions.StoreLiteral.__init__">(actions.StoreLiteral method)</a>
+</li>
+        <li><a href="grammar.html#grammar.Grammar.__init__">(grammar.Grammar method)</a>
+</li>
         <li><a href="grammar.html#grammar.Production.__init__">(grammar.Production method)</a>
 </li>
         <li><a href="lexer.html#lex.Lexer.__init__">(lex.Lexer method)</a>
 </li>
         <li><a href="lltable.html#lltable.LLTable.__init__">(lltable.LLTable method)</a>
 </li>
-        <li><a href="precedence_table.html#precedence_table.PrecedenceTable.__init__">(precedence_table.PrecedenceTable method)</a>
+        <li><a href="symbol.html#symbol.Action.__init__">(symbol.Action method)</a>
 </li>
         <li><a href="symbol.html#symbol.NonTerminal.__init__">(symbol.NonTerminal method)</a>
 </li>
@@ -126,11 +135,28 @@
 <h2 id="A">A</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="precedence_table.html#precedence_table.Action">Action (class in precedence_table)</a>
+      <li><a href="symbol.html#symbol.Action">Action (class in symbol)</a>
 </li>
+      <li>
+    actions
+
+      <ul>
+        <li><a href="actions.html#module-actions">module</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="lexer.html#lex.Lexer.advance">advance() (lex.Lexer method)</a>
+</li>
+      <li><a href="actions.html#actions.AssignToVariable">AssignToVariable (class in actions)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="B">B</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="actions.html#actions.BinaryOperation">BinaryOperation (class in actions)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -138,17 +164,43 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="actions.html#actions.AssignToVariable.call">call() (actions.AssignToVariable method)</a>
+
+      <ul>
+        <li><a href="actions.html#actions.BinaryOperation.call">(actions.BinaryOperation method)</a>
+</li>
+        <li><a href="actions.html#actions.Comparison.call">(actions.Comparison method)</a>
+</li>
+        <li><a href="actions.html#actions.HandleElse.call">(actions.HandleElse method)</a>
+</li>
+        <li><a href="actions.html#actions.If.call">(actions.If method)</a>
+</li>
+        <li><a href="actions.html#actions.StoreLiteral.call">(actions.StoreLiteral method)</a>
+</li>
+        <li><a href="actions.html#actions.StoreToBody.call">(actions.StoreToBody method)</a>
+</li>
+        <li><a href="actions.html#actions.StoreVariableName.call">(actions.StoreVariableName method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="tokens.html#tokens.Colon">Colon (class in tokens)</a>
+</li>
       <li><a href="tokens.html#tokens.Comma">Comma (class in tokens)</a>
+</li>
+      <li><a href="actions.html#actions.Comparison">Comparison (class in actions)</a>
 </li>
       <li><a href="lltable.html#lltable.LLTable.ComputeFirstSets">ComputeFirstSets() (lltable.LLTable method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="lltable.html#lltable.LLTable.ComputeFolowSets">ComputeFolowSets() (lltable.LLTable method)</a>
 </li>
       <li><a href="lltable.html#lltable.LLTable.ComputeSelectSets">ComputeSelectSets() (lltable.LLTable method)</a>
 </li>
       <li><a href="lltable.html#lltable.LLTable.ComputeTable">ComputeTable() (lltable.LLTable method)</a>
+</li>
+      <li><a href="actions.html#actions.CreateRangeCondition">CreateRangeCondition (class in actions)</a>
+</li>
+      <li><a href="actions.html#actions.CreateWhileCondition">CreateWhileCondition (class in actions)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -170,13 +222,15 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tokens.html#tokens.Else">Else (class in tokens)</a>
 </li>
-      <li><a href="symbol.html#symbol.Epsilon">Epsilon (class in symbol)</a>
+      <li><a href="tokens.html#tokens.ElseIf">ElseIf (class in tokens)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="tokens.html#tokens.Equal">Equal (class in tokens)</a>
+      <li><a href="tokens.html#tokens.EndOfFile">EndOfFile (class in tokens)</a>
 </li>
-      <li><a href="tokens.html#tokens.Expression">Expression (class in tokens)</a>
+      <li><a href="symbol.html#symbol.Epsilon">Epsilon (class in symbol)</a>
+</li>
+      <li><a href="tokens.html#tokens.Equal">Equal (class in tokens)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -220,15 +274,31 @@
   </ul></td>
 </tr></table>
 
+<h2 id="H">H</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="actions.html#actions.HandleAllLoops">HandleAllLoops (class in actions)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="actions.html#actions.HandleElse">HandleElse (class in actions)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tokens.html#tokens.Identifier">Identifier (class in tokens)</a>
 </li>
+      <li><a href="actions.html#actions.If">If (class in actions)</a>
+
+      <ul>
+        <li><a href="tokens.html#tokens.If">(class in tokens)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="tokens.html#tokens.If">If (class in tokens)</a>
-</li>
       <li><a href="tokens.html#tokens.Integer">Integer (class in tokens)</a>
 </li>
   </ul></td>
@@ -243,13 +313,11 @@
 </li>
       <li><a href="lexer.html#lex.Lexer">Lexer (class in lex)</a>
 </li>
-      <li><a href="tokens.html#tokens.Literal">Literal (class in tokens)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="lltable.html#lltable.LLTable">LLTable (class in lltable)</a>
+      <li><a href="tokens.html#tokens.Literal">Literal (class in tokens)</a>
 </li>
-      <li><a href="precedence_table.html#precedence_table.PrecedenceTable.load">load() (precedence_table.PrecedenceTable method)</a>
+      <li><a href="lltable.html#lltable.LLTable">LLTable (class in lltable)</a>
 </li>
       <li><a href="tokens.html#tokens.LT">LT (class in tokens)</a>
 </li>
@@ -267,9 +335,9 @@
     module
 
       <ul>
-        <li><a href="grammar.html#module-grammar">grammar</a>
+        <li><a href="actions.html#module-actions">actions</a>
 </li>
-        <li><a href="precedence_table.html#module-precedence_table">precedence_table</a>
+        <li><a href="grammar.html#module-grammar">grammar</a>
 </li>
         <li><a href="symbol.html#module-symbol">symbol</a>
 </li>
@@ -294,6 +362,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="grammar.html#grammar.Grammar.nonTerminals">nonTerminals() (grammar.Grammar method)</a>
 </li>
+      <li><a href="tokens.html#tokens.Not">Not (class in tokens)</a>
+</li>
       <li><a href="tokens.html#tokens.NotEqual">NotEqual (class in tokens)</a>
 </li>
   </ul></td>
@@ -304,17 +374,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tokens.html#tokens.Plus">Plus (class in tokens)</a>
 </li>
-      <li>
-    precedence_table
-
-      <ul>
-        <li><a href="precedence_table.html#module-precedence_table">module</a>
-</li>
-      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="precedence_table.html#precedence_table.PrecedenceTable">PrecedenceTable (class in precedence_table)</a>
-</li>
       <li><a href="lltable.html#lltable.LLTable.Predict">Predict() (lltable.LLTable method)</a>
 </li>
       <li><a href="grammar.html#grammar.Production">Production (class in grammar)</a>
@@ -345,14 +406,18 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="precedence_table.html#precedence_table.PrecedenceTable.save">save() (precedence_table.PrecedenceTable method)</a>
-</li>
       <li><a href="tokens.html#tokens.Semicolon">Semicolon (class in tokens)</a>
 </li>
       <li><a href="tokens.html#tokens.Space">Space (class in tokens)</a>
 </li>
+      <li><a href="actions.html#actions.StoreLiteral">StoreLiteral (class in actions)</a>
+</li>
+      <li><a href="actions.html#actions.StoreToBody">StoreToBody (class in actions)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="actions.html#actions.StoreVariableName">StoreVariableName (class in actions)</a>
+</li>
       <li><a href="tokens.html#tokens.String">String (class in tokens)</a>
 </li>
       <li>
@@ -386,6 +451,14 @@
 </li>
       </ul></li>
       <li><a href="lexer.html#lex.Lexer.tokens">tokens() (lex.Lexer method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="actions.html#actions.UnarySubtract">UnarySubtract (class in actions)</a>
 </li>
   </ul></td>
 </tr></table>

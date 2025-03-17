@@ -5,6 +5,7 @@ from lltable import LLTable
 from symbol import Epsilon, NonTerminal, Terminal
 from lex import Lexer
 from grammar import Grammar
+from symtable import SymbolTable
 from tokens import EndOfFile, Token
 from symbol import Action
 from ast import AST, Module
@@ -41,7 +42,8 @@ class Parser:
         self.valueStack.put(Module())
         self.tokenStack: LifoQueue[Token] = LifoQueue()     # Stack for tokens as input for actions
         self.ast = Module()
-        self.stack.put(NonTerminal("body"))     # Stack for ll parsing
+        self.stack.put(NonTerminal("root"))     # Stack for ll parsing
+        self.symtable = SymbolTable()
 
         self.current_token = next(self.lexer.tokens())
         logger.info("Initialized Parser")
@@ -60,8 +62,6 @@ class Parser:
             logger.debug(f"Queue {list(self.stack.queue)}")
             logger.debug(f"valueStack {list(self.valueStack.queue)}\n\n")
             match top:
-                # case Action(): # TBD if used
-                #    pass
                 case NonTerminal():
                     self.handleNonTerminal(top)
 
@@ -101,4 +101,4 @@ class Parser:
 
     def handleAction(self, top: Action):
         logger.debug(f"Applying action {type(top).__name__}")
-        top.call(self.valueStack, self.tokenStack)
+        top.call(self.valueStack, self.tokenStack, self.symtable)

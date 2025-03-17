@@ -5,7 +5,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tokens &mdash; LUMEX  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
 
@@ -45,7 +45,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="lexer.html">Lexer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="grammar.html">Grammar</a></li>
@@ -58,7 +58,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#tokens.Literal.__init__"><code class="docutils literal notranslate"><span class="pre">Literal.__init__()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#tokens.Expression"><code class="docutils literal notranslate"><span class="pre">Expression</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.Identifier"><code class="docutils literal notranslate"><span class="pre">Identifier</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.Integer"><code class="docutils literal notranslate"><span class="pre">Integer</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.Float"><code class="docutils literal notranslate"><span class="pre">Float</span></code></a></li>
@@ -67,6 +66,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#tokens.Minus"><code class="docutils literal notranslate"><span class="pre">Minus</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.Divide"><code class="docutils literal notranslate"><span class="pre">Divide</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.Multiply"><code class="docutils literal notranslate"><span class="pre">Multiply</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tokens.Not"><code class="docutils literal notranslate"><span class="pre">Not</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.Equal"><code class="docutils literal notranslate"><span class="pre">Equal</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.NotEqual"><code class="docutils literal notranslate"><span class="pre">NotEqual</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.DoubleEqual"><code class="docutils literal notranslate"><span class="pre">DoubleEqual</span></code></a></li>
@@ -80,18 +80,21 @@
 <li class="toctree-l2"><a class="reference internal" href="#tokens.RightCurly"><code class="docutils literal notranslate"><span class="pre">RightCurly</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.Questionmark"><code class="docutils literal notranslate"><span class="pre">Questionmark</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.Semicolon"><code class="docutils literal notranslate"><span class="pre">Semicolon</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tokens.Colon"><code class="docutils literal notranslate"><span class="pre">Colon</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.Comma"><code class="docutils literal notranslate"><span class="pre">Comma</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.Space"><code class="docutils literal notranslate"><span class="pre">Space</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.NewLine"><code class="docutils literal notranslate"><span class="pre">NewLine</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tokens.EndOfFile"><code class="docutils literal notranslate"><span class="pre">EndOfFile</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.Function"><code class="docutils literal notranslate"><span class="pre">Function</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.For"><code class="docutils literal notranslate"><span class="pre">For</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.If"><code class="docutils literal notranslate"><span class="pre">If</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.Else"><code class="docutils literal notranslate"><span class="pre">Else</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tokens.ElseIf"><code class="docutils literal notranslate"><span class="pre">ElseIf</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="symbol.html">Symbol</a></li>
+<li class="toctree-l1"><a class="reference internal" href="actions.html">Actions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lltable.html">LL Table</a></li>
-<li class="toctree-l1"><a class="reference internal" href="precedence_table.html">Precedence Table</a></li>
 </ul>
 
         </div>
@@ -157,24 +160,12 @@
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="tokens.Expression">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Expression</span></span><a class="headerlink" href="#tokens.Expression" title="Link to this definition"></a></dt>
-<dd><p>Represents an expression token.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match an expression.
-Lexeme pattern: <cite>r””</cite></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py class">
 <dt class="sig sig-object py" id="tokens.Identifier">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Identifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lexeme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tokens.Identifier" title="Link to this definition"></a></dt>
 <dd><p>Represents an identifier token (e.g., variable names).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match an identifier, 
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match an identifier,
 which starts with a letter and can be followed by letters and digits.
 Lexeme pattern: <cite>r”[A-Za-z][A-Za-z0-9]*”</cite></p>
 </dd>
@@ -187,7 +178,7 @@ Lexeme pattern: <cite>r”[A-Za-z][A-Za-z0-9]*”</cite></p>
 <dd><p>Represents an integer literal token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match an integer, 
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match an integer,
 which consists of one or more digits.
 Lexeme pattern: <cite>r”[0-9]+”</cite></p>
 </dd>
@@ -200,7 +191,7 @@ Lexeme pattern: <cite>r”[0-9]+”</cite></p>
 <dd><p>Represents a floating-point literal token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match a float, 
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match a float,
 which consists of a digit, a period, and one or more digits after the period.
 Lexeme pattern: <cite>r”[0-9].[0-9]+”</cite></p>
 </dd>
@@ -213,7 +204,7 @@ Lexeme pattern: <cite>r”[0-9].[0-9]+”</cite></p>
 <dd><p>Represents a string literal token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match a string, 
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match a string,
 which starts and ends with a double quote and may contain escaped quotes.
 Lexeme pattern: <cite>r’”(?:”|[^”])*”’</cite></p>
 </dd>
@@ -251,7 +242,7 @@ Lexeme pattern: <cite>r”-”</cite></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the division operator.
-Lexeme pattern: <cite>r”&quot;</cite></p>
+Lexeme pattern: <cite>r”/”</cite></p>
 </dd>
 </dl>
 </dd></dl>
@@ -264,6 +255,18 @@ Lexeme pattern: <cite>r”&quot;</cite></p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the multiplication operator.
 Lexeme pattern: <cite>r”*”</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tokens.Not">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Not</span></span><a class="headerlink" href="#tokens.Not" title="Link to this definition"></a></dt>
+<dd><p>Represents the unary not operator token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the unary not operator.
+Lexeme pattern: <cite>r”!”</cite></p>
 </dd>
 </dl>
 </dd></dl>
@@ -425,6 +428,18 @@ Lexeme pattern: <cite>r”;”</cite></p>
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="tokens.Colon">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Colon</span></span><a class="headerlink" href="#tokens.Colon" title="Link to this definition"></a></dt>
+<dd><p>Represents the colon ‘:’ token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the colon.
+Lexeme pattern: <cite>r”:”</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="tokens.Comma">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Comma</span></span><a class="headerlink" href="#tokens.Comma" title="Link to this definition"></a></dt>
 <dd><p>Represents the comma ‘,’ token.</p>
@@ -456,6 +471,18 @@ Lexeme pattern: <cite>r”[t ]+”</cite></p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match newline characters.
 Lexeme pattern: <cite>r”r?n”</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tokens.EndOfFile">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">EndOfFile</span></span><a class="headerlink" href="#tokens.EndOfFile" title="Link to this definition"></a></dt>
+<dd><p>Represents a EOF token at the end of the parsed file. Used to terminate parsing process.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the end of a file.
+Lexeme pattern: <cite>r”Z”</cite></p>
 </dd>
 </dl>
 </dd></dl>
@@ -507,6 +534,11 @@ Lexeme pattern: <cite>r”else”</cite></p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tokens.ElseIf">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">ElseIf</span></span><a class="headerlink" href="#tokens.ElseIf" title="Link to this definition"></a></dt>
+<dd></dd></dl>
 
 </section>
 

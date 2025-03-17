@@ -6,18 +6,29 @@
 LUMEX documentation
 ===================
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
+**Lumerical to Meep Exchange (LUMEX)** is an open-source source-to-source compiler designed to translate `Ansys Lumerical <https://www.ansys.com/products/optics/fdtd>`_ `.lsf` scripts into `Meep <https://meep.readthedocs.io/en/master/>`_-compatible Python code.  
 
 
 .. toctree::
    :maxdepth: 1
-   :caption: Contents:
+   :caption: Table of Contents:
 
    lexer
    grammar
    tokens
    symbol
+   actions
    lltable
-   precedence_table
+
+Key Features
+------------
+
+- **Automated Translation**: Converts `.lsf` scripts to Python scripts compatible with the Python Meep library.
+- **Cross-Platform**: Works on major operating systems (Windows, macOS, Linux).
+- **Extensible**: Designed with modularity to support additional features and tools.
+
+About the Project
+-----------------
+
+LUMEX was developed as part of a Bachelor's thesis project aimed at enhancing interoperability between proprietary and open-source simulation tools. The focus is on providing researchers and engineers with an efficient tool for transitioning from Lumerical's environment to Meep using Python.
+

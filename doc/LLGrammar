@@ -1,6 +1,6 @@
 %token identifier number string boolean
 %%
-body : statement body
+body : statement body EOF
 | 'function' identifier '(' parameter_list ')' '{' nested_body '}'
 | /*eps*/ ;
 

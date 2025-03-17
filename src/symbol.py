@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from abc import ABC, abstractmethod
 from ast import AST
 from queue import LifoQueue
+from symtable import SymbolTable
 
 
 @dataclass
@@ -43,7 +44,7 @@ class Action(Symbol):
     name: str = ""
 
     @abstractmethod
-    def call(self, ValueStack: LifoQueue[AST], TokenStack: LifoQueue):
+    def call(self, ValueStack: LifoQueue[AST], TokenStack: LifoQueue, SymbolTable: SymbolTable):
         pass
 
 

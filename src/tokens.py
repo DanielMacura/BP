@@ -408,3 +408,11 @@ class Else(Token):
 
     lexeme_pattern = r"else"
 
+class AddFDTD(Token):
+    lexeme_pattern = r"addfdtd"
+
+class SetToken(Token):
+    lexeme_pattern = r"set"
+
+class AddRect(Token):
+    lexeme_pattern = r"addrect"

@@ -5,7 +5,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Grammar &mdash; LUMEX  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
 
@@ -45,7 +45,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="lexer.html">Lexer</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Grammar</a><ul>
@@ -63,8 +63,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tokens.html">Tokens</a></li>
 <li class="toctree-l1"><a class="reference internal" href="symbol.html">Symbol</a></li>
+<li class="toctree-l1"><a class="reference internal" href="actions.html">Actions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lltable.html">LL Table</a></li>
-<li class="toctree-l1"><a class="reference internal" href="precedence_table.html">Precedence Table</a></li>
 </ul>
 
         </div>
@@ -108,7 +108,8 @@ when the production is applied.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>LHS</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="symbol.html#symbol.NonTerminal" title="symbol.NonTerminal"><code class="xref py py-class docutils literal notranslate"><span class="pre">NonTerminal</span></code></a></span>) – Left-hand-side of the production.</p></li>
-<li><p><strong>RHS</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="symbol.html#symbol.NonTerminal" title="symbol.NonTerminal"><code class="xref py py-class docutils literal notranslate"><span class="pre">NonTerminal</span></code></a> | <a class="reference internal" href="symbol.html#symbol.Terminal" title="symbol.Terminal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Terminal</span></code></a>], <a class="reference internal" href="symbol.html#symbol.Epsilon" title="symbol.Epsilon"><code class="xref py py-class docutils literal notranslate"><span class="pre">Epsilon</span></code></a>]</span>) – Right-hand-side of the production.</p></li>
+<li><p><strong>RHS</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<a class="reference internal" href="symbol.html#symbol.NonTerminal" title="symbol.NonTerminal"><code class="xref py py-class docutils literal notranslate"><span class="pre">NonTerminal</span></code></a> | <a class="reference internal" href="symbol.html#symbol.Terminal" title="symbol.Terminal"><code class="xref py py-class docutils literal notranslate"><span class="pre">Terminal</span></code></a> | <a class="reference internal" href="symbol.html#symbol.Action" title="symbol.Action"><code class="xref py py-class docutils literal notranslate"><span class="pre">Action</span></code></a>], <a class="reference internal" href="symbol.html#symbol.Epsilon" title="symbol.Epsilon"><code class="xref py py-class docutils literal notranslate"><span class="pre">Epsilon</span></code></a>]</span>) – Right-hand-side of the production.</p></li>
+<li><p><strong>RHS_clean</strong> – Right-hand-side of the production with no actions, used in LL table generation.</p></li>
 <li><p><strong>nullable</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – Specifies if the production is nullable.</p></li>
 </ul>
 </dd>
@@ -152,14 +153,13 @@ Even terminals not in any RHS of any production in the grammar are listed.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="grammar.Grammar.nonTerminals">
 <span class="sig-name descname"><span class="pre">nonTerminals</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#grammar.Grammar.nonTerminals" title="Link to this definition"></a></dt>
-<dd><p>List all terminals which are subclasses of Token or Literal.
-Even terminals not in any RHS of any production in the grammar are listed.</p>
+<dd><p>List all nonterminals.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Set</span></code>[<a class="reference internal" href="symbol.html#symbol.NonTerminal" title="symbol.NonTerminal"><code class="xref py py-class docutils literal notranslate"><span class="pre">NonTerminal</span></code></a>]</span></p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>All terminals.</p>
+<dd class="field-even"><p>All nonterminals.</p>
 </dd>
 </dl>
 </dd></dl>

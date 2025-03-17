@@ -5,7 +5,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Symbol &mdash; LUMEX  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
 
@@ -45,7 +45,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="lexer.html">Lexer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="grammar.html">Grammar</a></li>
@@ -58,6 +58,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#symbol.Terminal"><code class="docutils literal notranslate"><span class="pre">Terminal</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#symbol.NonTerminal"><code class="docutils literal notranslate"><span class="pre">NonTerminal</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#symbol.NonTerminal.__init__"><code class="docutils literal notranslate"><span class="pre">NonTerminal.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#symbol.Action"><code class="docutils literal notranslate"><span class="pre">Action</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#symbol.Action.__init__"><code class="docutils literal notranslate"><span class="pre">Action.__init__()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#symbol.Epsilon"><code class="docutils literal notranslate"><span class="pre">Epsilon</span></code></a></li>
@@ -92,12 +96,13 @@
              
   <section id="symbol">
 <h1>Symbol<a class="headerlink" href="#symbol" title="Link to this heading"></a></h1>
-<div class="graphviz"><img src="_images/inheritance-d63a9d1d9412bf366618ab0c64474cffe63e7ae2.png" alt="Inheritance diagram of symbol" usemap="#inheritance2ca1aea48c" class="inheritance graphviz" /></div>
+<div class="graphviz"><img src="_images/inheritance-004fe08389f09e835563b165c1a3a634eac2c768.png" alt="Inheritance diagram of symbol" usemap="#inheritance2ca1aea48c" class="inheritance graphviz" /></div>
 <map id="inheritance2ca1aea48c" name="inheritance2ca1aea48c">
-<area shape="rect" id="node1" href="#symbol.Epsilon" target="_top" title="symbol.Epsilon" alt="" coords="193,5,314,33"/>
-<area shape="rect" id="node2" href="#symbol.Symbol" target="_top" title="Symbol()" alt="" coords="5,57,128,85"/>
-<area shape="rect" id="node3" href="#symbol.NonTerminal" target="_top" title="NonTerminal(name: str)" alt="" coords="176,57,331,85"/>
-<area shape="rect" id="node4" href="#symbol.Terminal" target="_top" title="symbol.Terminal" alt="" coords="189,109,318,137"/>
+<area shape="rect" id="node3" href="#symbol.Symbol" target="_top" title="Symbol()" alt="" coords="129,84,251,112"/>
+<area shape="rect" id="node2" href="#symbol.Action" target="_top" title="Action(name: str = &#39;&#39;)" alt="" coords="320,5,434,33"/>
+<area shape="rect" id="node4" href="#symbol.Epsilon" target="_top" title="symbol.Epsilon" alt="" coords="316,57,437,85"/>
+<area shape="rect" id="node5" href="#symbol.NonTerminal" target="_top" title="NonTerminal(name: str)" alt="" coords="299,109,454,137"/>
+<area shape="rect" id="node6" href="#symbol.Terminal" target="_top" title="symbol.Terminal" alt="" coords="312,161,441,189"/>
 </map><dl class="py class" id="module-symbol">
 <dt class="sig sig-object py" id="symbol.Symbol">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">symbol.</span></span><span class="sig-name descname"><span class="pre">Symbol</span></span><a class="headerlink" href="#symbol.Symbol" title="Link to this definition"></a></dt>
@@ -119,6 +124,16 @@
 <dd><dl class="py method">
 <dt class="sig sig-object py" id="symbol.NonTerminal.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#symbol.NonTerminal.__init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="symbol.Action">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">symbol.</span></span><span class="sig-name descname"><span class="pre">Action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#symbol.Action" title="Link to this definition"></a></dt>
+<dd><dl class="py method">
+<dt class="sig sig-object py" id="symbol.Action.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#symbol.Action.__init__" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
