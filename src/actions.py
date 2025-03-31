@@ -32,7 +32,7 @@ class StoreToBody(Action):
 
         :param TokenStack: Not used in this action (interface consistency)
 
-        Note: Parent node must have a `body` attribute (like :class:`ast.Module`)
+        .. note:: Parent node must have a `body` attribute (like :class:`ast.Module`)
         """
         value = ValueStack.get()
         module = ValueStack.get()
@@ -604,7 +604,7 @@ class CreateEmptyWhile(Action):
            - Populate body contents
            - Handle else clauses if present
 
-        ..note: The parser must ensure test condition is set before finalizing
+        .. note:: The parser must ensure test condition is set before finalizing
         the loop structure to avoid invalid AST nodes.
         """
         node = ast.While(test=None, body=[])
@@ -925,7 +925,7 @@ class Break(Action):
         Example AST result:
             Break()
 
-        Note: Does not validate proper loop context - parser must ensure
+        .. note:: Does not validate proper loop context - parser must ensure
         break statements only appear inside loops.
         """
         node = ast.Break()
@@ -965,7 +965,7 @@ class Print(Action):
                 )
             )
 
-        Note: Only supports single-argument print statements. For multiple
+        .. note:: Only supports single-argument print statements. For multiple
         arguments, additional handling would be required.
         """
         value = ValueStack.get()
@@ -1011,7 +1011,7 @@ class Imports(Action):
             level=0
           )
 
-        Note: These imports are added automatically, not based on user code.
+        .. note:: These imports are added automatically, not based on user code.
         """
         import_meep = ast.Import(names=[ast.alias(name="meep", asname="mp")])
 
@@ -1062,7 +1062,7 @@ class CreateSelector(Action):
         - Requires prior import of Selector via `Imports` action
         - Typically followed by `StoreToBody` to add to parent scope
 
-        Note: This creates a fresh selector instance regardless of existing
+        .. note:: This creates a fresh selector instance regardless of existing
         variables with the same name in the scope.
         """
         # Generate: selector = Selector()
@@ -1311,7 +1311,7 @@ class AddRect(Action):
         - Requires `mp` (meep) module import
         - Requires `Record` and `selector` initialization
 
-        Note: Currently uses hardcoded default values. For dynamic size/materials,
+        .. note:: Currently uses hardcoded default values. For dynamic size/materials,
         additional processing would be needed.
         """
         ValueStack.put(
@@ -1382,7 +1382,7 @@ class AddFDTD(Action):
         - Requires `Record` and `selector` initialization
         - Depends on Meep's Simulation and Vector3 classes
 
-        Note: Current implementation uses hardcoded defaults for:
+        .. note:: Current implementation uses hardcoded defaults for:
         - cell_size (mp.Vector3(1,1,1))
         - Other simulation parameters (not shown)
         Real-world usage would require extending with actual parameters.
@@ -1462,7 +1462,7 @@ class SelectAll(Action):
         - Depends on Selector class from runtime imports
         - Assumes selector object has selectAll() method
 
-        Note: This action doesn't return a value but modifies the selector's
+        .. note:: This action doesn't return a value but modifies the selector's
         internal state. Typically used before bulk operations on records.
         """
         node = ast.Expr(
@@ -1518,7 +1518,7 @@ class UnselectAll(Action):
         - Depends on Selector class from runtime imports
         - Assumes selector object has unselectAll() method
 
-        Note: This action clears the selector's current selection without
+        .. note:: This action clears the selector's current selection without
         returning a value. Typically used after bulk operations or before
         making new selections.
         """
@@ -1575,7 +1575,7 @@ class Select(Action):
         - Assumes selector object has select() method
         - Name argument must be a string constant
 
-        Note: Typically used for precise selection of individual records
+        .. note:: Typically used for precise selection of individual records
         after initial bulk operations.
         """
         name = ValueStack.get()
@@ -1633,7 +1633,7 @@ class ShiftSelect(Action):
         - Assumes selector object has shiftSelect() method
         - Requires prior selection to exist for meaningful operation
 
-        Note: Used for cumulative selections rather than replacing the current selection.
+        .. note:: Used for cumulative selections rather than replacing the current selection.
         Typically combined with initial select() or selectAll() calls.
         """
         name = ValueStack.get()
