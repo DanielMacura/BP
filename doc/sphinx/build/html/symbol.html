@@ -22,7 +22,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="LL Table" href="lltable.html" />
+    <link rel="next" title="Actions" href="actions.html" />
     <link rel="prev" title="Tokens" href="tokens.html" /> 
 </head>
 
@@ -67,6 +67,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#symbol.Epsilon"><code class="docutils literal notranslate"><span class="pre">Epsilon</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="actions.html">Actions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="lltable.html">LL Table</a></li>
 </ul>
 
@@ -96,7 +97,7 @@
              
   <section id="symbol">
 <h1>Symbol<a class="headerlink" href="#symbol" title="Link to this heading"></a></h1>
-<div class="graphviz"><img src="_images/inheritance-004fe08389f09e835563b165c1a3a634eac2c768.png" alt="Inheritance diagram of symbol" usemap="#inheritance2ca1aea48c" class="inheritance graphviz" /></div>
+<div class="graphviz"><img src="_images/inheritance-bc73316215e0ce99ce31c1eec0ccd6a328633677.png" alt="Inheritance diagram of symbol" usemap="#inheritance2ca1aea48c" class="inheritance graphviz" /></div>
 <map id="inheritance2ca1aea48c" name="inheritance2ca1aea48c">
 <area shape="rect" id="node3" href="#symbol.Symbol" target="_top" title="Symbol()" alt="" coords="129,84,251,112"/>
 <area shape="rect" id="node2" href="#symbol.Action" target="_top" title="Action(name: str = &#39;&#39;)" alt="" coords="320,5,434,33"/>
@@ -105,7 +106,7 @@
 <area shape="rect" id="node6" href="#symbol.Terminal" target="_top" title="symbol.Terminal" alt="" coords="312,161,441,189"/>
 </map><dl class="py class" id="module-symbol">
 <dt class="sig sig-object py" id="symbol.Symbol">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">symbol.</span></span><span class="sig-name descname"><span class="pre">Symbol</span></span><a class="headerlink" href="#symbol.Symbol" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">symbol.</span></span><span class="sig-name descname"><span class="pre">Symbol</span></span><a class="headerlink" href="#symbol.Symbol" title="Link to this definition"></a></dt>
 <dd><dl class="py method">
 <dt class="sig sig-object py" id="symbol.Symbol.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#symbol.Symbol.__init__" title="Link to this definition"></a></dt>
@@ -115,12 +116,12 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="symbol.Terminal">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">symbol.</span></span><span class="sig-name descname"><span class="pre">Terminal</span></span><a class="headerlink" href="#symbol.Terminal" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">symbol.</span></span><span class="sig-name descname"><span class="pre">Terminal</span></span><a class="headerlink" href="#symbol.Terminal" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="symbol.NonTerminal">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">symbol.</span></span><span class="sig-name descname"><span class="pre">NonTerminal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#symbol.NonTerminal" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">symbol.</span></span><span class="sig-name descname"><span class="pre">NonTerminal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#symbol.NonTerminal" title="Link to this definition"></a></dt>
 <dd><dl class="py method">
 <dt class="sig sig-object py" id="symbol.NonTerminal.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#symbol.NonTerminal.__init__" title="Link to this definition"></a></dt>
@@ -130,7 +131,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="symbol.Action">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">symbol.</span></span><span class="sig-name descname"><span class="pre">Action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#symbol.Action" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">symbol.</span></span><span class="sig-name descname"><span class="pre">Action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#symbol.Action" title="Link to this definition"></a></dt>
 <dd><dl class="py method">
 <dt class="sig sig-object py" id="symbol.Action.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#symbol.Action.__init__" title="Link to this definition"></a></dt>
@@ -140,7 +141,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="symbol.Epsilon">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">symbol.</span></span><span class="sig-name descname"><span class="pre">Epsilon</span></span><a class="headerlink" href="#symbol.Epsilon" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">symbol.</span></span><span class="sig-name descname"><span class="pre">Epsilon</span></span><a class="headerlink" href="#symbol.Epsilon" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </section>
@@ -150,7 +151,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="tokens.html" class="btn btn-neutral float-left" title="Tokens" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="lltable.html" class="btn btn-neutral float-right" title="LL Table" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="actions.html" class="btn btn-neutral float-right" title="Actions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

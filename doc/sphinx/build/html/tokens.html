@@ -87,9 +87,16 @@
 <li class="toctree-l2"><a class="reference internal" href="#tokens.EndOfFile"><code class="docutils literal notranslate"><span class="pre">EndOfFile</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.Function"><code class="docutils literal notranslate"><span class="pre">Function</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.For"><code class="docutils literal notranslate"><span class="pre">For</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tokens.Break"><code class="docutils literal notranslate"><span class="pre">Break</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.If"><code class="docutils literal notranslate"><span class="pre">If</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#tokens.Else"><code class="docutils literal notranslate"><span class="pre">Else</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="#tokens.ElseIf"><code class="docutils literal notranslate"><span class="pre">ElseIf</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tokens.AddFDTD"><code class="docutils literal notranslate"><span class="pre">AddFDTD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tokens.SetToken"><code class="docutils literal notranslate"><span class="pre">SetToken</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tokens.AddRect"><code class="docutils literal notranslate"><span class="pre">AddRect</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tokens.SelectAll"><code class="docutils literal notranslate"><span class="pre">SelectAll</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tokens.UnselectAll"><code class="docutils literal notranslate"><span class="pre">UnselectAll</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tokens.Select"><code class="docutils literal notranslate"><span class="pre">Select</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tokens.ShiftSelect"><code class="docutils literal notranslate"><span class="pre">ShiftSelect</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="symbol.html">Symbol</a></li>
@@ -125,7 +132,7 @@
 <span id="tokens"></span><h1>Tokens<a class="headerlink" href="#module-tokens" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Token">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Token</span></span><a class="headerlink" href="#tokens.Token" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Token</span></span><a class="headerlink" href="#tokens.Token" title="Link to this definition"></a></dt>
 <dd><p>Tokens a are specific implementations of <code class="xref py py-class docutils literal notranslate"><span class="pre">Terminal</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -145,7 +152,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Literal">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Literal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lexeme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tokens.Literal" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Literal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lexeme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tokens.Literal" title="Link to this definition"></a></dt>
 <dd><p>A special <a class="reference internal" href="#tokens.Token" title="tokens.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">Token</span></code></a> that also stores a value generated from it’s lexeme.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -161,7 +168,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Identifier">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Identifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lexeme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tokens.Identifier" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Identifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lexeme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tokens.Identifier" title="Link to this definition"></a></dt>
 <dd><p>Represents an identifier token (e.g., variable names).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -174,7 +181,7 @@ Lexeme pattern: <cite>r”[A-Za-z][A-Za-z0-9]*”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Integer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Integer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lexeme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tokens.Integer" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Integer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lexeme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tokens.Integer" title="Link to this definition"></a></dt>
 <dd><p>Represents an integer literal token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -187,7 +194,7 @@ Lexeme pattern: <cite>r”[0-9]+”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Float">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lexeme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tokens.Float" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lexeme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tokens.Float" title="Link to this definition"></a></dt>
 <dd><p>Represents a floating-point literal token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -200,7 +207,7 @@ Lexeme pattern: <cite>r”[0-9].[0-9]+”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.String">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">String</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lexeme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tokens.String" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">String</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lexeme</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#tokens.String" title="Link to this definition"></a></dt>
 <dd><p>Represents a string literal token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -213,7 +220,7 @@ Lexeme pattern: <cite>r’”(?:”|[^”])*”’</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Plus">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Plus</span></span><a class="headerlink" href="#tokens.Plus" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Plus</span></span><a class="headerlink" href="#tokens.Plus" title="Link to this definition"></a></dt>
 <dd><p>Represents the ‘+’ operator token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -225,7 +232,7 @@ Lexeme pattern: <cite>r”+”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Minus">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Minus</span></span><a class="headerlink" href="#tokens.Minus" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Minus</span></span><a class="headerlink" href="#tokens.Minus" title="Link to this definition"></a></dt>
 <dd><p>Represents the ‘-’ operator token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -237,7 +244,7 @@ Lexeme pattern: <cite>r”-”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Divide">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Divide</span></span><a class="headerlink" href="#tokens.Divide" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Divide</span></span><a class="headerlink" href="#tokens.Divide" title="Link to this definition"></a></dt>
 <dd><p>Represents the division operator token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -249,7 +256,7 @@ Lexeme pattern: <cite>r”/”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Multiply">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Multiply</span></span><a class="headerlink" href="#tokens.Multiply" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Multiply</span></span><a class="headerlink" href="#tokens.Multiply" title="Link to this definition"></a></dt>
 <dd><p>Represents the multiplication operator token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -261,7 +268,7 @@ Lexeme pattern: <cite>r”*”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Not">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Not</span></span><a class="headerlink" href="#tokens.Not" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Not</span></span><a class="headerlink" href="#tokens.Not" title="Link to this definition"></a></dt>
 <dd><p>Represents the unary not operator token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -273,7 +280,7 @@ Lexeme pattern: <cite>r”!”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Equal">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Equal</span></span><a class="headerlink" href="#tokens.Equal" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Equal</span></span><a class="headerlink" href="#tokens.Equal" title="Link to this definition"></a></dt>
 <dd><p>Represents the equality operator token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -285,7 +292,7 @@ Lexeme pattern: <cite>r”=”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.NotEqual">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">NotEqual</span></span><a class="headerlink" href="#tokens.NotEqual" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">NotEqual</span></span><a class="headerlink" href="#tokens.NotEqual" title="Link to this definition"></a></dt>
 <dd><p>Represents the not-equal operator token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -297,7 +304,7 @@ Lexeme pattern: <cite>r”!=”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.DoubleEqual">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">DoubleEqual</span></span><a class="headerlink" href="#tokens.DoubleEqual" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">DoubleEqual</span></span><a class="headerlink" href="#tokens.DoubleEqual" title="Link to this definition"></a></dt>
 <dd><p>Represents the double equality operator token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -309,7 +316,7 @@ Lexeme pattern: <cite>r”==”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.GT">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">GT</span></span><a class="headerlink" href="#tokens.GT" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">GT</span></span><a class="headerlink" href="#tokens.GT" title="Link to this definition"></a></dt>
 <dd><p>Represents the ‘greater than’ operator token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -321,7 +328,7 @@ Lexeme pattern: <cite>r”&gt;”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.GTE">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">GTE</span></span><a class="headerlink" href="#tokens.GTE" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">GTE</span></span><a class="headerlink" href="#tokens.GTE" title="Link to this definition"></a></dt>
 <dd><p>Represents the ‘greater than or equal to’ operator token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -333,7 +340,7 @@ Lexeme pattern: <cite>r”&gt;=”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.LT">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">LT</span></span><a class="headerlink" href="#tokens.LT" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">LT</span></span><a class="headerlink" href="#tokens.LT" title="Link to this definition"></a></dt>
 <dd><p>Represents the ‘less than’ operator token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -345,7 +352,7 @@ Lexeme pattern: <cite>r”&lt;”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.LTE">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">LTE</span></span><a class="headerlink" href="#tokens.LTE" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">LTE</span></span><a class="headerlink" href="#tokens.LTE" title="Link to this definition"></a></dt>
 <dd><p>Represents the ‘less than or equal to’ operator token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -357,7 +364,7 @@ Lexeme pattern: <cite>r”&lt;=”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.LeftBracket">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">LeftBracket</span></span><a class="headerlink" href="#tokens.LeftBracket" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">LeftBracket</span></span><a class="headerlink" href="#tokens.LeftBracket" title="Link to this definition"></a></dt>
 <dd><p>Represents the left parenthesis ‘(’ token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -369,7 +376,7 @@ Lexeme pattern: <cite>r”(”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.RightBracket">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">RightBracket</span></span><a class="headerlink" href="#tokens.RightBracket" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">RightBracket</span></span><a class="headerlink" href="#tokens.RightBracket" title="Link to this definition"></a></dt>
 <dd><p>Represents the right parenthesis ‘)’ token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -381,7 +388,7 @@ Lexeme pattern: <cite>r”)”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.LeftCurly">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">LeftCurly</span></span><a class="headerlink" href="#tokens.LeftCurly" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">LeftCurly</span></span><a class="headerlink" href="#tokens.LeftCurly" title="Link to this definition"></a></dt>
 <dd><p>Represents the left curly brace ‘{’ token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -393,7 +400,7 @@ Lexeme pattern: <cite>r”{”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.RightCurly">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">RightCurly</span></span><a class="headerlink" href="#tokens.RightCurly" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">RightCurly</span></span><a class="headerlink" href="#tokens.RightCurly" title="Link to this definition"></a></dt>
 <dd><p>Represents the right curly brace ‘}’ token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -405,7 +412,7 @@ Lexeme pattern: <cite>r”}”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Questionmark">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Questionmark</span></span><a class="headerlink" href="#tokens.Questionmark" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Questionmark</span></span><a class="headerlink" href="#tokens.Questionmark" title="Link to this definition"></a></dt>
 <dd><p>Represents the ‘?’ token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -417,7 +424,7 @@ Lexeme pattern: <cite>r”?”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Semicolon">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Semicolon</span></span><a class="headerlink" href="#tokens.Semicolon" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Semicolon</span></span><a class="headerlink" href="#tokens.Semicolon" title="Link to this definition"></a></dt>
 <dd><p>Represents the semicolon ‘;’ token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -429,7 +436,7 @@ Lexeme pattern: <cite>r”;”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Colon">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Colon</span></span><a class="headerlink" href="#tokens.Colon" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Colon</span></span><a class="headerlink" href="#tokens.Colon" title="Link to this definition"></a></dt>
 <dd><p>Represents the colon ‘:’ token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -441,7 +448,7 @@ Lexeme pattern: <cite>r”:”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Comma">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Comma</span></span><a class="headerlink" href="#tokens.Comma" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Comma</span></span><a class="headerlink" href="#tokens.Comma" title="Link to this definition"></a></dt>
 <dd><p>Represents the comma ‘,’ token.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -453,7 +460,7 @@ Lexeme pattern: <cite>r”,”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Space">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Space</span></span><a class="headerlink" href="#tokens.Space" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Space</span></span><a class="headerlink" href="#tokens.Space" title="Link to this definition"></a></dt>
 <dd><p>Represents whitespace characters (spaces and tabs).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -465,7 +472,7 @@ Lexeme pattern: <cite>r”[t ]+”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.NewLine">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">NewLine</span></span><a class="headerlink" href="#tokens.NewLine" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">NewLine</span></span><a class="headerlink" href="#tokens.NewLine" title="Link to this definition"></a></dt>
 <dd><p>Represents newline characters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -477,7 +484,7 @@ Lexeme pattern: <cite>r”r?n”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.EndOfFile">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">EndOfFile</span></span><a class="headerlink" href="#tokens.EndOfFile" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">EndOfFile</span></span><a class="headerlink" href="#tokens.EndOfFile" title="Link to this definition"></a></dt>
 <dd><p>Represents a EOF token at the end of the parsed file. Used to terminate parsing process.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -489,7 +496,7 @@ Lexeme pattern: <cite>r”Z”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Function">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Function</span></span><a class="headerlink" href="#tokens.Function" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Function</span></span><a class="headerlink" href="#tokens.Function" title="Link to this definition"></a></dt>
 <dd><p>Represents the ‘function’ keyword.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -501,7 +508,7 @@ Lexeme pattern: <cite>r”function”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.For">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">For</span></span><a class="headerlink" href="#tokens.For" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">For</span></span><a class="headerlink" href="#tokens.For" title="Link to this definition"></a></dt>
 <dd><p>Represents the ‘for’ keyword.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -512,8 +519,20 @@ Lexeme pattern: <cite>r”for”</cite></p>
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="tokens.Break">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Break</span></span><a class="headerlink" href="#tokens.Break" title="Link to this definition"></a></dt>
+<dd><p>Represents the ‘break’ keyword.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>lexeme_pattern</strong> – The regular expression pattern used to match the ‘break’ keyword.
+Lexeme pattern: <cite>r”break”</cite></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="tokens.If">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">If</span></span><a class="headerlink" href="#tokens.If" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">If</span></span><a class="headerlink" href="#tokens.If" title="Link to this definition"></a></dt>
 <dd><p>Represents the ‘if’ keyword.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -525,7 +544,7 @@ Lexeme pattern: <cite>r”if”</cite></p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="tokens.Else">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Else</span></span><a class="headerlink" href="#tokens.Else" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Else</span></span><a class="headerlink" href="#tokens.Else" title="Link to this definition"></a></dt>
 <dd><p>Represents the ‘else’ keyword.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -536,8 +555,38 @@ Lexeme pattern: <cite>r”else”</cite></p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="tokens.ElseIf">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">ElseIf</span></span><a class="headerlink" href="#tokens.ElseIf" title="Link to this definition"></a></dt>
+<dt class="sig sig-object py" id="tokens.AddFDTD">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">AddFDTD</span></span><a class="headerlink" href="#tokens.AddFDTD" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tokens.SetToken">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">SetToken</span></span><a class="headerlink" href="#tokens.SetToken" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tokens.AddRect">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">AddRect</span></span><a class="headerlink" href="#tokens.AddRect" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tokens.SelectAll">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">SelectAll</span></span><a class="headerlink" href="#tokens.SelectAll" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tokens.UnselectAll">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">UnselectAll</span></span><a class="headerlink" href="#tokens.UnselectAll" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tokens.Select">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">Select</span></span><a class="headerlink" href="#tokens.Select" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="tokens.ShiftSelect">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tokens.</span></span><span class="sig-name descname"><span class="pre">ShiftSelect</span></span><a class="headerlink" href="#tokens.ShiftSelect" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </section>
