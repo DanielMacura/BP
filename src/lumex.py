@@ -24,8 +24,9 @@ def main():
     # lexer = Lexer('addrect;')
     # lexer = Lexer('addfdtd;\naddrect;\naddrect;\nset("name", "block");')
     # lexer = Lexer('addfdtd;\naddrect;\naddrect;\nset("name", "block");\nset("x", 5);')
-    lexer = Lexer('addfdtd;\naddrect;\naddrect;\nset("name", "block");\nset("x", 5);\nset("x span", 7);\nset("z span", 11);')
-
+    # lexer = Lexer('addfdtd;\naddrect;\naddrect;\nset("name", "block");\nset("x", 5);\nset("x span", 7);\nset("z span", 11);')
+    # lexer = Lexer('addfdtd;\naddrect;\naddrect;\nset("name", "block");\nset("x", 5);\nset("x span", 7);\nselectall;\nset("z span", 11);')
+    lexer = Lexer('addfdtd;\naddrect;\naddrect;\nset("name", "block");\nset("x", 5);\nset("x span", 7);\nshiftselect("Rectangle");\nset("z span", 11);\nselect("block");\nset("z", 2+2);')
     parser = Parser(lumerical_grammar, lexer)
     parser.parse()
     tree = parser.valueStack.get()

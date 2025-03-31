@@ -101,4 +101,4 @@ class Parser:
 
     def handleAction(self, top: Action):
         logger.debug(f"Applying action {type(top).__name__}")
-        top.call(self.valueStack, self.tokenStack, self.symtable)
+        top.call(self.valueStack, self.tokenStack)

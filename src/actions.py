@@ -1,11 +1,10 @@
-from ast import AST, USub, keyword
+from ast import AST, USub
 import ast
 from queue import LifoQueue
 from symbol import Action
 from symtable import SymbolTable
-from symtable import Record
 from tokens import Token
-from typing import Literal
+from typing import Literal, Tuple, List
 import logging
 
 logger = logging.getLogger(__name__)
@@ -23,7 +22,6 @@ class StoreToBody(Action):
         self,
         ValueStack: LifoQueue,
         TokenStack: LifoQueue[Token],
-        SymbolTable: SymbolTable,
     ):
         """Modify parent node by appending child value to its body.
 
@@ -44,12 +42,60 @@ class StoreToBody(Action):
 
 
 class StoreToElse(Action):
+    """Action for properly nesting else/elif bodies in AST If node chains.
+
+    Handles two scenarios:
+    1. Direct else attachment to existing If node
+    2. Implicit elif creation from else-if patterns
+
+    Stack Expectations:
+    - Scenario 1 (Standard else):
+        Top: Else body (list of statements)
+        Next: ast.If node
+
+    - Scenario 2 (Implicit elif):
+        Top: Else body (list of statements)
+        Next: Condition expression
+        Next: Parent ast.If node
+
+    :raises ValueError: If stack contents don't match expected patterns
+    """
+
     def call(
         self,
         ValueStack: LifoQueue[AST],
         TokenStack: LifoQueue[Token],
-        SymbolTable: SymbolTable,
     ):
+        """Process else clause body and modify AST structure accordingly.
+
+        :param ValueStack: LIFO queue containing:
+            - Top: Else clause body statements
+            - Next: Either:
+                a) ast.If node (direct else attachment), or
+                b) condition expression followed by ast.If node (elif pattern)
+        :param TokenStack: Not used in this action (interface consistency)
+
+        Modifies the AST by:
+        1. Finding the deepest nested orelse chain
+        2. Appending else body to final node in chain
+        3. Handling implicit elif conversion when needed
+
+        Example transformations:
+        Original if-elif-else structure:
+            if(a) {} else if(b) {} else {}
+        AST Result:
+            If(
+                test=a,
+                body=[],
+                orelse=[
+                    If(
+                        test=b,
+                        body=[],
+                        orelse=[]
+                    )
+                ]
+            )
+        """
         value = ValueStack.get()
         if_node_or_expr = ValueStack.get()
 
@@ -97,7 +143,6 @@ class StoreLiteral(Action):
         self,
         ValueStack: LifoQueue[AST],
         TokenStack: LifoQueue[Token],
-        SymbolTable: SymbolTable,
     ):
         """Process the literal token and push converted value to ValueStack.
 
@@ -135,7 +180,6 @@ class AssignToVariable(Action):
         self,
         ValueStack: LifoQueue[AST],
         TokenStack: LifoQueue[Token],
-        SymbolTable: SymbolTable,
     ):
         """Create and push an assignment node to the ValueStack.
 
@@ -166,7 +210,6 @@ class StoreVariableName(Action):
         self,
         ValueStack: LifoQueue[AST],
         TokenStack: LifoQueue[Token],
-        SymbolTable: SymbolTable,
     ):
         """Process variable name token and create storage-context Name node.
 
@@ -220,7 +263,6 @@ class BinaryOperation(Action):
         self,
         ValueStack: LifoQueue[AST],
         TokenStack: LifoQueue[Token],
-        SymbolTable: SymbolTable,
     ):
         """Create and push binary operation node to ValueStack.
 
@@ -245,7 +287,6 @@ class UnarySubtract(Action):
         self,
         ValueStack: LifoQueue[AST],
         TokenStack: LifoQueue[Token],
-        SymbolTable: SymbolTable,
     ):
         operand = ValueStack.get()
         print(operand)
@@ -301,7 +342,6 @@ class Comparison(Action):
         self,
         ValueStack: LifoQueue[AST],
         TokenStack: LifoQueue[Token],
-        SymbolTable: SymbolTable,
     ):
         """Create or extend comparison node in the AST.
 
@@ -360,7 +400,6 @@ class If(Action):
         self,
         ValueStack: LifoQueue[AST],
         TokenStack: LifoQueue[Token],
-        SymbolTable: SymbolTable,
     ):
         """Construct and push an If node to the value stack.
 
@@ -409,7 +448,6 @@ class HandleElse(Action):
         self,
         ValueStack: LifoQueue[AST],
         TokenStack: LifoQueue[Token],
-        SymbolTable: SymbolTable,
     ):
         """
         Process else clause and modify AST structure accordingly.
@@ -469,7 +507,47 @@ class HandleElse(Action):
 
 
 class CleanUpElse(Action):
-    def call(self, ValueStack, TokenStack, SymbolTable: SymbolTable):
+    """Action for normalizing the stack state after else/elif clause processing.
+
+    Ensures the final If node is properly positioned on the value stack by
+    handling two possible stack configurations:
+    1. Direct If node presence
+    2. If node preceded by a conditional expression (elif pattern)
+
+    Typical usage::
+
+        # After processing else/elif bodies
+        Production(
+            else_clause,
+            [
+                Else(),
+                condition,
+                body,
+                actions.CleanUpElse()
+            ]
+        )
+    """
+
+    def call(self, ValueStack, TokenStack):
+        """Normalizes stack state by ensuring proper If node placement.
+
+        :param ValueStack: LIFO queue containing either:
+            - Top: ast.If node (direct case), or
+            - Top: Conditional expression
+              Next: ast.If node (elif pattern case)
+        :param TokenStack: Not used in this action (interface consistency)
+
+        Processing logic:
+        1. Pops the top value which could be:
+           - Direct If node, or
+           - Conditional expression (with If node beneath it)
+        2. Validates stack contents
+        3. Ensures only the If node remains on the stack
+
+        Modifies the ValueStack by:
+        - Removing any temporary conditional expressions
+        - Leaving the final If node properly positioned
+        """
         if_node_or_expr = ValueStack.get()
 
         if isinstance(if_node_or_expr, ast.If):
@@ -482,9 +560,52 @@ class CleanUpElse(Action):
 
 
 class CreateEmptyWhile(Action):
-    def call(self, ValueStack, TokenStack, SymbolTable: SymbolTable):
-        """
-        Used to create an empty loop, for statements can be pushed to the body.
+    """Action for initializing a While loop structure in the AST.
+
+    Creates a placeholder :class:`ast.While` node with empty body and no test condition,
+    allowing subsequent parsing actions to populate these components incrementally.
+
+    Typical usage in grammar productions::
+
+        Production(
+            while_loop,
+            [
+                While(),
+                actions.CreateEmptyWhile(),
+                LeftBracket(),
+                expression,  # Condition will be added later
+                RightBracket(),
+                LeftCurly(),
+                body_statements,
+                RightCurly()
+            ]
+        )
+
+    Node Structure:
+        Creates node with:
+        - test: None (to be populated later)
+        - body: Empty list (to be extended during parsing)
+        - orelse: Empty list (no else clause by default)
+    """
+
+    def call(self, ValueStack, TokenStack):
+        """Creates and pushes an empty While node to the value stack.
+
+        :param ValueStack: LIFO queue where the new While node will be pushed
+        :param TokenStack: Not used in this action (interface consistency)
+
+        Processing flow:
+        1. Creates barebones While node with:
+           - test=None (temporary placeholder)
+           - body=[]
+        2. Pushes node to ValueStack for subsequent modifications
+        3. Relies on later actions to:
+           - Set test condition
+           - Populate body contents
+           - Handle else clauses if present
+
+        ..note: The parser must ensure test condition is set before finalizing
+        the loop structure to avoid invalid AST nodes.
         """
         node = ast.While(test=None, body=[])
 
@@ -492,7 +613,55 @@ class CreateEmptyWhile(Action):
 
 
 class HandleAllLoops(Action):
-    def call(self, ValueStack, TokenStack, SymbolTable: SymbolTable):
+    """Action for finalizing loop structures by assembling components into valid AST nodes.
+
+    Handles both range-style and while-style loops by:
+    1. Storing initial assignment before the loop
+    2. Creating the While node body with increment step
+    3. Maintaining proper parent body structure
+
+    Stack Expectations:
+    - Top: while_node (ast.While placeholder)
+    - Next: increment_node (assignment step)
+    - Next: start_node (initial assignment)
+
+    Modified Stack After Processing:
+    - Parent body contains:
+        1. Initial assignment
+        2. While loop
+        3. Increment step (if applicable)
+    """
+
+    def call(self, ValueStack, TokenStack):
+        """Assembles loop components into parent body structure.
+
+        :param ValueStack: LIFO queue containing:
+            - Top: Unconfigured While node
+            - Next: Increment assignment node
+            - Next: Initial assignment node
+        :param TokenStack: Not used directly (forwarded to StoreToBody)
+        :param SymbolTable: (Contextual) Current symbol table reference
+
+        Processing Flow:
+        1. Retrieve loop components from stack in reverse order:
+           - while_node -> increment_node -> start_node
+        2. Store initial assignment in parent body
+        3. Store While node in parent body
+        4. Store increment step after While node
+
+        Example Transformation:
+        Original Components:
+            start_node: x = 1
+            while_node: while(x <= 10)
+            increment_node: x = x + 1
+
+        Resulting Parent Body:
+            [
+                Assign(target=x, value=1),
+                While(test=x <= 10, body=[...]),
+                AugAssign(target=x, op=Add, value=1)
+            ]
+        """
         # body = ValueStack.get()
         # loop_data = ValueStack.get()
 
@@ -528,9 +697,55 @@ class HandleAllLoops(Action):
 
 
 class CreateRangeCondition(Action):
-    """Handles both start:end and start:step:end ranges"""
+    """Action for configuring range-based loop conditions in AST.
 
-    def call(self, ValueStack, TokenStack, SymbolTable: SymbolTable):
+    Transforms Lumerical-style range syntax (start:end or start:step:end)
+    into Python-compatible While loop structures with:
+    - Initial assignment
+    - Loop test condition
+    - Increment operation
+
+    Integrates with:
+    - StoreToBody for parent structure management
+    - HandleAllLoops for final assembly
+
+    Handled Patterns:
+    - for(x=1:10) → while x <= 10 with x += 1
+    - for(x=1:2:10) → while x <= 10 with x += 2
+    """
+
+    def call(self, ValueStack, TokenStack):
+        """Process range components and configure While loop node.
+
+        :param ValueStack: LIFO queue containing:
+            - Top: End value (AST node)
+            - Next: Initial assignment node (ast.Assign)
+            - Next: Unconfigured While node (ast.While)
+        :param TokenStack: Not used directly (interface consistency)
+
+        Processing Flow:
+        1. Extract end boundary from stack
+        2. Retrieve initial assignment (e.g., x=1)
+        3. Configure While node with test condition
+        4. Generate increment operation
+        5. Re-stack components for final assembly
+
+        Modifies Stack To:
+            - Top: Configured While node
+            - Next: Increment operation
+            - Next: Initial assignment
+
+        Example Transformation:
+            Input Stack:
+                Constant(value=10)
+                Assign(target=x, value=1)
+                While(test=None, body=[])
+
+            Output Stack:
+                While(test=x <= 10, body=[])
+                AugAssign(target=x, op=Add, value=1)
+                Assign(target=x, value=1)
+        """
         end = ValueStack.get()
         assign_node = ValueStack.get()
         while_node: ast.While = ValueStack.get()
@@ -553,22 +768,51 @@ class CreateRangeCondition(Action):
         ValueStack.put(increment_node)
         ValueStack.put(while_node)
 
-        # Store components for loop construction
-        # ValueStack.put(
-        #     {
-        #         "type": "range",
-        #         "target": target,
-        #         "start": start,
-        #         "end": end,
-        #         "step": step,
-        #         "test": test,
-        #         "increment": increment,
-        #     }
-        # )
-
 
 class ExtendRangeCondition(Action):
-    def call(self, ValueStack, TokenStack, SymbolTable: SymbolTable):
+    """Action for extending range-based loop conditions with step values.
+
+    Handles the second colon in range syntax (start:step:end) by:
+    1. Updating the loop's termination condition
+    2. Adjusting the increment operation
+    3. Modifying comparison operators based on step direction
+
+    Stack Expectations:
+    - Top: End value (AST node)
+    - Next: Partially configured While node
+    - Next: Increment operation node (AugAssign)
+    """
+
+    def call(self, ValueStack, TokenStack):
+        """Process step value and finalize range condition configuration.
+
+        :param ValueStack: LIFO queue containing:
+            - Top: Final end value for range
+            - Next: While node with initial test
+            - Next: Increment node with step value
+        :param TokenStack: Not used directly (interface consistency)
+
+        Processing Flow:
+        1. Retrieves final end value from stack
+        2. Updates While node's test comparator
+        3. Adjusts comparison operator based on step sign
+        4. Reassembles components for final processing
+
+        Modifies:
+        - While node's test.comparators
+        - While node's test.ops (conditionally)
+        - Increment node's value
+
+        Example Transformation:
+        Initial Configuration:
+            While(test=x <= 10, ...)
+            AugAssign(value=2)
+            New end: 20
+
+        Result:
+            While(test=x <= 20, ...)
+            AugAssign(value=2)
+        """
         end = ValueStack.get()
         # loop_data = ValueStack.get()
         while_node: ast.While = ValueStack.get()
@@ -600,9 +844,43 @@ class ExtendRangeCondition(Action):
 
 
 class CreateWhileCondition(Action):
-    """Handles three-argument for loops (0;x<10;0)"""
+    """Action for processing three-argument while-style loop components.
 
-    def call(self, ValueStack, TokenStack, SymbolTable: SymbolTable):
+    Handles Lumerical's `for(init; test; step)` syntax used to implement while loops.
+    Collects loop components into a structured dictionary for later processing.
+
+    Stack Expectations:
+    - Top: step (third argument, typically dummy value)
+    - Next: test (loop condition expression)
+    - Next: init (initial assignment, typically dummy value)
+    - Next: target (loop variable reference)
+
+    Output:
+    Pushes dictionary with keys:
+    - "init": Initial assignment node
+    - "test": Condition check node
+    - "step": Step operation node
+    """
+
+    def call(self, ValueStack, TokenStack):
+        """Packages while-loop components into a structured dictionary.
+
+        :param ValueStack: LIFO queue containing:
+            - Top: step (AST node, typically constant 0)
+            - Next: test (ast.Compare node)
+            - Next: init (ast.Assign node)
+            - Next: target (ast.Name node)
+        :param TokenStack: Not used (interface consistency)
+
+        Example Usage:
+        For Lumerical code `for(0; x<10; 0) { ... }`
+        Processes components to create:
+            {
+                "init": Assign(target=x, value=0),
+                "test": Compare(x < 10),
+                "step": Assign(target=x, value=0)
+            }
+        """
         step = ValueStack.get()
         test = ValueStack.get()
         init = ValueStack.get()
@@ -612,19 +890,84 @@ class CreateWhileCondition(Action):
 
 
 class Break(Action):
+    """Action for creating break statements in loop control flow.
+
+    Generates an :class:`ast.Break` node to represent the `break` keyword
+    in loop structures. This node will be added to the nearest enclosing
+    loop's body during AST construction.
+
+    Example usage in grammar::
+
+        Production(
+            jump_statement,
+            [
+                Break(),
+                Semicolon()
+            ]
+        )
+    """
+
     def call(
         self,
         ValueStack: LifoQueue[AST],
         TokenStack: LifoQueue,
-        SymbolTable: SymbolTable,
     ):
+        """Creates and pushes a Break node to the value stack.
+
+        :param ValueStack: LIFO queue where the Break node will be added
+        :param TokenStack: Not used in this action (interface consistency)
+
+        Processing flow:
+        1. Creates bare Break node
+        2. Pushes node to ValueStack for inclusion in parent body
+        3. Relies on containing loop structure for context validity
+
+        Example AST result:
+            Break()
+
+        Note: Does not validate proper loop context - parser must ensure
+        break statements only appear inside loops.
+        """
         node = ast.Break()
 
         ValueStack.put(node)
 
 
 class Print(Action):
-    def call(self, ValueStack, TokenStack, SymbolTable: SymbolTable):
+    """Action for creating print statement nodes in the AST.
+
+    Translates Lumerical's `?` operator syntax into Python print calls.
+    Constructs an :class:`ast.Expr` node containing a call to the print function.
+
+    Example conversion:
+        Lumerical: ?x;
+        Python: print(x)
+    """
+
+    def call(self, ValueStack, TokenStack):
+        """Creates and pushes a print call node to the value stack.
+
+        :param ValueStack: LIFO queue containing:
+            - Top: Value to be printed (AST node)
+        :param TokenStack: Not used in this action (interface consistency)
+
+        Processing Flow:
+        1. Retrieves value to print from stack
+        2. Constructs print call AST node
+        3. Pushes node back to stack for parent body inclusion
+
+        Resulting AST Structure:
+            Expr(
+                value=Call(
+                    func=Name(id='print', ctx=Load()),
+                    args=[<value>],
+                    keywords=[]
+                )
+            )
+
+        Note: Only supports single-argument print statements. For multiple
+        arguments, additional handling would be required.
+        """
         value = ValueStack.get()
 
         node = ast.Expr(
@@ -635,190 +978,674 @@ class Print(Action):
 
 
 class Imports(Action):
+    """Action for injecting mandatory import statements into the AST.
+
+    Generates hardcoded import declarations required for Lumerical script compatibility:
+    1. `import meep as mp`
+    2. `from runtime import Selector, Record`
+
+    These imports are automatically added to the module body regardless of user code.
+    """
+
     def call(
         self,
         ValueStack: LifoQueue[AST],
         TokenStack: LifoQueue,
-        SymbolTable: SymbolTable,
     ):
-        node = ast.Import(names=[ast.alias("meep", "mp")])
+        """Creates and stores import nodes in the AST body.
 
-        ValueStack.put(node)
+        :param ValueStack: LIFO queue used for AST construction
+        :param TokenStack: Not used in this action (interface consistency)
+
+        Processing Flow:
+        1. Creates meep import node
+        2. Stores it in parent body via StoreToBody
+        3. Creates runtime selectors import node
+        4. Leaves it on stack for subsequent processing
+
+        Generated AST Nodes:
+        - Import(alias(name='meep', asname='mp'))
+        - ImportFrom(
+            module='runtime',
+            names=[alias(name='Selector'), alias(name='Record')],
+            level=0
+          )
+
+        Note: These imports are added automatically, not based on user code.
+        """
+        import_meep = ast.Import(names=[ast.alias(name="meep", asname="mp")])
+
+        import_selector = ast.ImportFrom(
+            module="runtime",
+            names=[
+                ast.alias(name="Selector", asname=None),
+                ast.alias(name="Record", asname=None),
+            ],
+            level=0,  # Absolute import
+        )
+
+        ValueStack.put(import_meep)
+        StoreToBody().call(ValueStack, TokenStack)
+        ValueStack.put(import_selector)
 
 
-class AddFDTD(Action):
-    def call(
-        self,
-        ValueStack: LifoQueue[AST],
-        TokenStack: LifoQueue,
-        SymbolTable: SymbolTable,
-    ):
+class CreateSelector(Action):
+    """Action for creating a Selector instance assignment in the AST.
+
+    Generates an assignment node that initializes a `selector` variable
+    with a `Selector()` constructor call. This is typically used for
+    Lumerical script compatibility where selector objects are required.
+
+    Example AST Output:
+        Assign(
+            targets=[Name(id='selector', ctx=Store())],
+            value=Call(
+                func=Name(id='Selector', ctx=Load()),
+                args=[],
+                keywords=[]
+            )
+        )
+    """
+
+    def call(self, ValueStack, TokenStack: LifoQueue):
+        """Creates and pushes a Selector initialization node to the value stack.
+
+        :param ValueStack: LIFO queue where the assignment node will be placed
+        :param TokenStack: Not used in this action (interface consistency)
+
+        Node Details:
+        - Creates a variable assignment: `selector = Selector()`
+        - Uses empty constructor arguments
+        - Assigns to fixed variable name 'selector'
+
+        Integration Points:
+        - Requires prior import of Selector via `Imports` action
+        - Typically followed by `StoreToBody` to add to parent scope
+
+        Note: This creates a fresh selector instance regardless of existing
+        variables with the same name in the scope.
+        """
+        # Generate: selector = Selector()
         node = ast.Assign(
-            targets=[ast.Name(id="sim", ctx=ast.Store())],
+            targets=[ast.Name(id="selector", ctx=ast.Store())],
             value=ast.Call(
-                func=ast.Name(id="mp.Simulation", ctx=ast.Load()), args=[], keywords=[]
+                func=ast.Name(id="Selector", ctx=ast.Load()), args=[], keywords=[]
             ),
         )
         ValueStack.put(node)
 
 
-# class SetProperty(Action):
-#     def call(self, ValueStack, TokenStack: LifoQueue, symtable: SymbolTable):
-#         value = ValueStack.get()  # A ast.Const
-#         name: ast.Constant = ValueStack.get()  # ast.Const with str
-#         logger.debug(f" test {str(value.value)}, {name.value}, {type(name.value)}")
-#
-#         match name.value:
-#             case "name":
-#                 logger.debug("Set name")
-#                 node = ast.Assign(
-#                     targets=[ast.Name(id=value.value)],
-#                     value=ast.Name(id=symtable.selected[0].name, ctx=ast.Store()),
-#                 )
-#                 symtable.selected[0].name = value.value
-#                 ValueStack.put(node)
-#
-#             case "x" | "y" | "z":
-#                 logger.debug(f"Set {name.value}")
-#                 # Block.center = mp.Vector3(block.center.x, block.center.y, value)
-#                 node = ast.Assign(
-#                     targets=[
-#                         ast.Attribute(
-#                             value=ast.Name(
-#                                 id=symtable.selected[0].name, ctx=ast.Load()
-#                             ),
-#                             attr="center",
-#                             ctx=ast.Store(),
-#                         )
-#                     ],
-#                     value=ast.Call(
-#                         func=ast.Attribute(
-#                             value=ast.Name(id="mp", ctx=ast.Load()),
-#                             attr="Vector3",
-#                             ctx=ast.Load(),
-#                         ),
-#                         args=[
-#                             value
-#                             if name.value == "x"
-#                             else ast.Attribute(
-#                                 value=ast.Attribute(
-#                                     value=ast.Name(
-#                                         id=symtable.selected[0].name, ctx=ast.Load()
-#                                     ),
-#                                     attr="center",
-#                                     ctx=ast.Load(),
-#                                 ),
-#                                 attr="x",
-#                                 ctx=ast.Load(),
-#                             ),
-#                             value
-#                             if name.value == "y"
-#                             else ast.Attribute(
-#                                 value=ast.Attribute(
-#                                     value=ast.Name(
-#                                         id=symtable.selected[0].name, ctx=ast.Load()
-#                                     ),
-#                                     attr="center",
-#                                     ctx=ast.Load(),
-#                                 ),
-#                                 attr="y",
-#                                 ctx=ast.Load(),
-#                             ),
-#                             value
-#                             if name.value == "z"
-#                             else ast.Attribute(
-#                                 value=ast.Attribute(
-#                                     value=ast.Name(
-#                                         id=symtable.selected[0].name, ctx=ast.Load()
-#                                     ),
-#                                     attr="center",
-#                                     ctx=ast.Load(),
-#                                 ),
-#                                 attr="z",
-#                                 ctx=ast.Load(),
-#                             ),
-#                         ],
-#                     ),
-#                 )
-#                 ValueStack.put(node)
-#
-#             case _:
-#                 logger.debug(f"Fallback, {str(name.value)}")
-#
 class SetProperty(Action):
-    def call(self, ValueStack, TokenStack: LifoQueue, symtable: SymbolTable):
+    """Action for generating property assignments on selector records.
+
+    Handles three types of property assignments:
+    1. Direct name assignments
+    2. Geometric center coordinates (x/y/z)
+    3. Size spans (x span/y span/z span)
+
+    Requires prior initialization of:
+    - `selector` variable via CreateSelector
+    - `mp` module import (from meep)
+    """
+
+    def call(self, ValueStack, TokenStack: LifoQueue):
+        """Creates AST nodes for property assignment loops.
+
+        :param ValueStack: LIFO queue containing:
+            - Top: Property value (AST node)
+            - Next: Property name (ast.Constant)
+        :param TokenStack: Not used directly (interface consistency)
+
+        Processing Flow:
+        1. Retrieves property name and value from stack
+        2. Generates appropriate assignment loop based on property type
+        3. Pushes resulting loop node to stack
+
+        Match Cases:
+        - "name": Direct name assignment to records
+        - "x"/"y"/"z": Center coordinate assignment
+        - "* span": Size dimension assignment
+
+        Example Output for "x" assignment:
+            For(
+                target=Name(id='record'),
+                iter=Call(
+                    func=Attribute(
+                        value=Name(id='selector'),
+                        attr='getSelected'),
+                body=[
+                    Assign(
+                        targets=[Attribute(
+                            value=Name(id='record'),
+                            attr='center')],
+                        value=Call(
+                            func=Attribute(
+                                value=Name(id='mp'),
+                                attr='Vector3'),
+                            args=[<x_val>, <existing_y>, <existing_z>]
+                        )
+                    )
+                ]
+            )
+        """
         value = ValueStack.get()
         name: ast.Constant = ValueStack.get()
-        logger.debug(f" test {str(value.value)}, {name.value}, {type(name.value)}")
+        logger.debug(f"Processing property {name.value} with value {value}")
 
-        obj_name = symtable.selected[0].name
-        obj_ref = ast.Name(id=obj_name, ctx=ast.Load())
-        mp_vector3 = ast.Attribute(value=ast.Name(id="mp", ctx=ast.Load()), attr="Vector3", ctx=ast.Load())
+        # Common AST components
+        selector_ref = ast.Name(id="selector", ctx=ast.Load())
+        mp_vector3 = ast.Attribute(
+            value=ast.Name(id="mp", ctx=ast.Load()), attr="Vector3", ctx=ast.Load()
+        )
 
-        def create_vector_component(axis: str, attr: str) -> ast.AST:
-            """Create either new value or reference to existing component"""
-            return (
-                value if axis == target_axis else
-                ast.Attribute(
-                    value=ast.Attribute(value=obj_ref, attr=attr, ctx=ast.Load()),
-                    attr=axis,
-                    ctx=ast.Load()
-                )
+        def create_loop_body(attr: str, components: list) -> ast.stmt:
+            """Create assignment body for vector properties"""
+            return ast.Assign(
+                targets=[
+                    ast.Attribute(
+                        value=ast.Name(id="record", ctx=ast.Load()),
+                        attr=attr,
+                        ctx=ast.Store(),
+                    )
+                ],
+                value=ast.Call(func=mp_vector3, args=components, keywords=[]),
+            )
+
+        def create_getSelected_loop(body: List[ast.AST]) -> ast.For:
+            return ast.For(
+                target=ast.Name(id="record", ctx=ast.Store()),
+                iter=ast.Call(
+                    func=ast.Attribute(selector_ref, "getSelected", ctx=ast.Load()),
+                    args=[],
+                    keywords=[],
+                ),
+                body=body,
+                orelse=[],
             )
 
         match name.value:
             case "name":
-                logger.debug("Set name")
-                node = ast.Assign(
-                    targets=[ast.Name(id=value.value)],
-                    value=ast.Name(id=obj_name, ctx=ast.Store()),
-                )
-                symtable.selected[0].name = value.value
-                ValueStack.put(node)
+                # Generate: for record in selector.getSelected(): record.name = value
+                body = [
+                    ast.Assign(
+                        targets=[
+                            ast.Attribute(
+                                ast.Name(id="record", ctx=ast.Load()),
+                                "name",
+                                ctx=ast.Store(),
+                            )
+                        ],
+                        value=value,
+                    )
+                ]
+                loop = create_getSelected_loop(body)
+
+                ValueStack.put(loop)
 
             case axis if axis in {"x", "y", "z"}:
-                logger.debug(f"Set {axis}")
-                target_axis = axis
-                node = ast.Assign(
-                    targets=[ast.Attribute(value=obj_ref, attr="center", ctx=ast.Store())],
-                    value=ast.Call(
-                        func=mp_vector3,
-                        args=[
-                            create_vector_component(a, "center")
-                            for a in ["x", "y", "z"]
-                        ],
-                    ),
-                )
-                ValueStack.put(node)
+                # Generate vector components while preserving others
+                components = [
+                    value
+                    if a == axis
+                    else ast.Attribute(
+                        ast.Attribute(
+                            ast.Name(id="record", ctx=ast.Load()),
+                            "center",
+                            ctx=ast.Load(),
+                        ),
+                        a,
+                        ctx=ast.Load(),
+                    )
+                    for a in ["x", "y", "z"]
+                ]
+                loop_body = create_loop_body("center", components)
+                loop = create_getSelected_loop([loop_body])
+                ValueStack.put(loop)
 
             case span if span.endswith(" span"):
-                target_axis = span.split()[0]
-                logger.debug(f"Set {target_axis} span")
-                node = ast.Assign(
-                    targets=[ast.Attribute(value=obj_ref, attr="size", ctx=ast.Store())],
-                    value=ast.Call(
-                        func=mp_vector3,
-                        args=[
-                            create_vector_component(a, "size")
-                            for a in ["x", "y", "z"]
-                        ],
-                    ),
-                )
-                ValueStack.put(node)
+                axis = span.split()[0]
+                components = [
+                    value
+                    if a == axis
+                    else ast.Attribute(
+                        ast.Attribute(
+                            ast.Name(id="record", ctx=ast.Load()),
+                            "size",
+                            ctx=ast.Load(),
+                        ),
+                        a,
+                        ctx=ast.Load(),
+                    )
+                    for a in ["x", "y", "z"]
+                ]
+                loop_body = create_loop_body("size", components)
+                loop = create_getSelected_loop([loop_body])
+                ValueStack.put(loop)
 
             case _:
-                logger.debug(f"Fallback, {str(name.value)}")
+                logger.warning(f"Unsupported property: {name.value}")
+                ValueStack.put(ast.Pass())
+
+
+def AddToSelector(args: Tuple[ast.Constant, ast.Call, ast.Constant]) -> ast.Expr:
+    """Constructs AST nodes for adding a Record to a Selector.
+
+    Generates an expression node representing the operation:
+    `selector.add(Record(name, value, unit))`
+
+    :param args: Tuple containing three elements:
+        - [0]: Name of the record (ast.Constant)
+        - [1]: Value of the record (ast.Call)
+        - [2]: Unit specification (ast.Constant)
+    :return: Expression node representing the add operation
+
+    Example AST output:
+        Expr(
+            value=Call(
+                func=Attribute(
+                    value=Name(id='selector'),
+                    attr='add'
+                ),
+                args=[
+                    Call(
+                        func=Name(id='Record'),
+                        args=[
+                            Constant(value='material'),
+                            Call(...),  # Value expression
+                            Constant(value='unit')
+                        ]
+                    )
+                ]
+            )
+        )
+
+    Dependencies:
+    - Requires `selector` variable initialized via CreateSelector
+    - Requires `Record` imported from runtime module
+    """
+    return ast.Expr(
+        value=ast.Call(
+            func=ast.Attribute(
+                ast.Name(id="selector", ctx=ast.Load()), "add", ctx=ast.Load()
+            ),
+            args=[
+                ast.Call(
+                    func=ast.Name(id="Record", ctx=ast.Load()),
+                    args=args,
+                    keywords=[],
+                )
+            ],
+            keywords=[],
+        )
+    )
 
 
 class AddRect(Action):
-    def call(
-        self, ValueStack: LifoQueue[AST], TokenStack: LifoQueue, symtable: SymbolTable
-    ):
-        symtable.add(Record(record_type="rect"))
-        node = ast.Assign(
-            targets=[ast.Name(id=str(symtable.selected[0].name), ctx=ast.Store())],
+    """Action for creating and adding a rectangular block to the selector.
+
+    Generates AST nodes to create a Meep rectangular block with default size
+    and adds it to the selector using the Record pattern. This represents
+    Lumerical's rectangle creation syntax with default placeholder values.
+
+    Example generated code:
+        selector.add(Record(
+            "Rectangle",
+            mp.Block(size=mp.Vector3(1,1,1)),
+            True
+        ))
+    """
+
+    def call(self, ValueStack: LifoQueue, TokenStack: LifoQueue):
+        """Creates and pushes rectangle Record addition to the value stack.
+
+        :param ValueStack: LIFO queue where the expression will be pushed
+        :param TokenStack: Not used in this action (interface consistency)
+
+        Node Structure:
+        - Creates a Record with:
+            - Name: "Rectangle"
+            - Value: mp.Block with default size (1,1,1)
+            - Unit: True (boolean placeholder)
+
+        Dependencies:
+        - Requires `mp` (meep) module import
+        - Requires `Record` and `selector` initialization
+
+        Note: Currently uses hardcoded default values. For dynamic size/materials,
+        additional processing would be needed.
+        """
+        ValueStack.put(
+            AddToSelector(
+                [
+                    ast.Constant(value="Rectangle"),
+                    ast.Call(
+                        func=ast.Attribute(
+                            ast.Name(id="mp", ctx=ast.Load()),
+                            "Block",
+                            ctx=ast.Load(),
+                        ),
+                        args=[],
+                        keywords=[
+                            ast.keyword(
+                                arg="size",
+                                value=ast.Call(
+                                    func=ast.Attribute(
+                                        value=ast.Name(id="mp", ctx=ast.Load()),
+                                        attr="Vector3",
+                                        ctx=ast.Load(),
+                                    ),
+                                    args=[
+                                        ast.Constant(value=1),
+                                        ast.Constant(value=1),
+                                        ast.Constant(value=1),
+                                    ],
+                                    keywords=[],
+                                ),
+                            )
+                        ],
+                    ),
+                    ast.Constant(value=True),
+                ]
+            )
+        )
+
+
+class AddFDTD(Action):
+    """Action for creating and adding a basic FDTD simulation region to the selector.
+
+    Generates AST nodes to initialize a Meep simulation with default parameters
+    and adds it to the selector using the Record pattern. This represents
+    Lumerical's FDTD solution region setup with placeholder values.
+
+    Example generated code:
+        selector.add(Record(
+            "Simulation",
+            mp.Simulation(cell_size=mp.Vector3(1,1,1)),
+            True
+        ))
+    """
+
+    def call(self, ValueStack: LifoQueue, TokenStack: LifoQueue):
+        """Creates and pushes FDTD simulation Record addition to the value stack.
+
+        :param ValueStack: LIFO queue where the expression will be pushed
+        :param TokenStack: Not used in this action (interface consistency)
+
+        Node Structure:
+        - Creates a Record with:
+            - Name: "Simulation"
+            - Value: mp.Simulation with default 1x1x1 cell size
+            - Unit: True (boolean placeholder)
+
+        Dependencies:
+        - Requires `mp` (meep) module import
+        - Requires `Record` and `selector` initialization
+        - Depends on Meep's Simulation and Vector3 classes
+
+        Note: Current implementation uses hardcoded defaults for:
+        - cell_size (mp.Vector3(1,1,1))
+        - Other simulation parameters (not shown)
+        Real-world usage would require extending with actual parameters.
+        """
+        ValueStack.put(
+            AddToSelector(
+                [
+                    ast.Constant(value="Simulation"),  # Record name
+                    ast.Call(  # Simulation object
+                        func=ast.Attribute(
+                            value=ast.Name(id="mp", ctx=ast.Load()),
+                            attr="Simulation",
+                            ctx=ast.Load(),
+                        ),
+                        args=[],
+                        keywords=[
+                            ast.keyword(
+                                arg="cell_size",
+                                value=ast.Call(
+                                    func=ast.Attribute(
+                                        value=ast.Name(id="mp", ctx=ast.Load()),
+                                        attr="Vector3",
+                                        ctx=ast.Load(),
+                                    ),
+                                    args=[
+                                        ast.Constant(value=1),
+                                        ast.Constant(value=1),
+                                        ast.Constant(value=1),
+                                    ],
+                                    keywords=[],
+                                ),
+                            )
+                        ],
+                    ),
+                    ast.Constant(value=True),  # selected
+                ]
+            )
+        )
+
+
+class SelectAll(Action):
+    """Action for creating a 'select all records' operation in the AST.
+
+    Generates an expression node that calls the `selectAll` method on the
+    selector object, typically used to select all available records in
+    Lumerical's scripting context.
+    """
+
+    def call(self, ValueStack: LifoQueue, TokenStack: LifoQueue):
+        """Creates and pushes a selectAll call node to the value stack.
+
+        :param ValueStack: LIFO queue where the expression will be placed
+        :param TokenStack: Not used in this action (interface consistency)
+
+        Generated AST Node:
+        ```python
+        Expr(
+            value=Call(
+                func=Attribute(
+                    value=Name(id='selector', ctx=Load()),
+                    attr='selectAll',
+                    ctx=Load()
+                ),
+                args=[],
+                keywords=[]
+            )
+        )
+        ```
+
+        Equivalent Python Code:
+        ```python
+        selector.selectAll()
+        ```
+
+        Dependencies:
+        - Requires `selector` variable initialized via CreateSelector
+        - Depends on Selector class from runtime imports
+        - Assumes selector object has selectAll() method
+
+        Note: This action doesn't return a value but modifies the selector's
+        internal state. Typically used before bulk operations on records.
+        """
+        node = ast.Expr(
             value=ast.Call(
-                func=ast.Name(id="mp.Block", ctx=ast.Load(), args=[], keywords=[])
-            ),
+                func=ast.Attribute(
+                    value=ast.Name(id="selector", ctx=ast.Load()),
+                    attr="selectAll",
+                    ctx=ast.Load(),
+                ),
+                args=[],
+                keywords=[],
+            )
+        )
+        ValueStack.put(node)
+
+
+class UnselectAll(Action):
+    """Action for creating an 'unselect all records' operation in the AST.
+
+    Generates an expression node that calls the `unselectAll` method on the
+    selector object, typically used to clear all record selections in
+    Lumerical's scripting context.
+    """
+
+    def call(self, ValueStack: LifoQueue, TokenStack: LifoQueue):
+        """Creates and pushes an unselectAll call node to the value stack.
+
+        :param ValueStack: LIFO queue where the expression will be placed
+        :param TokenStack: Not used in this action (interface consistency)
+
+        Generated AST Node:
+        ```python
+        Expr(
+            value=Call(
+                func=Attribute(
+                    value=Name(id='selector', ctx=Load()),
+                    attr='unselectAll',
+                    ctx=Load()
+                ),
+                args=[],
+                keywords=[]
+            )
+        )
+        ```
+
+        Equivalent Python Code:
+        ```python
+        selector.unselectAll()
+        ```
+
+        Dependencies:
+        - Requires `selector` variable initialized via CreateSelector
+        - Depends on Selector class from runtime imports
+        - Assumes selector object has unselectAll() method
+
+        Note: This action clears the selector's current selection without
+        returning a value. Typically used after bulk operations or before
+        making new selections.
+        """
+        node = ast.Expr(
+            value=ast.Call(
+                func=ast.Attribute(
+                    value=ast.Name(id="selector", ctx=ast.Load()),
+                    attr="unselectAll",
+                    ctx=ast.Load(),
+                ),
+                args=[],
+                keywords=[],
+            )
+        )
+        ValueStack.put(node)
+
+
+class Select(Action):
+    """Action for creating a 'select specific record' operation in the AST.
+
+    Generates an expression node that calls the `select` method on the
+    selector object to select a specific record by name.
+    """
+
+    def call(self, ValueStack: LifoQueue, TokenStack: LifoQueue):
+        """Creates and pushes a select call node to the value stack.
+
+        :param ValueStack: LIFO queue containing:
+            - Top: Name of record to select (ast.Constant)
+        :param TokenStack: Not used in this action (interface consistency)
+
+        Generated AST Node:
+        ```python
+        Expr(
+            value=Call(
+                func=Attribute(
+                    value=Name(id='selector', ctx=Load()),
+                    attr='select',
+                    ctx=Load()
+                ),
+                args=[<name_node>],
+                keywords=[]
+            )
+        )
+        ```
+
+        Equivalent Python Code:
+        ```python
+        selector.select("material_silicon")
+        ```
+
+        Dependencies:
+        - Requires `selector` variable initialized via CreateSelector
+        - Assumes selector object has select() method
+        - Name argument must be a string constant
+
+        Note: Typically used for precise selection of individual records
+        after initial bulk operations.
+        """
+        name = ValueStack.get()
+        node = ast.Expr(
+            value=ast.Call(
+                func=ast.Attribute(
+                    value=ast.Name(id="selector", ctx=ast.Load()),
+                    attr="select",
+                    ctx=ast.Load(),
+                ),
+                args=[name],
+                keywords=[],
+            )
+        )
+        ValueStack.put(node)
+
+
+class ShiftSelect(Action):
+    """Action for creating a 'shift-select' operation to add records to the current selection.
+
+    Generates an expression node that calls the `shiftSelect` method on the selector object,
+    typically used to add a specific record to an existing selection (similar to Ctrl/Cmd+click
+    in GUI environments).
+    """
+
+    def call(self, ValueStack: LifoQueue, TokenStack: LifoQueue):
+        """Creates and pushes a shiftSelect call node to the value stack.
+
+        :param ValueStack: LIFO queue containing:
+            - Top: Name of record to add to selection (ast.Constant)
+        :param TokenStack: Not used in this action (interface consistency)
+
+        Generated AST Node:
+        ```python
+        Expr(
+            value=Call(
+                func=Attribute(
+                    value=Name(id='selector', ctx=Load()),
+                    attr='shiftSelect',
+                    ctx=Load()
+                ),
+                args=[<name_node>],
+                keywords=[]
+            )
+        )
+        ```
+
+        Equivalent Python Code:
+        ```python
+        selector.shiftSelect("waveguide_property")
+        ```
+
+        Dependencies:
+        - Requires `selector` variable initialized via CreateSelector
+        - Assumes selector object has shiftSelect() method
+        - Requires prior selection to exist for meaningful operation
+
+        Note: Used for cumulative selections rather than replacing the current selection.
+        Typically combined with initial select() or selectAll() calls.
+        """
+        name = ValueStack.get()
+        node = ast.Expr(
+            value=ast.Call(
+                func=ast.Attribute(
+                    value=ast.Name(id="selector", ctx=ast.Load()),
+                    attr="shiftSelect",
+                    ctx=ast.Load(),
+                ),
+                args=[name],
+                keywords=[],
+            )
         )
         ValueStack.put(node)

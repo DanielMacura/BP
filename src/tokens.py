@@ -416,3 +416,16 @@ class SetToken(Token):
 
 class AddRect(Token):
     lexeme_pattern = r"addrect"
+
+class SelectAll(Token):
+    lexeme_pattern = r"selectall"
+
+class UnselectAll(Token):
+    lexeme_pattern = r"unselectall"
+
+class Select(Token):
+    lexeme_pattern = r"select"
+
+class ShiftSelect(Token):
+    lexeme_pattern = r"shiftselect"
+

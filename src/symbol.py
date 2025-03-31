@@ -44,7 +44,7 @@ class Action(Symbol):
     name: str = ""
 
     @abstractmethod
-    def call(self, ValueStack: LifoQueue[AST], TokenStack: LifoQueue, SymbolTable: SymbolTable):
+    def call(self, ValueStack: LifoQueue[AST], TokenStack: LifoQueue):
         pass
 
 

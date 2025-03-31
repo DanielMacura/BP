@@ -8,10 +8,19 @@
 
 \chapter{Note to the Reader}
 Through the thesis, the expression "iff" refers to "if and only if".\\
-Except if explicitely stated otherwise, the following notation conventions apply throughout the thesis. 
-In the context of regular languages, lower case latin alphabet letters, such as $a, b, c, \dots$, reffer to terminal symbols. Upper case latin alphabet letters, such as $A, B, C,\dots$, denote nonternminal symbols.
+Except if explicitly stated otherwise, the following notation conventions apply throughout the thesis. 
+In the context of regular languages, lower case Latin alphabet letters, such as $a, b, c, \dots$, refer to terminal symbols. Upper case Latin alphabet letters, such as $A, B, C,\dots$, denote nonterminal symbols.
 
 \chapter{Introduction}
+In modern society humans are reliant on a multitude of technologies such as internet, mobile phones, television, radio, microwave ovens, camera sensors, lasers, light emitting diodes, electrical motors, medical imaging systems and many others. All of these are electromagnetic devices, thus without a doubt electromagnetism plays a key role in day-to-day life.
+
+Electromagnetic field theory is the underpinning framework used to study the effects of electromagnetic phenomena at scales where quantum effects are negligible. It studies the interactions between electric charges and currents (Currents are often referred to as electric charges in motion). Maxwell's equations, a set of fundamental coupled partial differential equations form the cornerstone of classical electromagnetism. Closed form analytical solutions are complex, know for only simple cases and usually inapplicable in real world use.
+
+However with the rapid increase of available computational power, the use of analytically simple but computationally taxing methods arose as they became more available. These method provide solutions to more general problems compared to their counterparts. The branch of electromagnetics that focuses on such methods is know as computational electromagnetics (CEM). CEM allows for simulating more complex problems and verifying designs before production of prototypes. They provide key insight in to the operation of electromagnetic devices and even certain information that may be unattainable by classical analytical methods. More over with the ability to tweak parameters and resimulate, CEM brings about an advent of design optimization in electromagnetic devices.
+
+Today, there are many such tools and software packages, some commercial and others open-source. It is important to be able to verify results against other implementations, enabling researchers to verify that results are not artifacts of a particular solver but are physically meaningful. Furthermore tools may offer different features and constrains, thus interoperability is desired. This thesis explores the possibility of translating simulation code between two such tools, Ansys Lumerical and Meep.
+
+
 \todo{Add motivation for thesis, talk about importance of optics simulations, talk about uses, show examples. Talk about the need to compare simulation software.}
 
 \chapter{Review of Relevant Literature}
@@ -145,10 +154,10 @@ When working with formal grammars, the need to compare their expressive power ar
 
 
 \begin{figure}[h]
-  \caption{Description of Chomsky hierarchy.}
   \label{fig:chomsky-hierarchy}
   \centering
   \includegraphics[width=0.75\textwidth]{figures/chomsky-hierarchy.pdf}
+  \caption{Description of Chomsky hierarchy.}
 \end{figure}
 
 The intricaties of each class are not necessary in the context of this thesis, how ever relugar laguages will be used heavily throughout the rest of this thesis, so they will be explained more in depth.
@@ -198,10 +207,10 @@ If starting in the state $q_0$ and moving left to right over the input string su
 
 
 \begin{figure}[h]
-  \caption{Description of a compiler as a single unit.}
   \label{fig:dfa}
   \centering
   \includegraphics[width=0.75\textwidth]{figures/dfa.pdf}
+  \caption{Description of a compiler as a single unit.}
 \end{figure}
 
 
@@ -215,10 +224,10 @@ If starting in the state $q_0$ and moving left to right over the input string su
 Today's world undeniably relies on software more than ever before. It is imperative for developers to be able to efficiently write software. Software today is written in programming languages, high-level human-readable notations for defining how a program should run. However, before a program can be run on a system, it has to be translated (or compiled) into low-level machine code, which computers can run. The computer program that facilitates this translation is called a \emph{compiler}. See \cref{fig:compiler}.
 
 \begin{figure}[h]
-  \caption{Description of a compiler as a single unit.}
   \label{fig:compiler}
   \centering
   \includegraphics[width=0.75\textwidth]{figures/compiler.pdf}
+  \caption{Description of a compiler as a single unit.}
 \end{figure}
 
 
@@ -227,10 +236,11 @@ Compilers are complex programs. It is helpful to break them down into parts, eac
 
 
 \begin{figure}[h]
-  \caption{Overview of relevant compiler stages.}
+ 
   \label{fig:compiler-stages}
   \centering
   \includegraphics[width=0.75\textwidth]{figures/compiler-stages.pdf}
+  \caption{Overview of relevant compiler stages.}
 \end{figure}
 
 \subsection*{Lexical Analysis}
@@ -252,17 +262,118 @@ A compact way to represent the patterns accepting tokens are \emph{regular expre
 
 
 \chapter{Transpiler Implementation}
-\section{Tools \todo{rename}}
+This chapter introduces the implementation of the source to source compiler designed to convert Lumerical's scripting language to Python combined with the Meep library. 
+\section{Choice of Tools \todo{rename}}
+When writing any program, it is important to choose the right tools for the job. That comes down not only to choosing a programming language but also what libraries and packages to utilize and which components to implement to better suite the project's constraints. The source language, Lumerical's scripting language allows you to automate tasks and analysis such as manipulating simulation objects, launching simulations, and analyzing results \cite{ansys_lsf}. This how ever is not suitable for implementing a transpiler. Looking at the target language, Python is a general-purpose high-level interpreted language. Writing the transpiler in Python will allow easier editing and debugging due to it's high-level nature. Following that, utilizing the fact that the implementation language is the same as the target language allows me to use built in modules for generating the target code. Python's ecosystem allow allows the use of tools such as Sphinx and Pytest for writing technical documentation and tests respectively.
+
+\subsection{Sphinx}
+Sphinx is a tool that automatically generates documentation by converting plain text source files into multiple output formats\cite{sphinx_quickstart}. Sphinx was chosen because it facilitates the extraction of docstring style comments from Python code with may be enriched by the addition of ReStructured Text \cite{docutils_rst}. Multiple output formats such as Portable Document Format (PDF), \LaTeX source code and Hypertext Markup Language (HTML) are supported. Sphinx also includes multiple extensions which allow the parsing of \LaTeX into Scalable Vector Graphics (SVG) which are easily rendered in the web.
+
+This helps provide the user insight into the technical operation of the transpiler and allows him to search and view information in a concise manor.
+
+\begin{figure}[h]
+
+  \label{fig:compiler-stages}
+  \centering
+  \includegraphics[width=0.75\textwidth]{obrazky-figures/sphinx-lumex.png}
+  \caption{Screen-capture of the resulting documentation.}
+\end{figure}
+
+\subsection{Pytest}
+Pytest is a widely used testing framework for Python. 
+
+
 \todo{mention python, sphinx, pytest, explain motivation for implementation of own transpiler}
+\section{Grammar}
+Before being able to translate between two languages, it is paramount to understand their grammar. Many languages provide definitions of grammars in a metasyntax format such as Backus-Naur form(BNF), extended Backus-Naus form(EBNF), Wirth syntax notation(WSN), augmented Backus–Naur form (ABNF), parsing expression grammar (PEG) or Zephyr Abstract Syntax Definition Language (ASDL) \cite{asdl}. Python grammar is defined by a mixture of EBNF and PEG as used in the CPython parser \cite{python3grammar}. Additionally Python abstract symbol tree (AST) module also defines an abstract grammar in ASDL\cite{python_ast}.
+
+Lumerical, as of writing this thesis, does not publicly provide any such specification for Lumerical's scripting language. Thus it is necessary to analyze the language and derive such a grammar at least for the scope of this thesis.
+
+\todo{provide steps to reverse-engineer grammar}
+\todo{add grammar listing here or in appendix?}
+
+
+
+\section{Lexical Analysis}
+After defining a grammar, the first stage in creating a transpiler is the lexer. There are multiple methods in which a lexer may be modeled, the most straight forward is with the use of a DFA formalism and a loop over all characters. Always checking if there is a valid production from the current character to the look-ahead character and greedily continuing and backtracking to the last successful match. 
+
+
+\begin{algorithm}[H]
+
+current\_state $\gets$ \texttt{None}\\
+last\_accepting\_state $\gets$ \texttt{None}
+
+    \While{lookahead\_character != EOF}{
+        \If{has\_transition(current\_state, lookahead)}{
+            current\_state $\gets$ \text{next\_state}(current\_state, lookahead)\\
+            get\_next\_character()
+            
+            \If{\text{is\_accepting\_state}(current\_state)}{
+                last\_accepting\_state $\gets$ current\_state
+            }
+        }
+        \Else{
+            \If{no\_accepting\_state\_visited}{
+
+				\Return{\texttt{None}} \tcp*{Failure} 
+            }
+            \Else{
+				revert\_to\_previous\_accepting\_state\_and\_revert\_input\_characters
+				\Return{current\_state} \tcp*{Success} 
+            }
+        }
+    }
+    
+
+
+\caption{State Machine Based Lexer}
+\label{alg:lexer}
+\end{algorithm}
+
+This implementation is fine, how ever with an ever growing number of states, which have to be hard-coded, the solution may become rather complex. How ever there is a cleaner method. Since DFA may be transformed into regular expressions, it is sufficient to try to match all regular expressions against the input and return the longest match while removing it from the input.
+
+
+\begin{algorithm}[H]
+
+longest\_match $\gets$ \texttt{None}\\
+
+
+    \For{all\_regular\_expressions}{
+        \If{regular\_expression\_matches\_input}{
+            \If{regular\_expression\_is\_longer\_than\_longest\_match}{
+                longest\_match $\gets$ current\_regular\_expression
+            }
+        }
+    }
+    \If{longest\_match != \texttt{None}}{
+		\Return{matching\token}    
+		remove\_matched\_lexeme\_from\_input
+    }
+    \Else{
+    		\Return{\texttt{None}} \tcp*{Failure} 
+    }
+    
+
+
+\caption{Regular Expression Based Lexer}
+\label{alg:lexer}
+\end{algorithm}
+
 
 \todo{mention lexer regex implementation}
+\section{LL Parser}
 \todo{mention LL table calculation according to theory}
+\section{Code Generation}
+\todo{}
+\todo{handling context specific actions such as the selection -> introduction of runtime class}
 \todo{write about transformation of ast}
+
 
 
 \chapter{Evaluation of Results}
 \todo{talk about methodology}
-\todo{test examples analyticall vs FDTD}
+\todo{show comparison of leumerical code, generated python and handwritten -> conclusion probably not best method}
+\todo{test examples analytic vs FDTD}
 \chapter{Conclusion}
 \todo{compare lumerical and meep}
 \todo{test result TBD}
