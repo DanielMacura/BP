@@ -6,38 +6,169 @@
 % \documentclass[../projekt.tex]{subfiles}
 % \begin{document}
 
+%\newglossaryentry{utc}{name=utc,description={Coordinated Universal Time}}
+%\newglossaryentry{adt}{name=adt,description={Atlantic Daylight Time}}
+%\newglossaryentry{est}{name=est,description={Eastern Standard Time}}
+
+
+\newacronym{cem}{CEM}{Computational Electromagnetics}
+\newacronym{em}{EM}{Electro Magnetic}
+\newacronym{abc}{ABC}{Absorbing Boundary Conditions}
+\newacronym{fdtd}{FDTD}{Finite-Difference Time-Domain}
+\newacronym{pml}{PML}{Perfectly Matched Layer}
+\newacronym{dfa}{DFA}{Deterministic Finite Automaton}
+\newacronym{nfa}{NFA}{Nondeterministic Finite Automaton}
+\newacronym{fsm}{FSM}{Finite State Machine}
+\newacronym{bnf}{BNF}{Backus-Naur form}
+\newacronym{ebnf}{EBNF}{Extended Backus-Naur form}
+\newacronym{abnf}{ABNF}{Augmented Backus-Naur form}
+\newacronym{wsn}{WSN}{Wirth Syntax Notation}
+\newacronym{peg}{PEG}{Parsing Expression Grammar}
+\newacronym{asdl}{ASDL}{Zephyr Abstract Syntax Definition Language}
+\newacronym{cfg}{CFG}{Context Free Grammar}
+\newacronym{ast}{AST}{Abstract Syntax Tree}
+\newacronym{ll}{LL}{\underline{L}eft to Right, \underline{L}eftmost Derivation}
+\newacronym{1d}{2D}{One Dimension}
+\newacronym{2d}{2D}{Two Dimensions}
+\newacronym{3d}{3D}{Three Dimensions}
+\newacronym{3d}{3D}{Three Dimensions}
+\newacronym{cfl}{CFL}{Courtant-Friedrichs-Lewy}
+
+
+
+
 \chapter{Note to the Reader}
-Through the thesis, the expression "iff" refers to "if and only if".\\
-Except if explicitly stated otherwise, the following notation conventions apply throughout the thesis. 
+The following notation conventions apply throughout the thesis if not explicitly stated otherwise.  In the context pertaining to physics, symbols in \textbf{bold} represent vectors and symbols in \textit{italics} represent scalars, unless stated differently.
+The del operator denoted by the nabla symbol $\nabla$ is used with the dot product and cross product to denote divergence: $\nabla \cdot v$ and the curl: $\nabla \times v$.
+The expression "iff" refers to "if and only if".
 In the context of regular languages, lower case Latin alphabet letters, such as $a, b, c, \dots$, refer to terminal symbols. Upper case Latin alphabet letters, such as $A, B, C,\dots$, denote nonterminal symbols.
 
+Otherwise fairly standard notation in the applicable fields is used throughout the rest of the thesis. 
+
 \chapter{Introduction}
-In modern society humans are reliant on a multitude of technologies such as internet, mobile phones, television, radio, microwave ovens, camera sensors, lasers, light emitting diodes, electrical motors, medical imaging systems and many others. All of these are electromagnetic devices, thus without a doubt electromagnetism plays a key role in day-to-day life.
-
-Electromagnetic field theory is the underpinning framework used to study the effects of electromagnetic phenomena at scales where quantum effects are negligible. It studies the interactions between electric charges and currents (Currents are often referred to as electric charges in motion). Maxwell's equations, a set of fundamental coupled partial differential equations form the cornerstone of classical electromagnetism. Closed form analytical solutions are complex, know for only simple cases and usually inapplicable in real world use.
-
-However with the rapid increase of available computational power, the use of analytically simple but computationally taxing methods arose as they became more available. These method provide solutions to more general problems compared to their counterparts. The branch of electromagnetics that focuses on such methods is know as computational electromagnetics (CEM). CEM allows for simulating more complex problems and verifying designs before production of prototypes. They provide key insight in to the operation of electromagnetic devices and even certain information that may be unattainable by classical analytical methods. More over with the ability to tweak parameters and resimulate, CEM brings about an advent of design optimization in electromagnetic devices.
-
-Today, there are many such tools and software packages, some commercial and others open-source. It is important to be able to verify results against other implementations, enabling researchers to verify that results are not artifacts of a particular solver but are physically meaningful. Furthermore tools may offer different features and constrains, thus interoperability is desired. This thesis explores the possibility of translating simulation code between two such tools, Ansys Lumerical and Meep.
+In modern society, humans are reliant on a multitude of technologies, such as the Internet, mobile phones, television, radio, microwave ovens, camera sensors, lasers, light-emitting diodes, electrical motors, medical imaging systems, and many others. All of these rely on electromagnetic devices; electromagnetism undoubtedly plays a key role in day-to-day life as we know it.
 
 
-\todo{Add motivation for thesis, talk about importance of optics simulations, talk about uses, show examples. Talk about the need to compare simulation software.}
+The electromagnetic field theory is the underpinning framework for studying the effects of electromagnetic phenomena at scales where quantum effects are negligible. It studies the interactions between electric charges and currents (Currents are often referred to as electric charges in motion). Maxwell's equations are a series of fundamental coupled partial differential equations that form the cornerstone of classical electromagnetism. However, the closed-form analytical solutions are highly complex and available only for simple cases, making them impractical for most real-world applications.
+
+
+However, with the rapid increase of available computational power, the use of analytically simple but computationally taxing methods was given an extra boost as they became more available. Compared to their counterparts, these methods provide solutions to more general problems. The branch of electromagnetics that focuses on such methods is termed \gls{cem}. \gls{cem} allows us to simulate more complex problems and verify designs before the production of prototypes. They also provide key insight into the operation of electromagnetic devices and even reveal certain information that may be unattainable by classical analytical methods. Moreover, with the ability to tweak the parameters and re-simulate, \gls{cem} has caused the advent of design optimization in electromagnetic devices.
+
+
+Today, many such tools and software packages exist, some commercial and others open-source. It is important to be able to verify the results against other implementations, which allows the researchers to verify whether the results are mere artifacts of a particular solver or physically meaningful. Furthermore, the tools may offer different features and constraints, and their interoperability is desired. This thesis explores the possibility of translating simulation code between two such tools, Ansys Lumerical and Meep.
+
+
 
 \chapter{Review of Relevant Literature}
-This chapter aims to give the reader a broad understanding of the subjects of matter. It provides an overview of the physics behind the aforementioned simulations and an introduction to the basic concepts of compiler design and the underlying formal language theory. This chapter will not delve into the specifics of each subject at hand but will provide the reader with the foundations necessary to comprehend the rest of this thesis.
+This chapter aims to give the reader a broader understanding of the relevant subject matter. It provides an overview of the physics behind the aforementioned simulations and an introduction to the basic concepts of compiler design and the underlying formal language theory. This chapter will not delve into the specifics of each subject at hand but will rather provide the reader with the foundations necessary to comprehend the remaining parts of this thesis.
 
 \section{Computational Electromagnetics}
+As this thesis focuses on the implementation of a transpiler, an intricate grasp of \gls{cem} is not required; however, a surface-level explanation may benefit the reader, and thus it is provided below.
+
+As explained earlier, \gls{cem} is a branch of electromagnetics that focuses on computational methods. This process involves modeling the interactions of \gls{em} fields with objects, typically with the computation of the $\mathbf{E}$ (electric) and $\mathbf{H}$ (magnetic) fields or the surface current, in the case of Method of Moments, across the simulation domain. These methods discretize the fields in a step called \textit{meshing}, resulting in the subdivision of the problem domain into many smaller elements. Depending on the simulation method and number of dimensions, this may result in a three-dimensional grid, two-dimensional patches or one-dimensional segments. There are multiple different methods, that each have specific use cases, Finite Element Method is useful when facing arbitrary geometry or objects that do not align properly in the Cartesian grid. Method of Moments is a surface-based method that converts integral forms of Maxwell’s equations into matrix equations. \gls{fdtd} solves Maxwell’s equations in the time domain and it is one of the most commonly used methods and also a key part of this thesis, so it will be introduced in more detail in the following sections \cite{davidson_2010}.
+
+\todo{add image of double slit experiment}
+
+
+
 \subsection*{Curl theorem}
+\todo{ask if should omit}
 \subsection*{Divergence theorem}
+\todo{ask if should omit}
 \subsection*{Maxwell's equations}
-\todo{show all 4 equations}
-\todo{derive partial form form integral form}
+
+In the 19th century, James Clerk Maxwell formulated a set of four equations that underpin classical electromagnetic and form a coherent theoretical structure. 
+Maxwell's equations in the integral form tend to be used in the calculation of symmetric problems, such as finding the electric field of a charged plane, sphere, etc., whereas the differential form is more suitable for the calculation of numerical problems as it is simple to obtain the magnetic and electric fields at a single point. The Ampère-Maxwell law states that magnetic fields are generated by electric currents and a change of the electric field over time. Faraday's law states that a changing magnetic field produces a rotating electric field and the other way around. Gauss's law for electric flux states that electric charges generate an electric field. Gauss's law for magnetic flux postulates the nonexistence of magnetic charge, i.e., magnetic monopoles. In 1931, Dirac proposed that the discovery of magnetic charge (a magnetic monopole) would require a modification of Gauss's law for magnetic flux \cite{dirac1931monopole}. \todo{ask if this citation is OK} Despite extensive searches, magnetic monopoles have yet to be detected experimentally. 
+
+
+Ampère-Maxwell law
+\begin{equation}
+\nabla \times \mathbf{H} =\mathbf{J} + \frac{\partial \mathbf{D}}{\partial t}
+%\nabla \times \mathbf{B} =\mu_0\mathbf{J} + \mu_0 \epsilon_0 \frac{\partial \mathbf{D}}{\partial t}
+\end{equation}
+
+Faraday’s law
+\begin{equation}
+\nabla \times \mathbf{E} = - \frac{\partial \mathbf{B}}{\partial t}
+%\nabla \times \mathbf{E} = - \frac{\partial \mathbf{B}}{\partial t}
+\end{equation}
+
+Gauss's law for electric flux
+\begin{equation}
+\nabla \cdot \mathbf{D} = \rho
+%\nabla \cdot \mathbf{E} = \frac{\rho}{\epsilon_0}
+\end{equation}
+
+Gauss's law for magnetic flux
+\begin{equation}
+\nabla \cdot \mathbf{B} = 0
+\end{equation}
+
+%= 4\pi\cdot 10^{-7} \si{\volt\second}/\si{\ampere\meter}
+
+
+Where $\mathbf{B}$ is the magnetic field, $\mathbf{E}$ is the electric field, $\mathbf{J}$ the current density, $\mu_0$ the vacuum permeability, $\epsilon_0 = $ the vacuum permittivity. It also holds that the speed of light $c=\left(\epsilon_0\mu_0\right)^{-\frac{1}{2}}$.
+
+The above equations are in the differential form, and they are first-order linearly coupled. They also have equivalent integral forms, which may be produced by applying the divergence integral theorem and curl integral theorem. Readers are directed to \cite[Chapter~2.4]{staelin2009electromagnetics} for more details. \todo{ask if okay}
+
+
+
+
+\subsubsection*{Constitutive Relations}
+Since Maxwell's equations contain more unknowns than equations, as shown above, they are undetermined. This is where constitutive relations between field intensities $\mathbf{E},\mathbf{H}$ and the flux densities $\mathbf{D},\mathbf{B}$ come into play. 
+For simple mediums, which are \textit{linear}, \textit{isotropic}, and \textit{non-dispersive}, the following equations hold.
+
+
+\begin{equation}
+\mathbf{D} = \epsilon \mathbf{E}
+\end{equation}
+\begin{equation}
+\mathbf{B} = \mu \mathbf{H}
+\end{equation}
+\begin{equation}
+\mathbf{J} = \sigma \mathbf{E}
+\end{equation}
+
+Where $\epsilon$, the permittivity of a medium, is given by the permittivity of free space and the relative permittivity respectively $\epsilon = \epsilon_0\epsilon_r$. Similarly, $\mu$, the permeability of a medium, is given by the permeability of free space and the relative permeability $\mu = \mu_0\mu_r$. A medium is often defined by its \textit{constitutive parameters} $\epsilon$, $\mu$, $\sigma$. A good illustration of this is that a medium is \textit{isotropic} if $\epsilon$ does not change with direction, \textit{homogeneous} if $\epsilon$ does not change between two different points in space. Another example is that a material is \textit{linear} if $\mathbf{D} = \epsilon \mathbf{E}$ holds and $\epsilon$ does not change in respect to $\mathbf{E}$.
+
+
 
 
 
 \subsection*{Finite Difference Time Domain}
+The \gls{fdtd} method is a staple among finite difference techniques. Finite difference methods are numerical techniques that approximate derivatives directly using finite difference quotients. This class of methods is widespread due to its implied simplicity and is widely used for scientific computation. 
+
+
+It is suitable for problems where the electromagnetic wavelengths, along with the geometries, are comparable to the simulation domain. It is a time domain method, thus it may solve for a broad spectrum in a single simulation in a single pass where it provides a direct numerical approximation of the differential operators in Maxwell's curl equations. The spatial domain is discretized into a staggered grid of \textit{cells}; these will be explained in more depth soon. \gls{fdtd} also discretizes the continuous time into \textit{time steps}, how-ever there is a limit to the largest time step, where the method stays numerically stable, $\Delta t < h / \left( c \sqrt{3} \right)$ for \gls{3d}, where $h$ and $c$ denote the grid dimension and speed of light in the simulation respectively. This is often referred to as the \textit{Courant limit} after the \gls{cfl} condition.
+
+
+The user must keep in mind that such a method will never give a precise answer. The accuracy of the simulation is dictated by the resolution. A general rule of thumb in the \gls{cem} community is to use at least 10 samples (cells) per the shortest wavelength. Similarly, Dennis M. Sullivan's book Electromagnetic Simulation Using the FDTD Method states: “A good rule of thumb is 10 points per wavelength. Experience has shown this to be adequate, with inaccuracies appearing as soon as the sampling drops below this rate.” \cite[p.10]{sullivan2013fdtd}.\todo{ask if this citation is OK}
+
+
+\gls{fdtd} provides second-order accuracy with the use of first-order numerical differentiation. Thus the error may be defined as $\text{Error} \propto (\Delta h)^2$. For example, in a \gls{3d} simulation, if the spatial (and thus time) resolution is increased twofold, the accuracy increases 4 times. This is due to the fact Maxwell’s curl equations are discretized using central difference approximations, which are inherently second-order accurate.
+
+
+Another vital part is the staggered grid it self. Kane S. Yee introduced a system of calculating the $\mathbf{E}$ and $\mathbf{H}$ fields using the aforementioned central differences in an offset pair of grids. The $\mathbf{E}$ fields are defined at the edges of a cell while the $\mathbf{H}$ fields are stored at the centers of the faces, thus offset spatially by $\frac{h}{2}$.  However since the $\mathbf{E}$ and 
+
+
+\begin{figure}[H]
+  \label{fig:yee}
+  \centering
+  \includegraphics[width=0.75\textwidth]{figures/yee.pdf}
+  \caption{Description of the Yee cell.}
+\end{figure}
+
+The basic flow a
+
+\todo{stair-stepping -> downside}
+
+\subsection{Boundary Conditions}
+
+\section{Meep}
+Meep --- MIT Electromagnetic Equation Propagation --- is an open-source program for \gls{em} simulations. 
+\section{Ansys Lumerical}
 \section{Formal Language Theory}
-We use languages like English or Slovak every day to communicate information, these languages are referred to as \emph{natural languages}. The Oxford English Dictionary defines language as a system of spoken or written communication used by a particular country, people, community. How ever a more rigorous definition of languages and the tools to operate on them is required. That is what the notion of formal language theory will introduce in the following sections.
+We use languages like English, Czech, or Slovak in everyday communication exchanges, and these languages are commonly referred to as \emph{natural languages}. The Oxford English Dictionary defines language as a system of spoken or written communication used by a particular country, people or community. How-ever, a more rigorous definition of languages and the tools to operate within them is required. These aspects of language will be tackled in the notion of formal language, which is introduced in the below sections.
 
 \subsection{Alphabets and Languages}
 
@@ -49,14 +180,14 @@ Let $\Sigma$ be an \emph{alphabet}, a finite nonempty set of symbols, letters. T
 $$w= a_1 a_2 a_3 \dots a_{n-1} a_n, \in \Sigma \text{ for } n \in \mathbb{N}$$
 \end{definition}
 
-The sequence of symbols $w$ is called a \emph{word}. The length of a word is given by the number of symbols $a$, symbolically $|w| = n$. The word with a length of 0 is called an \emph{empty word} denoted as $\epsilon$.
+The sequence of symbols $w$ is called a \emph{word}. Word length is given by the number of symbols $a$, and symbolically annotated as $|w| = n$. The word with a length of 0 is called an \emph{empty word} denoted as $\epsilon$.
 
 \begin{definition}[Language]
 \label{def:language}
-The set $L$ where $L\subseteq \Sigma^{*}$ is know as the \emph{formal language} over the alphabet $\Sigma$. 
+The set $L$ where $L\subseteq \Sigma^{*}$ is defined as a \emph{formal language} over the alphabet $\Sigma$. 
 \end{definition}
-The words $L = \left\lbrace \epsilon, a, b, aa, ab, bb \right\rbrace$ are some words of a language $L$ over the alphabet $\Sigma=\left\lbrace a,b \right\rbrace$.
-Other examples for languages over the alphabet $\Sigma=\left\lbrace a,b \right\rbrace$ might include:
+The words $L = \left\lbrace \epsilon, a, b, aa, ab, bb \right\rbrace$ are examples of words in language $L$ over the alphabet $\Sigma=\left\lbrace a,b \right\rbrace$.
+Other examples of languages over the alphabet $\Sigma=\left\lbrace a,b \right\rbrace$ might include:
 \begin{itemize}
 \item $L_1 = \left\lbrace \epsilon \right\rbrace$
 \item $L_2 = \left\lbrace a \right\rbrace$
@@ -74,7 +205,7 @@ Other examples for languages over the alphabet $\Sigma=\left\lbrace a,b \right\r
 \begin{itemize}
 \item Iteration\\
   Let $a^i; a \in \Sigma \text{ and } i \in \mathbb{Z}$ be the \emph{iteration} of a character $a$, where $|a^i| = i$.\\
-Example bellow:
+Examples bellow:
 
 
 \begin{itemize}
@@ -83,7 +214,6 @@ Example bellow:
 \item $a^2 = aa$
 \item $a^i = a_0 a_1 a_2 \dots a_i; i \in \mathbb{N}$
 \end{itemize}
-
 
 
 \item Concatenation\\
@@ -101,18 +231,18 @@ The number of occurrences of $a$ in $w$, where $a \in \Sigma, w \in \Sigma^{*}$,
 \end{itemize}
 
 \subsection{Grammars}
-Linguists refer to grammar as a set of rules that specify how a natural language is formed. Due to the polysemous and vague nature of natural languages, it is not suited for the description of unambiguous systems. The inherit need to strictly describe languages introduced various language defining mechanisms. Many of these mechanisms are interchangeable, and may describe the same languages. How ever, not all mechanisms are able to describe languages formed by other mechanisms.
+Linguists refer to grammar as a set of surface level and deep level rules that specify how a natural language is formed. Due to the polysemous and homonymous nature of natural languages, it is not suited for the description of unambiguous systems. The inherit need to strictly describe languages introduced various language defining mechanisms. Many of these mechanisms are interchangeable, and may describe the same languages. How ever, not all mechanisms are able to describe languages formed by other mechanisms.
 
-The concept of a grammar is a powerful tool for describing languages\cite[p. 52]{Linz2016Introduction}. A simple sentence in English consists of a single independent clause. A clause is typically formed by a subject and a predicate. This can be written as follows.
+The concept of a grammar is a powerful tool for describing languages \cite[p. 52]{Linz2016Introduction}. A simple sentence in English consists of a single independent clause. A clause is typically formed by a subject and a predicate. This can be written as follows.
 $$ \left< clause \right> \rightarrow \left< subject \right> \left< predicate \right> $$
 
 We can further define the $\left< subject \right>$ and $\left< predicate \right>$. One of the possible subjects is a noun phrase, and the predicate may be a simple verb.
 $$\left< subject \right>   \rightarrow   \left< determiner \right>   \left< premodifier \right>    \left< noun \right>    \left< postmodifier \right>$$
 $$\left< predicate \right> \rightarrow \left< verb \right>$$
 
-Associating the $\left< determiner \right>$ with the article "the", $\left< premodifier \right>$ with "fast" or "slow", $\left< noun \right>$ with "athlete", $\left< postmodifier \right>$ to "from England" or to an empty string and finally associating the $\left< verb \right>$ to "won" or "lost" allows us to write multiple sentences like "The fast athlete from England won" or "The slow athlete lost". These sentences are considered to be \emph{well formed}, as they resulted from following the grammatical rules.
+Associating the $\left< determiner \right>$ with the article "the", $\left< premodifier \right>$ with "fast" or "slow", $\left< noun \right>$ with "athlete", $\left< postmodifier \right>$ to "from England" or to an empty string and finally associating the $\left< verb \right>$ to "won" or "lost" allows us to define a pattern capable of generating an infinite number of clauses/sentences such as "The fast athlete from England won" or "The slow athlete lost", which testifies to the principle of Chomskian generative grammar.. These sentences are considered to be \emph{well formed} as far as grammar is concerned, as they resulted from the implementation of grammatical rules.
 
-The premise is consecutively replacing $\left< clause \right>$ until only irreducible blocks of the language remain. Generalizing this idea brings about the concept formal grammars.
+The premise is to consecutively replace the $\left< clause \right>$ until only irreducible blocks of the language remain. Generalizing this idea brings about the concept of formal grammars.
 
 \begin{definition}[Grammar]
 \label{def:grammar}
@@ -120,12 +250,12 @@ The premise is consecutively replacing $\left< clause \right>$ until only irredu
 Let an ordered quadruple $G$ define a grammar such that: $G=\left(N, \Sigma, P, S \right)$, where:
 \begin{enumerate}
 \item $N$ is a finite set of \emph{nonternminal} symbols
-\item $\Sigma$ is an alphabet finite set of \emph{terminal} symbols, such that $N \cap \Sigma = \varnothing$
+\item $\Sigma$ is an alphabet, i.e. a finite set of \emph{terminal} symbols, such that $N \cap \Sigma = \varnothing$
 \item $P$ is a finite set of rewriting rules known as \emph{productions}, ordered pairs $\left( \alpha, \beta \right)$.
 $P$ is a subset of the cartesian product of $\alpha = \left(N \cup \Sigma\right)^* N \left(N \cup \Sigma\right)^*$ and $\beta = \left(N \cup \Sigma\right)^*$
 
 
-Productions are denoted as $\alpha \rightarrow \beta$.
+The productions are denoted as $\alpha \rightarrow \beta$.
 If there are multiple productions with the same left hand side ($\alpha$), we can group their right hand sides ($\beta$).
 
 
@@ -146,21 +276,21 @@ such that $v_0 = V$ and $v_z = W$ where each is rewritten from the previous word
 The length of a derivation is given by $z$. 
 \end{definition}
 
-Grammars are often represented using formalisms, these formalisms often set restrictions on the left and right hand sides of productions. These restrictions further impose limits on the set of languages a grammar may produce, this is known as the \emph{expressive power} of a grammar. 
+Grammars are often represented using formalisms that, often set restrictions on the left and right hand sides of productions. These restrictions further impose limits on the set of languages a grammar may produce; this is known as the \emph{expressive power} of a grammar. 
 
 \subsection{Chomsky hierarchy}
-When working with formal grammars, the need to compare their expressive power arose. Linguist Noam Chomsky introduced the now so called \emph{Chomsky hierarchy}\cite{chomsky1956three}. A set of four classes, each more expressive than the previous, see \cref{fig:chomsky-hierarchy}.
+When working with formal grammars, the need to compare their expressive power arose. Linguist Noam Chomsky introduced the so called \emph{Chomsky hierarchy} \cite{chomsky1956three}. A set of four classes, each more expressive than the previous, see \cref{fig:chomsky-hierarchy}.
 
 
 
-\begin{figure}[h]
+\begin{figure}[H]
   \label{fig:chomsky-hierarchy}
   \centering
   \includegraphics[width=0.75\textwidth]{figures/chomsky-hierarchy.pdf}
-  \caption{Description of Chomsky hierarchy.}
+  \caption{Description of the Chomsky hierarchy.}
 \end{figure}
 
-The intricaties of each class are not necessary in the context of this thesis, how ever relugar laguages will be used heavily throughout the rest of this thesis, so they will be explained more in depth.
+The intricacies of each of said classes are not necessary in the context of this thesis, how-ever regular languages will be used heavily throughout the rest of this thesis, and explained more in depth.
 
 \begin{table}[h]
 \centering
@@ -176,8 +306,12 @@ $\mathcal{L}_0$ & Recursively Enumerable &              \\ \bottomrule
 \label{tab:chomsky-hierarchy}
 \end{table}
 
+\subsection{Context Free Languages} 
+
+\subsubsection{LL Languages}
+
 \subsection{Regular Languages}
-As shown above, regular languages are the inner most part of the Chomsky hierarchy, thus they are the most constricted. How ever, regular languages play a crutial role in lexical analysis, more precisely pattern matching. These constrictions lead to many useful closure propetries and decisability properties, mainly membership, which will be introduced shortly.
+As shown above, regular languages are the inner most part of the Chomsky hierarchy, thus they are the most constricted. How-ever, regular languages play a crucial role in lexical analysis, more precisely, in pattern matching. These constrictions lead to many useful closure properties and decisability properties, mainly membership, which will be introduced shortly.
 
 Regular languges may be defined in multiple equivalent manners such as through finite automata or regular expressions. 
 
@@ -188,9 +322,9 @@ Regular languges may be defined in multiple equivalent manners such as through f
 DFAs are formally defined as 5-tuples
 $$ M = (Q, \Sigma, \delta, q_0, F),$$
 where
-$Q$ is a finite set of states. $\Sigma$ is a finite set of symbols, also know as a input alphabet. $\delta$ is a transition function between states defined as $\delta : Q \times \Sigma \rightarrow Q$. $q_0$ is a initial state, $q_0 \in Q$. And $F$ is a set of final states, $F \subseteq Q$.
+$Q$ is a finite set of states. $\Sigma$ is a finite set of symbols, also known as an input alphabet. $\delta$ is a transition function between states defined as $\delta : Q \times \Sigma \rightarrow Q$. $q_0$ is a initial state, $q_0 \in Q$. And $F$ is a set of final states, $F \subseteq Q$.
 
-If starting in the state $q_0$ and moving left to right over the input string such that during each move a single symbol is consumed from the input string and a transition function for the corresponding state and symbol exists. If after all symbols from the input string have been read and the dfa stopped in a final state, the string is accepted. This is called a deterministic finite acceptor. \todo{rephrase nicer}
+If starting in the state $q_0$ and moving left to right over the input string such that during each move a single symbol is consumed from the input string and a transition function for the corresponding state and symbol exists, and all symbols from the input string have been read and the \gls{dfa} stopped in a final state, the string is deemed accepted. This is called a deterministic finite acceptor.
 \end{definition}
 
 
@@ -206,7 +340,7 @@ If starting in the state $q_0$ and moving left to right over the input string su
 
 
 
-\begin{figure}[h]
+\begin{figure}[H]
   \label{fig:dfa}
   \centering
   \includegraphics[width=0.75\textwidth]{figures/dfa.pdf}
@@ -221,9 +355,9 @@ If starting in the state $q_0$ and moving left to right over the input string su
 \section{Compilers}
 
 
-Today's world undeniably relies on software more than ever before. It is imperative for developers to be able to efficiently write software. Software today is written in programming languages, high-level human-readable notations for defining how a program should run. However, before a program can be run on a system, it has to be translated (or compiled) into low-level machine code, which computers can run. The computer program that facilitates this translation is called a \emph{compiler}. See \cref{fig:compiler}.
+Today's world relies on software more than ever before. It is imperative for developers to be able to write software efficiently. Software today is written in programming languages, high-level human-readable notations for defining how a program should run. However, before a program can be run on a system, it has to be translated (or compiled) into low-level machine code, which computers can run. The computer program that facilitates this translation is called a \emph{compiler}. See \cref{fig:compiler}.
 
-\begin{figure}[h]
+\begin{figure}[H]
   \label{fig:compiler}
   \centering
   \includegraphics[width=0.75\textwidth]{figures/compiler.pdf}
@@ -232,10 +366,10 @@ Today's world undeniably relies on software more than ever before. It is imperat
 
 
 
-Compilers are complex programs. It is helpful to break them down into parts, each handling different tasks, which are chained together to form a compiler. Modern compilers are composed of many phases, such as the Lexical Analyzer, Syntax Analyzer, Semantic Analyzer, Intermediate Code Generator, Machine-Independent Code Optimizer, Code Generator, Machine-Dependent Code Optimizer \cite[p. 5]{dragon}, however this chapter covers the components relevant to this thesis. See relevant stages in \cref{fig:compiler-stages}.
+Compilers are complex programs. It is helpful to break them down into parts, each handling different tasks, which are chained together to form a compiler. Modern compilers are composed of many phases, such as the Lexical Analyzer, Syntax Analyzer, Semantic Analyzer, Intermediate Code Generator, Machine-Independent Code Optimizer, Code Generator, Machine-Dependent Code Optimizer \cite[p. 5]{dragon}, however this chapter covers the components relevant to this thesis. See the relevant stages in \cref{fig:compiler-stages}.
 
 
-\begin{figure}[h]
+\begin{figure}[H]
  
   \label{fig:compiler-stages}
   \centering
@@ -244,13 +378,13 @@ Compilers are complex programs. It is helpful to break them down into parts, eac
 \end{figure}
 
 \subsection*{Lexical Analysis}
-The first stage of a compiler is lexical analysis, also known as a \emph{lexer} or \emph{tokenizer}. For the remainder of this thesis, \emph{lexer} will refer to the lexical analysis stage of a compiler. The lexer consumes a stream of characters, the \emph{source code}, and returns a stream of \emph{tokens}. A \emph{token} is a lexically indivisible unit, for example, the Python keyword \texttt{return}, you cannot divide it further, for example, into \texttt{re} \texttt{turn}. Each token is comprised of characters. The rule that defines which combination of characters constitutes a given token is called a \emph{pattern}. The sequence of characters matching a pattern is called a \emph{lexeme}, the \emph{lexeme} is stored along with the token as a value.
+The first stage of a compiler is lexical analysis, also known as a \emph{lexer} or \emph{tokenizer}. For the remainder of this thesis, the term \emph{lexer} will refer to the lexical analysis stage of a compiler. The lexer consumes a stream of characters, or the \emph{source code}, and returns a stream of \emph{tokens}. A \emph{token} is a lexically indivisible unit, for example, the Python keyword \texttt{return}, cannot be divided any further, e.g. into \texttt{re} \texttt{turn}. Each token is comprised of characters. The rule that defines which combination of characters constitutes a given token is called a \emph{pattern}. The sequence of characters matching a pattern is called a \emph{lexeme}, which is stored along with the token as a value.
 
 %Lexical analysis may be further divided into two distinct stages, however they are often implemented together. These stages are the \emph{scanner} and \emph{evaluator}.
 
 
 \subsubsection*{Regular Expressions}
-A compact way to represent the patterns accepting tokens are \emph{regular expressions}, which were introduced in \cref{def:regular_exp}. Regular expressions are an algebraic definition of patterns, they specify \emph{regular languages}, $\mathcal{L}_3$
+\emph{Regular expressions}, which were introduced in \cref{def:regular_exp} are a compact way to represent the patterns accepting tokens. Regular expressions are an algebraic definition of patterns; they specify \emph{regular languages}, $\mathcal{L}_3$
 
 \subsection*{Syntactic Analysis}
 
@@ -263,43 +397,61 @@ A compact way to represent the patterns accepting tokens are \emph{regular expre
 
 \chapter{Transpiler Implementation}
 This chapter introduces the implementation of the source to source compiler designed to convert Lumerical's scripting language to Python combined with the Meep library. 
-\section{Choice of Tools \todo{rename}}
-When writing any program, it is important to choose the right tools for the job. That comes down not only to choosing a programming language but also what libraries and packages to utilize and which components to implement to better suite the project's constraints. The source language, Lumerical's scripting language allows you to automate tasks and analysis such as manipulating simulation objects, launching simulations, and analyzing results \cite{ansys_lsf}. This how ever is not suitable for implementing a transpiler. Looking at the target language, Python is a general-purpose high-level interpreted language. Writing the transpiler in Python will allow easier editing and debugging due to it's high-level nature. Following that, utilizing the fact that the implementation language is the same as the target language allows me to use built in modules for generating the target code. Python's ecosystem allow allows the use of tools such as Sphinx and Pytest for writing technical documentation and tests respectively.
+\section{Choice of Tools}
+When writing any program, it is important to choose the right tools for the job. This comes down not only to choosing the programming language but also what libraries and packages to utilize and which components to implement to better suit the project's constraints. The source language, Lumerical's scripting language, allows you to automate tasks and analysis such as manipulating simulation objects, launching simulations, and analyzing results \cite{ansys_lsf}. This language how-ever, is not suitable for implementing a transpiler. Looking at the target language, Python is a general-purpose high-level interpreted language. Writing the transpiler in Python will allow for easier editing and debugging due to it's high-level nature. Consequently, and owing to the fact that the implementation language is the same as the target language, this will also allow us to use built in modules for generating the target code. The Python's ecosystem also includes the tools such as Sphinx and Pytest for writing technical documentation and tests respectively.
 
 \subsection{Sphinx}
-Sphinx is a tool that automatically generates documentation by converting plain text source files into multiple output formats\cite{sphinx_quickstart}. Sphinx was chosen because it facilitates the extraction of docstring style comments from Python code with may be enriched by the addition of ReStructured Text \cite{docutils_rst}. Multiple output formats such as Portable Document Format (PDF), \LaTeX source code and Hypertext Markup Language (HTML) are supported. Sphinx also includes multiple extensions which allow the parsing of \LaTeX into Scalable Vector Graphics (SVG) which are easily rendered in the web.
+Sphinx is a tool that automatically generates documentation by converting plain text source files into multiple output formats \cite{sphinx_quickstart}. Sphinx was chosen because it facilitates the extraction of docstring style comments from the Python code, which may be enriched by the addition of ReStructured Text \cite{docutils_rst}. Multiple output formats such as Portable Document Format (PDF), \LaTeX \ source code and Hypertext Markup Language (HTML), are supported. Sphinx also includes multiple extensions which allow the parsing of \LaTeX \ into Scalable Vector Graphics (SVG), which are easily rendered in the web.
 
-This helps provide the user insight into the technical operation of the transpiler and allows him to search and view information in a concise manor.
+This is instrumental in providing the user with the necessary insight into the technical operation of the transpiler, and allows us to search and view information in a concise manner.
 
-\begin{figure}[h]
+\begin{figure}[H]
 
   \label{fig:compiler-stages}
   \centering
-  \includegraphics[width=0.75\textwidth]{obrazky-figures/sphinx-lumex.png}
+  \includegraphics[width=\textwidth]{obrazky-figures/sphinx-lumex.png}
   \caption{Screen-capture of the resulting documentation.}
 \end{figure}
 
 \subsection{Pytest}
 Pytest is a widely used testing framework for Python. 
 
+%\section{General Implementation Strategy}
+%The purpose of this thesis is to construct a custom transpiler between two highly specific languages, nevertheless it is beneficial to separate each logical step into its own class, which promotes interoperability and allows for simpler extension or replacement of code and parsing methods down the line. 
 
 \todo{mention python, sphinx, pytest, explain motivation for implementation of own transpiler}
 \section{Grammar}
-Before being able to translate between two languages, it is paramount to understand their grammar. Many languages provide definitions of grammars in a metasyntax format such as Backus-Naur form(BNF), extended Backus-Naus form(EBNF), Wirth syntax notation(WSN), augmented Backus–Naur form (ABNF), parsing expression grammar (PEG) or Zephyr Abstract Syntax Definition Language (ASDL) \cite{asdl}. Python grammar is defined by a mixture of EBNF and PEG as used in the CPython parser \cite{python3grammar}. Additionally Python abstract symbol tree (AST) module also defines an abstract grammar in ASDL\cite{python_ast}.
+Before being able to translate between two languages, it is paramount to understand their grammar. Many languages provide definitions of grammars in a metasyntax format such as \gls{bnf}, \gls{ebnf}, \gls{wsn}, \gls{abnf}, \gls{peg} or \gls{asdl} \cite{asdl}. The Python grammar is defined by a mixture of \gls{ebnf} and \gls{peg} as used in the CPython parser \cite{python3grammar}. Additionally, the Python \gls{ast} module also defines an abstract grammar in \gls{asdl} \cite{python_ast}.
 
-Lumerical, as of writing this thesis, does not publicly provide any such specification for Lumerical's scripting language. Thus it is necessary to analyze the language and derive such a grammar at least for the scope of this thesis.
+As, of writing this thesis, Lumerical does not publicly provide any such specification for the Lumerical's scripting language. Thus, it is necessary to analyze the language and derive such a grammar that covers the relevant subset of the language to the scope of this thesis.
+
+%To derive a grammar from a language, it is first necessary to specify the scope of the studied language.
+Since this thesis focuses primarily on nanophotonic simulation workflows, only essential commands to set up a simulation will be included, e.g. commands to add blocks, sources, monitors and commands to translate and scale the objects. There may be other parts of Lumerical's scripting language that could be utilized for a nanophotonics simulation, however those are considered out of the scope of this thesis due to the broad range of Lumerical's scripting language with around 800 commands and keywords \cite{ansys_lsf_commands}. 
+While Lumerical’s scripting language includes hundreds of commands spanning optimization, analysis, and post-processing (e.g., \texttt{runoptimization}, \texttt{fitlorentzpdf}, \texttt{exportcsvresults}), this work prioritizes the core geometry and simulation workflow: \texttt{addrect} (block creation), \texttt{addgaussian}/\texttt{addfdtd} (source/solver definition), \texttt{addpower} (monitor placement), and \texttt{set} (property configuration). 
+
 
 \todo{provide steps to reverse-engineer grammar}
-\todo{add grammar listing here or in appendix?}
+There are infinitely many distinct grammars that describe the same language. By example, in a \gls{cfg} given as $S \rightarrow aB$, one may add an intermediate rule, producing $S \rightarrow aC, C \rightarrow B$. This process may be repeated indefinitely creating new grammars that describe the same language. To this end, the grammar described bellow is just one of the plethora of possible grammars describing a subset of Lumerical's scripting language. While constructing the grammar, it is beneficial to impose additional constrains and only utilize a subset of \glspl{cfg}, namely a \gls{ll} grammar. This imposes certain rules as described before, informally speaking, when a parser arrives at a nonterminal, is must be able to decide which production to apply by peeking at at most the next $k$ symbols, this is an \gls{ll}$(k)$ grammar.
+\todo{collecting samples}
+It is important to first collect samples of code, to study the syntactic structure and the semantics of the code. Examples were taken from the official code 
+
+\todo{observation of keywords, syntactic structures -> tokens}
+Lumerical provides a list of all commands \cite{ansys_lsf_commands}
+\todo{formalize rules}
+
+
+
+\todo{add grammar listing here}
 
 
 
 \section{Lexical Analysis}
-After defining a grammar, the first stage in creating a transpiler is the lexer. There are multiple methods in which a lexer may be modeled, the most straight forward is with the use of a DFA formalism and a loop over all characters. Always checking if there is a valid production from the current character to the look-ahead character and greedily continuing and backtracking to the last successful match. 
+After defining a grammar, the first stage in creating a transpiler is the lexer. There are multiple methods in which a lexer may be modeled, the most straight-forward being the use of a \gls{dfa} formalism and a loop over all input characters while checking if there is a valid production from the current character to the look-ahead character and greedily continue and backtrack to the last successful match upon not being able to find an applicable production.
 
-
+\begingroup
+\vspace{1.5em}
 \begin{algorithm}[H]
-
+\setlength{\algomargin}{1.5em}
 current\_state $\gets$ \texttt{None}\\
 last\_accepting\_state $\gets$ \texttt{None}
 
@@ -327,14 +479,18 @@ last\_accepting\_state $\gets$ \texttt{None}
 
 
 \caption{State Machine Based Lexer}
-\label{alg:lexer}
+\label{alg:lexer-state-based}
 \end{algorithm}
+\vspace{1.5em}
+\endgroup
 
-This implementation is fine, how ever with an ever growing number of states, which have to be hard-coded, the solution may become rather complex. How ever there is a cleaner method. Since DFA may be transformed into regular expressions, it is sufficient to try to match all regular expressions against the input and return the longest match while removing it from the input.
+This implementation is fine, how-ever, with an ever-growing number of states, which have to be hard-coded; the solution may become rather complex. Indeed, a cleaner method exists. Since any \gls{dfa} may be transformed into a regular expression, it is sufficient to try to match all regular expressions against the input and return the longest match while removing it from the input. 
 
 
+\begingroup
+\vspace{1.5em}
 \begin{algorithm}[H]
-
+\setlength{\algomargin}{1.5em}
 longest\_match $\gets$ \texttt{None}\\
 
 
@@ -346,7 +502,7 @@ longest\_match $\gets$ \texttt{None}\\
         }
     }
     \If{longest\_match != \texttt{None}}{
-		\Return{matching\token}    
+		\Return{matching\_token}    
 		remove\_matched\_lexeme\_from\_input
     }
     \Else{
@@ -356,8 +512,12 @@ longest\_match $\gets$ \texttt{None}\\
 
 
 \caption{Regular Expression Based Lexer}
-\label{alg:lexer}
+\label{alg:lexer-expression-based}
 \end{algorithm}
+\vspace{1.5em}
+\endgroup
+
+This approach is not only more straight forward, but also allows modeling the lexer in a more pythonic manor. Each token is represented as a unique class with holds the regular expression pattern matching the corresponding token. Each specific token class inherits a common token class, after that, it is sufficient for the lexer to enumerate over all children of the token class and search for the one with the longest match resulting in a greedily matched token.
 
 
 \todo{mention lexer regex implementation}

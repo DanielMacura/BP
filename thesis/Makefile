@@ -27,8 +27,8 @@ $(CO).ps: $(CO).dvi
 $(CO).pdf: 
 	pdflatex $(CO)
 	-bibtex $(CO)
-	# makeglossaries $(CO)
-	# makeglossaries-lite $(CO)
+	makeglossaries $(CO)
+	makeglossaries-lite $(CO)
 	pdflatex $(CO)
 	pdflatex $(CO)
 

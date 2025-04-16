@@ -48,9 +48,14 @@
 
 % Pro seznam zkratek lze využít balíček Glossaries - nutno odkomentovat i níže a při kompilaci z konzoly i v Makefile (plnou verzi pro Perl, nebo lite)
 % The Glossaries package can be used for the list of abbreviations - it is necessary to uncomment also below. When compiling from the console also in the Makefile (full version for Perl or lite)
-%\usepackage{glossaries}
+\usepackage[acronym]{glossaries}
+%\usepackage{glossaries-extra}
+%\setabbreviationstyle{long-short}
 %\usepackage{glossary-superragged}
-%\makeglossaries 
+
+
+
+\makeglossaries 
 
 % Nastavení cesty k obrázkům
 % Setting of a path to the pictures
@@ -71,6 +76,8 @@
 \csdoublequotesoff
 
 \usepackage{url}
+\usepackage{amsmath}
+\usepackage{siunitx}
 
 % =======================================================================
 % balíček "hyperref" vytváří klikací odkazy v pdf, pokud tedy použijeme pdflatex
@@ -114,6 +121,7 @@
 \usepackage[all]{hypcap}
 
 
+
 % Informace o práci/projektu / Information about the thesis
 %---------------------------------------------------------------------------
 \projectinfo{
@@ -145,7 +153,7 @@
   %keywords.en={Here, individual keywords separated by commas will be written in English.},
   % Abstrakt / Abstract
   abstract.cs={Do tohoto odstavce bude zapsán výtah (abstrakt) práce v českém (slovenském) jazyce.}, % abstrakt v českém či slovenském jazyce / abstract in czech or slovak language
-  abstract.en={This thesis aims to provide a comparison between Ansys Lumerical and Meep FTDT simulation tools. A transpiler from Lumerical Scripting Language to the Meep Python interface was implemented. FDTD simulation were first automaticaly  results are compared with analytical results.}, % abstrakt v anglickém jazyce / abstract in english
+  abstract.en={This thesis aims to provide a comparison between the Ansys Lumerical and Meep FTDT simulation tools. A self-designed transpiler from Lumerical Scripting Language to the Meep Python interface was implemented. FDTD simulation were first automaticaly  results are compared with analytical results.}, % abstrakt v anglickém jazyce / abstract in english
   %abstract.en={An abstract of the work in English will be written in this paragraph.},
   % Prohlášení (u anglicky psané práce anglicky, u slovensky psané práce slovensky; u projektové praxe lze zakomentovat) / Declaration (for thesis in english should be in english; for project practice can be commented out)
   declaration={Prohlašuji, že jsem tuto bakalářskou práci vypracoval samostatně pod vedením pana X...
@@ -216,6 +224,7 @@ Uvedl jsem všechny literární prameny, publikace a další zdroje, ze kterých
 \newtheorem{example}{Example}[section]
 
 
+\usepackage{hyperref}
 \begin{document}
   % Vysazeni titulnich stran / Typesetting of the title pages
   % ----------------------------------------------
@@ -245,31 +254,29 @@ Uvedl jsem všechny literární prameny, publikace a další zdroje, ze kterých
   % {\hypersetup{hidelinks}\listoftables}
 
   % Seznam zkratek / List of abbreviations
-  %\ifczech
-  %  \renewcommand*\glossaryname{Seznam zkratek}%
-  %  \renewcommand*\entryname{Zkratka}
-  %  \renewcommand*\descriptionname{Význam}
-  %\fi
-  %\ifslovak
-  %  \renewcommand*\glossaryname{Zoznam skratiek}%
-  %  \renewcommand*\entryname{Skratka}
-  %  \renewcommand*\descriptionname{Význam}
-  %\fi
-  %\ifenglish
-  %  \renewcommand*\glossaryname{List of abbreviations}%
-  %  \renewcommand*\entryname{Abbreviation}
-  %  \renewcommand*\descriptionname{Meaning}
-  %\fi
+  \ifczech
+    \renewcommand*\glossaryname{Seznam zkratek}%
+    \renewcommand*\entryname{Zkratka}
+    \renewcommand*\descriptionname{Význam}
+  \fi
+  \ifslovak
+    \renewcommand*\glossaryname{Zoznam skratiek}%
+    \renewcommand*\entryname{Skratka}
+    \renewcommand*\descriptionname{Význam}
+  \fi
+  \ifenglish
+    \renewcommand*\glossaryname{List of abbreviations}%
+    \renewcommand*\entryname{Abbreviation}
+    \renewcommand*\descriptionname{Meaning}
+  \fi
   % Definice zkratek - z textu se odkazují např. \Gls{TF–IDF}
   % Definition of abbreviations - referred from the text e.g. \Gls{TF–IDF}
-  %\newglossaryentry{TF–IDF}
-  %{
-  %  name={TF–IDF},
-  %  description={Term Frequency-Inverse Document Frequency}
-  %}
-  % 
+
+   
+  %\setglossarystyle{acronym}%superragged
   %\setglossarystyle{superragged}
-  %\printglossaries
+  %\printglossary[type=\acronymtype]
+  \printglossaries
 
 
   \ifODSAZ
@@ -362,6 +369,8 @@ Uvedl jsem všechny literární prameny, publikace a další zdroje, ze kterých
 %    \addcontentsline{toc}{section}{List of Appendices}
   \fi
 \fi
+
+  
   \startcontents[chapters]
   \setlength{\parskip}{0pt} 
   % seznam příloh / list of appendices
