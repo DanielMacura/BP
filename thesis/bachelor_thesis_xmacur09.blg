@@ -1,0 +1,68 @@
+This is BibTeX, Version 0.99d (TeX Live 2026/dev/Arch Linux)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: bachelor_thesis_xmacur09.aux
+The style file: bib-styles/Pysny/enplain.bst
+Reallocated singl_function (elt_size=8) to 100 items from 50.
+Reallocated singl_function (elt_size=8) to 100 items from 50.
+Reallocated wiz_functions (elt_size=8) to 6000 items from 3000.
+Reallocated singl_function (elt_size=8) to 100 items from 50.
+Reallocated singl_function (elt_size=8) to 100 items from 50.
+Reallocated singl_function (elt_size=8) to 100 items from 50.
+Database file #1: projekt-20-literatura-bibliography.bib
+Warning--empty edition in davidson_2010
+Warning--empty edition in dirac1931monopole
+Warning--empty edition in staelin2009electromagnetics
+Warning--empty isbn in staelin2009electromagnetics
+Warning--empty edition in Linz2016Introduction
+Warning--empty edition in Salomaa1987Formal
+Warning--empty edition in chomsky1956three
+Warning--empty url in ansys_lsf
+Warning--empty url in sphinx_quickstart
+Warning--empty url in docutils_rst
+Warning--empty editor and organization in asdl
+Warning--empty isbn and issn in asdl
+Warning--empty url in ansys_lsf_commands
+Warning--empty url in ansys_for_command
+Warning--empty edition in Holub_1990
+You've used 17 entries,
+            3768 wiz_defined-function locations,
+            893 strings with 8000 characters,
+and the built_in function-call counts, 5502 in all, are:
+= -- 416
+> -- 146
+< -- 19
++ -- 53
+- -- 35
+* -- 273
+:= -- 627
+add.period$ -- 61
+call.type$ -- 17
+change.case$ -- 58
+chr.to.int$ -- 21
+cite$ -- 32
+duplicate$ -- 412
+empty$ -- 795
+format.name$ -- 25
+if$ -- 1392
+int.to.chr$ -- 0
+int.to.str$ -- 17
+missing$ -- 0
+newline$ -- 117
+num.names$ -- 17
+pop$ -- 176
+preamble$ -- 1
+purify$ -- 3
+quote$ -- 0
+skip$ -- 231
+stack$ -- 0
+substring$ -- 183
+swap$ -- 86
+text.length$ -- 9
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 15
+while$ -- 30
+width$ -- 19
+write$ -- 216
+(There were 15 warnings)

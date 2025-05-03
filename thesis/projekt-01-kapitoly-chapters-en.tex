@@ -1,21 +1,9 @@
-% This file should be replaced with your file with thesis content.
-%=========================================================================
-% Authors: Michal Bidlo, Bohuslav Křena, Jaroslav Dytrych, Petr Veigend and Adam Herout 2019
-
-% For compilation piecewise (see projekt.tex), it is necessary to uncomment it and change
-% \documentclass[../projekt.tex]{subfiles}
-% \begin{document}
-
-%\newglossaryentry{utc}{name=utc,description={Coordinated Universal Time}}
-%\newglossaryentry{adt}{name=adt,description={Atlantic Daylight Time}}
-%\newglossaryentry{est}{name=est,description={Eastern Standard Time}}
-
-
 \newacronym{cem}{CEM}{Computational Electromagnetics}
 \newacronym{em}{EM}{Electro Magnetic}
 \newacronym{abc}{ABC}{Absorbing Boundary Conditions}
 \newacronym{fdtd}{FDTD}{Finite-Difference Time-Domain}
 \newacronym{pml}{PML}{Perfectly Matched Layer}
+\newacronym{fa}{FA}{Finite Automaton}
 \newacronym{dfa}{DFA}{Deterministic Finite Automaton}
 \newacronym{nfa}{NFA}{Nondeterministic Finite Automaton}
 \newacronym{fsm}{FSM}{Finite State Machine}
@@ -27,12 +15,17 @@
 \newacronym{asdl}{ASDL}{Zephyr Abstract Syntax Definition Language}
 \newacronym{cfg}{CFG}{Context Free Grammar}
 \newacronym{ast}{AST}{Abstract Syntax Tree}
-\newacronym{ll}{LL}{\underline{L}eft to Right, \underline{L}eftmost Derivation}
-\newacronym{1d}{2D}{One Dimension}
+\newacronym{ll}{LL}{Left-to-Right, Leftmost Derivation}
+\newacronym{lalr}{LALR}{Look-Ahead, Left-to-Right, Rightmost Derivation}
+\newacronym{glr}{GLR}{Generalized Left-to-Right Rightmost Derivation}
+\newacronym{1d}{1D}{One Dimension}
 \newacronym{2d}{2D}{Two Dimensions}
 \newacronym{3d}{3D}{Three Dimensions}
-\newacronym{3d}{3D}{Three Dimensions}
-\newacronym{cfl}{CFL}{Courtant-Friedrichs-Lewy}
+\newacronym{cfl}{CFL}{Courant-Friedrichs-Lewy}
+\newacronym{lumex}{LuMeX}{Lumerical Meep Exchange}
+\newacronym{mpi}{MPI}{Message Passing Interface}
+\newacronym{lhs}{LHS}{Left-Hand Side}
+\newacronym{rhs}{RHS}{Right-Hand Side}
 
 
 
@@ -58,6 +51,10 @@ However, with the rapid increase of available computational power, the use of an
 Today, many such tools and software packages exist, some commercial and others open-source. It is important to be able to verify the results against other implementations, which allows the researchers to verify whether the results are mere artifacts of a particular solver or physically meaningful. Furthermore, the tools may offer different features and constraints, and their interoperability is desired. This thesis explores the possibility of translating simulation code between two such tools, Ansys Lumerical and Meep.
 
 
+\todo{motivation for use in company}
+\todo{-> use mainly for 3d pohotonics, focus on that}
+  
+  
 
 \chapter{Review of Relevant Literature}
 This chapter aims to give the reader a broader understanding of the relevant subject matter. It provides an overview of the physics behind the aforementioned simulations and an introduction to the basic concepts of compiler design and the underlying formal language theory. This chapter will not delve into the specifics of each subject at hand but will rather provide the reader with the foundations necessary to comprehend the remaining parts of this thesis.
@@ -67,7 +64,14 @@ As this thesis focuses on the implementation of a transpiler, an intricate grasp
 
 As explained earlier, \gls{cem} is a branch of electromagnetics that focuses on computational methods. This process involves modeling the interactions of \gls{em} fields with objects, typically with the computation of the $\mathbf{E}$ (electric) and $\mathbf{H}$ (magnetic) fields or the surface current, in the case of Method of Moments, across the simulation domain. These methods discretize the fields in a step called \textit{meshing}, resulting in the subdivision of the problem domain into many smaller elements. Depending on the simulation method and number of dimensions, this may result in a three-dimensional grid, two-dimensional patches or one-dimensional segments. There are multiple different methods, that each have specific use cases, Finite Element Method is useful when facing arbitrary geometry or objects that do not align properly in the Cartesian grid. Method of Moments is a surface-based method that converts integral forms of Maxwell’s equations into matrix equations. \gls{fdtd} solves Maxwell’s equations in the time domain and it is one of the most commonly used methods and also a key part of this thesis, so it will be introduced in more detail in the following sections \cite{davidson_2010}.
 
-\todo{add image of double slit experiment}
+
+\begin{figure}[H]
+  \label{fig:chomsky-hierarchy}
+  \centering
+  \includegraphics[width=0.75\textwidth]{obrazky-figures/double-slit.pdf}
+  \caption{Visualization of the $\mathbf{E}$ field in the famous double slit experiment.}
+\end{figure}
+
 
 
 
@@ -107,7 +111,7 @@ Gauss's law for magnetic flux
 %= 4\pi\cdot 10^{-7} \si{\volt\second}/\si{\ampere\meter}
 
 
-Where $\mathbf{B}$ is the magnetic field, $\mathbf{E}$ is the electric field, $\mathbf{J}$ the current density, $\mu_0$ the vacuum permeability, $\epsilon_0 = $ the vacuum permittivity. It also holds that the speed of light $c=\left(\epsilon_0\mu_0\right)^{-\frac{1}{2}}$.
+%Where $\mathbf{B}$ is the magnetic field, $\mathbf{E}$ is the electric field, $\mathbf{J}$ the current density, $\mu_0$ the vacuum permeability, $\epsilon_0 = $ the vacuum permittivity. It also holds that the speed of light $c=\left(\epsilon_0\mu_0\right)^{-\frac{1}{2}}$.
 
 The above equations are in the differential form, and they are first-order linearly coupled. They also have equivalent integral forms, which may be produced by applying the divergence integral theorem and curl integral theorem. Readers are directed to \cite[Chapter~2.4]{staelin2009electromagnetics} for more details. \todo{ask if okay}
 
@@ -148,7 +152,7 @@ The user must keep in mind that such a method will never give a precise answer. 
 \gls{fdtd} provides second-order accuracy with the use of first-order numerical differentiation. Thus the error may be defined as $\text{Error} \propto (\Delta h)^2$. For example, in a \gls{3d} simulation, if the spatial (and thus time) resolution is increased twofold, the accuracy increases 4 times. This is due to the fact Maxwell’s curl equations are discretized using central difference approximations, which are inherently second-order accurate.
 
 
-Another vital part is the staggered grid it self. Kane S. Yee introduced a system of calculating the $\mathbf{E}$ and $\mathbf{H}$ fields using the aforementioned central differences in an offset pair of grids. The $\mathbf{E}$ fields are defined at the edges of a cell while the $\mathbf{H}$ fields are stored at the centers of the faces, thus offset spatially by $\frac{h}{2}$.  However since the $\mathbf{E}$ and 
+Another vital part is the staggered grid it self. Kane S. Yee introduced a system of calculating the $\mathbf{E}$ and $\mathbf{H}$ fields using the aforementioned central differences in an offset pair of grids. The $\mathbf{E}$ fields are defined at the edges of a cell while the $\mathbf{H}$ fields are stored at the centers of the faces, thus offset spatially by $\frac{h}{2}$.  However since the $\mathbf{E}$ and $\mathbf{H}$ fields are defined at different locations, the time step must be staggered as well. The $\mathbf{E}$ field is calculated at time $t$ and the $\mathbf{H}$ field at $t + \frac{\Delta t}{2}$. This is known as the Yee cell, and it is a cornerstone of \gls{fdtd} methods. The Yee cell is shown in \ref{fig:yee}.
 
 
 \begin{figure}[H]
@@ -158,21 +162,43 @@ Another vital part is the staggered grid it self. Kane S. Yee introduced a syste
   \caption{Description of the Yee cell.}
 \end{figure}
 
-The basic flow a
+The basic flow of the \gls{fdtd} algorithm is as follows:
+\begin{enumerate}
+\item Divide the solution region into a grid of nodes (the Yee cell grid).
+\item Approximate the derivatives in Maxwell's equations using finite differences at these nodes.
+\item Set the initial conditions for the electric and magnetic fields.
+\item Loop over time steps using the "leapfrogging" technique:
+\begin{enumerate}
+  \item Update the electric field components using values of the magnetic field from the previous half time step.
+  \item Update the magnetic field components using the newly computed values of the electric field.
+\end{enumerate}
+\item Apply boundary conditions during each time step.
+\item Store the field values at desired time points for later analysis.
+\item Continue time marching until the desired simulation time is reached.
+\end{enumerate}
 
 \todo{stair-stepping -> downside}
 
 \subsection{Boundary Conditions}
 
 \section{Meep}
-Meep --- MIT Electromagnetic Equation Propagation --- is an open-source program for \gls{em} simulations. 
+Meep --- MIT Electromagnetic Equation Propagation --- is an open-source program for \gls{em} simulations distributed under the GNU General Public License v2.0. It is a scriptable software package using Python, Scheme or C++ APIs, how ever it lacks a graphical user interface. Nonetheless this allows the combination of multiple computation and a multi-parameter optimization, even in parallel. Meep handles paralelization across multiple cores and systems using the \gls{mpi}\footnote{\url{https://www.mpi-forum.org/}}. 
+
+Meep allows simulating in \gls{1d}, \gls{2d}, \gls{3d} and cylindrical coordinates. It can handle arbitrary geometries and materials such as anisotropic, dispersive, nonlinear and gyrotropic materials. It also supports a variety of boundary conditions, including Bloch-periodic, perfect-conductor boundary conditions and perfectly matched layers. 
+
+Meep offers the ability to exploit symmetries to reduce the computational time and memory requirements. The $\mathbf{E}$ and $\mathbf{H}$ fields may be exported and loaded using the HDF5 file format. These may be converted to other formats, such as VTK and visualized using ParaView\footnote{\url{https://www.paraview.org/}}. 
+
 \section{Ansys Lumerical}
+Ansys Lumerical FDTD\copyright \ is a photonics simulation tool that combines \gls{fdtd}, Optical Multilayer Solvers, Rigorously Coupled-Wave Analysis Solvers, Waveguide Solvers, Finite-difference Eingenmode Solvers and others within a unified design environment\footnote{Any and all ANSYS, Inc. brand, product, service and feature names, logos and slogans such as Ansys Lumerical are registered trademarks or trademarks of ANSYS, Inc. or its subsidiaries in the United States or other countries. All other brand, product, service and feature names or trademarks are the property of their respective owners.}.
+
+
 \section{Formal Language Theory}
 We use languages like English, Czech, or Slovak in everyday communication exchanges, and these languages are commonly referred to as \emph{natural languages}. The Oxford English Dictionary defines language as a system of spoken or written communication used by a particular country, people or community. How-ever, a more rigorous definition of languages and the tools to operate within them is required. These aspects of language will be tackled in the notion of formal language, which is introduced in the below sections.
 
 \subsection{Alphabets and Languages}
 
 \todo{add text about languages and alphabets, use English as example}
+Languages, both natural and formal, are constructed from a basic set of elements. In the case of English, these elements are the letters A to Z, which form the English alphabet. From this alphabet, we can produce words, which in turn form sentences and larger linguistic structures. Similarly, in formal language theory, we start with an alphabet from which we build sequences known as words. These words serve as the foundational units of formal languages, just as words do in natural languages.
 
 \begin{definition}[Alphabet]
 \label{def:alphabet}
@@ -290,25 +316,27 @@ When working with formal grammars, the need to compare their expressive power ar
   \caption{Description of the Chomsky hierarchy.}
 \end{figure}
 
-The intricacies of each of said classes are not necessary in the context of this thesis, how-ever regular languages will be used heavily throughout the rest of this thesis, and explained more in depth.
+The intricacies of each of said classes are not necessary in the context of this thesis, how-ever regular and context free languages will be used heavily throughout the rest of this thesis, and explained more in depth.
 
 \begin{table}[h]
 \centering
-\begin{tabular}{@{}ccl@{}}
-\toprule
-Grammar         & Language               & Restrictions \\ \midrule
+\begin{tabular}{|ccl|}
+\hline
+Grammar         & Language               & Restrictions \\ 
+\hline
 $\mathcal{L}_3$ & Regular                & \todo{todo}             \\
+\hline
 $\mathcal{L}_2$ & Context Free           &              \\
+\hline
 $\mathcal{L}_1$ & Context Sensitive      &              \\
-$\mathcal{L}_0$ & Recursively Enumerable &              \\ \bottomrule
+\hline
+$\mathcal{L}_0$ & Recursively Enumerable &              \\ 
+\hline
 \end{tabular}
 \caption{An overview of the Chomsky hierarchy classes.}
 \label{tab:chomsky-hierarchy}
 \end{table}
 
-\subsection{Context Free Languages} 
-
-\subsubsection{LL Languages}
 
 \subsection{Regular Languages}
 As shown above, regular languages are the inner most part of the Chomsky hierarchy, thus they are the most constricted. How-ever, regular languages play a crucial role in lexical analysis, more precisely, in pattern matching. These constrictions lead to many useful closure properties and decisability properties, mainly membership, which will be introduced shortly.
@@ -319,33 +347,88 @@ Regular languges may be defined in multiple equivalent manners such as through f
 
 \begin{definition}[Deterministic Finite Automata]
 \label{def:dfa}
-DFAs are formally defined as 5-tuples
-$$ M = (Q, \Sigma, \delta, q_0, F),$$
+\glspl{dfa} are formally defined as 5-tuples
+$$ M = (Q, \Sigma, \delta, q_0, F),$$ 
 where
-$Q$ is a finite set of states. $\Sigma$ is a finite set of symbols, also known as an input alphabet. $\delta$ is a transition function between states defined as $\delta : Q \times \Sigma \rightarrow Q$. $q_0$ is a initial state, $q_0 \in Q$. And $F$ is a set of final states, $F \subseteq Q$.
+\begin{itemize}
+\item $Q$ is a finite set of states,
+\item $\Sigma$ is a finite set of symbols, also known as an input alphabet,
+\item $\delta$ is a transition function between states defined as $\delta : Q \times \Sigma \rightarrow Q$,
+\item $q_0$ is a initial state for which $q_0 \in Q$ holds true,
+\item $F$ is a set of final states, $F \subseteq Q$.
+\end{itemize}
+
 
 If starting in the state $q_0$ and moving left to right over the input string such that during each move a single symbol is consumed from the input string and a transition function for the corresponding state and symbol exists, and all symbols from the input string have been read and the \gls{dfa} stopped in a final state, the string is deemed accepted. This is called a deterministic finite acceptor.
 \end{definition}
+
+Similarly \glspl{nfa} ale a 5-tuple, however they may have multiple initial and final states and there may be multiple transitions from the same state using the same symbol. For a rigorous formal definition the reader is directed to \cite[Chapter~1.4]{Salomaa1987Formal}.
+
+\begin{figure}[H]
+  \label{fig:dfa}
+  \centering
+  \includegraphics[width=0.5\textwidth]{figures/dfa.pdf}
+  \caption{A \gls{dfa} accepting only even binary numbers.}
+\end{figure}
+
+An example of a \gls{dfa} that accepts only even binary numbers is provided above. For a binary number to be even, the least significant bit must be a $0$. When this \gls{dfa} consumes a $1$, it stays or returns to the initial non-accepting state $q_0$, when it consumes a $0$, beaning the current least significant bit is $0$, is moves to an accepting state $q_1$. Leading zeros are ignored.
+
+
+
 
 
 \subsubsection{Regular Expressions} 
 
 \begin{definition}[Regular Expressions]
   \label{def:regular_exp}
+  Regular expressions are an algebraic notation, that describe a regular language. 
+  
+\begin{table}[ht]
+\centering
+\begin{tabular}{|ccc|}
+\hline
+\makecell{\textbf{Regular}\\ \textbf{Expression}} & \textbf{Language} & \textbf{Description} \\ 
+\hline
+a                          & $\{\text{"a"}\}$          & \makecell{The set containing a single\\ character "a"} \\
+\hline
+$\epsilon$                  & $\{\text{""}\}$           & The set containing the empty string \\
+\hline
+s|t                         & $L(s) \cup L(t)$            & Strings from both languages, union \\
+\hline
+st                          & $\{vw \mid v \in L(s), w \in L(t)\}$ & \makecell{All strings formed by\\ concatenating any string from\\ the first language with any string\\ from the second language.} \\
+\hline
+$s^*$                         & $\{\text{""}\} \cup \{vw \mid v \in L(s), w \in L(s^*)\}$ & \makecell{All concatenations of zero \\ or more strings from $L(s)$} \\
+\hline
+\end{tabular}
+\caption{Regular Expressions and Their Languages.}
+\label{tab:regex}
+\end{table}
 \end{definition}
 
-
-
-\todo{show equivalence DFA = NFA = $\mathcal{L}_3$}
-
-
+An example of a regular expression that accepts only even binary numbers is provided bellow. The expression matches any number of ones and zeros but must always end with a zero.
 
 \begin{figure}[H]
   \label{fig:dfa}
   \centering
-  \includegraphics[width=0.75\textwidth]{figures/dfa.pdf}
-  \caption{Description of a compiler as a single unit.}
+  $L1=\{\text{"}0\text{"}\}, L2=\{\text{"}1\text{"}\}$ $(L1\mid L2)^* L1$
+  \caption{A regular expression accepting only even binary numbers.}
 \end{figure}
+
+It holds true that \glspl{nfa}, \glspl{dfa} and regular expressions are closed under union, concatenation and Kleene star. They are in all intents and purposes equivalent and may be converted between each other as shown in \ref{fig:conversion}.
+
+\begin{figure}[H]
+  \label{fig:conversion}
+  \centering
+  \includegraphics[width=0.75\textwidth]{figures/conversion.pdf}
+  \caption{A diagram describing the equality of \glspl{dfa}, \glspl{nfa} and regular expressions.}
+\end{figure}
+
+Thus we have show that all 3 devices are equivalent and may be used to describe a $\mathcal{L}_3$ language.
+
+
+\subsection{Context Free Languages} 
+
+\subsubsection{LL Languages}
 
 
 
@@ -391,6 +474,7 @@ The first stage of a compiler is lexical analysis, also known as a \emph{lexer} 
 \subsubsection*{LL Parser}
 
 \subsection*{Semantic Analysis}
+\todo{talk about it being skipped and correct input code is relied on}
 
 \subsection*{Code Generation}
 
@@ -398,12 +482,43 @@ The first stage of a compiler is lexical analysis, also known as a \emph{lexer} 
 \chapter{Transpiler Implementation}
 This chapter introduces the implementation of the source to source compiler designed to convert Lumerical's scripting language to Python combined with the Meep library. 
 \section{Choice of Tools}
-When writing any program, it is important to choose the right tools for the job. This comes down not only to choosing the programming language but also what libraries and packages to utilize and which components to implement to better suit the project's constraints. The source language, Lumerical's scripting language, allows you to automate tasks and analysis such as manipulating simulation objects, launching simulations, and analyzing results \cite{ansys_lsf}. This language how-ever, is not suitable for implementing a transpiler. Looking at the target language, Python is a general-purpose high-level interpreted language. Writing the transpiler in Python will allow for easier editing and debugging due to it's high-level nature. Consequently, and owing to the fact that the implementation language is the same as the target language, this will also allow us to use built in modules for generating the target code. The Python's ecosystem also includes the tools such as Sphinx and Pytest for writing technical documentation and tests respectively.
+When writing any program, it is important to choose the right tools for the job. This comes down not only to choosing the programming language but also what libraries and packages to utilize and which components to implement to better suit the project's constraints. The source language, Lumerical's scripting language, allows you to automate tasks and analysis such as manipulating simulation objects, launching simulations, and analyzing results \cite{ansys_lsf}. This language how-ever, is not suitable for implementing a transpiler. Looking at the target language, Python is a general-purpose high-level interpreted language. Writing the transpiler in Python will allow for easier editing and debugging due to it's high-level nature. Consequently, and owing to the fact that the implementation language is the same as the target language, this will also allow us to use built in modules for generating the target code. Python's ecosystem also includes the tools such as Sphinx and Pytest for writing technical documentation and tests respectively.
+
+\subsection{Implementation Overview}
+
+
+\begin{figure}[H]
+ 
+  \label{fig:project-structure}
+  \centering
+\dirtree{%
+.1 /.
+.2 doc/\DTcomment{Holds documentation.}.
+.3 sphinx/\DTcomment{Sphinx root.}.
+.4 build/\DTcomment{Sphinx build directory.}.
+.5 html/\DTcomment{HTML output.}.
+.4 source/\DTcomment{Sphinx documentation source.}.
+.2 src/\DTcomment{LUMEX source code.}.
+.3 actions.py\DTcomment{Code generation.}.
+.3 grammar.py\DTcomment{Generic grammar class.}.
+.3 lex.py\DTcomment{Lexer implementation.}.
+.3 lltable.py\DTcomment{\gls{ll}$(1)$ parse table generator.}.
+.3 lumerical\_grammar.py\DTcomment{Concrete instance of Grammar describing the Lumerical Scripting Language.}.
+.3 lumex.py\DTcomment{Main script.}.
+.3 parse.py\DTcomment{\gls{ll}$(1)$ table based parser implementation.}.
+.3 runtime.py\DTcomment{Runtime code routines.}.
+.3 symbol.py\DTcomment{Generic symbol class.}.
+.3 tokens.py\DTcomment{List of tokens.}.
+.2 tests/\DTcomment{Holds Pytest unit tests.}.
+}
+
+\caption{Overview of the project file structure.}
+\end{figure}
 
 \subsection{Sphinx}
-Sphinx is a tool that automatically generates documentation by converting plain text source files into multiple output formats \cite{sphinx_quickstart}. Sphinx was chosen because it facilitates the extraction of docstring style comments from the Python code, which may be enriched by the addition of ReStructured Text \cite{docutils_rst}. Multiple output formats such as Portable Document Format (PDF), \LaTeX \ source code and Hypertext Markup Language (HTML), are supported. Sphinx also includes multiple extensions which allow the parsing of \LaTeX \ into Scalable Vector Graphics (SVG), which are easily rendered in the web.
+Sphinx is a tool that automatically generates documentation by converting plain text source files into multiple output formats \cite{sphinx_quickstart}. Sphinx was chosen because it facilitates the extraction of docstring style comments from the Python code, which may be enriched by the addition of ReStructured Text \cite{docutils_rst}. Multiple output formats such as Portable Document Format, \LaTeX \ source code and Hypertext Markup Language, are supported. Sphinx also includes multiple extensions which allow the parsing of \LaTeX \ into Scalable Vector Graphics, which are easily rendered in the web.
 
-This is instrumental in providing the user with the necessary insight into the technical operation of the transpiler, and allows us to search and view information in a concise manner.
+This is instrumental in providing the user with the necessary insight into the technical operation of the transpiler, and allows us to search and view information in a concise manner withot the need to direcly inspect the source code. The documentation is made available to the reader at the following address \footnote{\url{https://www.macura.sk/BP/}}
 
 \begin{figure}[H]
 
@@ -420,29 +535,94 @@ Pytest is a widely used testing framework for Python.
 %The purpose of this thesis is to construct a custom transpiler between two highly specific languages, nevertheless it is beneficial to separate each logical step into its own class, which promotes interoperability and allows for simpler extension or replacement of code and parsing methods down the line. 
 
 \todo{mention python, sphinx, pytest, explain motivation for implementation of own transpiler}
-\section{Grammar}
+
+
+
+\section{Grammar}\label{grammar}
 Before being able to translate between two languages, it is paramount to understand their grammar. Many languages provide definitions of grammars in a metasyntax format such as \gls{bnf}, \gls{ebnf}, \gls{wsn}, \gls{abnf}, \gls{peg} or \gls{asdl} \cite{asdl}. The Python grammar is defined by a mixture of \gls{ebnf} and \gls{peg} as used in the CPython parser \cite{python3grammar}. Additionally, the Python \gls{ast} module also defines an abstract grammar in \gls{asdl} \cite{python_ast}.
 
 As, of writing this thesis, Lumerical does not publicly provide any such specification for the Lumerical's scripting language. Thus, it is necessary to analyze the language and derive such a grammar that covers the relevant subset of the language to the scope of this thesis.
 
 %To derive a grammar from a language, it is first necessary to specify the scope of the studied language.
-Since this thesis focuses primarily on nanophotonic simulation workflows, only essential commands to set up a simulation will be included, e.g. commands to add blocks, sources, monitors and commands to translate and scale the objects. There may be other parts of Lumerical's scripting language that could be utilized for a nanophotonics simulation, however those are considered out of the scope of this thesis due to the broad range of Lumerical's scripting language with around 800 commands and keywords \cite{ansys_lsf_commands}. 
-While Lumerical’s scripting language includes hundreds of commands spanning optimization, analysis, and post-processing (e.g., \texttt{runoptimization}, \texttt{fitlorentzpdf}, \texttt{exportcsvresults}), this work prioritizes the core geometry and simulation workflow: \texttt{addrect} (block creation), \texttt{addgaussian}/\texttt{addfdtd} (source/solver definition), \texttt{addpower} (monitor placement), and \texttt{set} (property configuration). 
+Since this thesis focuses primarily on nanophotonic simulation workflows in \gls{3d}, only essential commands to set up a simulation will be included, e.g. commands to add blocks, sources, monitors and commands to translate and scale the objects. There may be other parts of Lumerical's scripting language that could be utilized for a nanophotonics simulation, however those are considered out of the scope of this thesis due to the broad range of Lumerical's scripting language with around 800 commands and keywords \cite{ansys_lsf_commands}. Since Meep is a \gls{fdtd} solver, only commands usable in Lumerical \gls{fdtd} simulations will be considered.
+While Lumerical’s scripting language includes hundreds of commands spanning optimization, analysis, and post-processing (e.g., \texttt{runoptimization}, \texttt{fitlorentzpdf}, \texttt{exportcsvresults}), this work prioritizes the core geometry and simulation workflow: \texttt{addrect} (block creation), \texttt{addplane}/\texttt{addfdtd} (source/solver definition), \texttt{addpower} (monitor placement), and \texttt{set} (property configuration). 
 
 
 \todo{provide steps to reverse-engineer grammar}
 There are infinitely many distinct grammars that describe the same language. By example, in a \gls{cfg} given as $S \rightarrow aB$, one may add an intermediate rule, producing $S \rightarrow aC, C \rightarrow B$. This process may be repeated indefinitely creating new grammars that describe the same language. To this end, the grammar described bellow is just one of the plethora of possible grammars describing a subset of Lumerical's scripting language. While constructing the grammar, it is beneficial to impose additional constrains and only utilize a subset of \glspl{cfg}, namely a \gls{ll} grammar. This imposes certain rules as described before, informally speaking, when a parser arrives at a nonterminal, is must be able to decide which production to apply by peeking at at most the next $k$ symbols, this is an \gls{ll}$(k)$ grammar.
+
+This will later help with constructing a simpler parser. How ever if a language construct was found in Lumerical's scripting language, outside of the subset studied by this thesis, that could not be described and parsed by a \gls{ll}(1) parser or even a \gls{ll}(k) parser, a more powerful parser would be required. This would incur need to swap out the parser implementation in \texttt{parse.py}. Because of this and similar reasons, the transpiler was written in a modular fashion, making this a trivial matter. Other common parser types might include the \gls{lalr} parser which is stronger as the \gls{ll} parser but just as fast, or the \gls{glr} parser which can handle even more ambiguous grammars.
+
+
 \todo{collecting samples}
 It is important to first collect samples of code, to study the syntactic structure and the semantics of the code. Examples were taken from the official code 
+
+Some examples are provided bellow that showcase the basic language constructs to the reader, a comprehensive list of commands is included in Table \ref{tab:commands} of Appendix \ref{appendix:one}:
+
+\paragraph*{Basic algebraic operators}
+\begin{itemize}
+\item \texttt{*} --- Multiplication
+\item \texttt{\textbackslash} --- Division
+\item \texttt{+} --- Addition
+\item \texttt{-} --- Subtraction
+\item \texttt{==} --- Comparison
+\item \texttt{!=} --- Not equal
+\item \texttt{<=} --- Less than or equal to
+\item \texttt{>=} --- Greater than or equal to
+\item \texttt{<} --- Less than
+\item \texttt{>} --- Greater than
+\item \texttt{:} --- Range
+\begin{lstlisting}
+1:2:10
+\end{lstlisting}
+Generates values 1, 3, 5, 7, 9.
+\end{itemize}
+
+Loops and conditionals
+\begin{itemize}
+\item \texttt{for} --- For loop
+\begin{lstlisting}
+for(1:10){ 
+?x; 
+} 
+\end{lstlisting}
+
+According to Ansys, ``There is no \texttt{while} command in the scripting language, but the \texttt{for} command can be used to implement a \texttt{while} command. The command \texttt{for(0; conditional\_expression; 0) \{\}} is the same as \texttt{while(conditional\_expression) \{\}}. The ``\texttt{0}'' statements in the \texttt{for} loop do nothing and are just placeholders because the scripting language expects an argument there.'' \cite{ansys_for_command}.
+
+\item \texttt{if} --- Conditional statement
+\begin{lstlisting}
+if(x < 5) {
+y = x+2;
+} 
+else if ( x > 10 ) {
+y = 2*x;
+} 
+else {
+y = x-3;
+} 
+\end{lstlisting}
+\end{itemize}
 
 \todo{observation of keywords, syntactic structures -> tokens}
 Lumerical provides a list of all commands \cite{ansys_lsf_commands}
 \todo{formalize rules}
 
 
+\todo{nice example of ll vs not ll grammar in compiler design book}
+ expression -> OPEN\_PAREN expression CLOSE\_PAREN
+            |  NUMBER MINUS expression
+
+after adding not ll
+ expression -> NUMBER PLUS expression
 
 \todo{add grammar listing here}
 
+\todo{implementation of grammar class}
+
+
+The grammar is implemented as a standalone class. The \texttt{Grammar} class is written in an abstract manner, allowing it to hold information about the Lumerical Scripting Language, while staying extendable. To facilitate this, the \texttt{Grammar} class holds a list of productions. The productions are represented as a separate \texttt{Production} classes holding information about the \gls{lhs} and \gls{rhs} of the production. The \gls{lhs} is a single nonterminal, while the \gls{rhs} is a list of nonterminals, terminals, actions, or a $\varepsilon$ symbol. The \texttt{Production} class also keeps track of the production number, assigning each production a unique numerical value in an ascending fashion and whether the production is nullable.
+
+Circling back to the \texttt{Grammar} class, it also provides helper functions, such as \texttt{append}, which adds the passed production to the grammar, while also updating the \texttt{nullable} attribute of the production. The \texttt{Grammar} class also provides \texttt{terminals} and \texttt{nonterminals} methods, to list all terminals and nonterminals in the grammar.
 
 
 \section{Lexical Analysis}
@@ -478,7 +658,7 @@ last\_accepting\_state $\gets$ \texttt{None}
     
 
 
-\caption{State Machine Based Lexer}
+\caption{State Machine Based Lexer.}
 \label{alg:lexer-state-based}
 \end{algorithm}
 \vspace{1.5em}
@@ -511,7 +691,7 @@ longest\_match $\gets$ \texttt{None}\\
     
 
 
-\caption{Regular Expression Based Lexer}
+\caption{Regular Expression Based Lexer.}
 \label{alg:lexer-expression-based}
 \end{algorithm}
 \vspace{1.5em}
@@ -520,14 +700,210 @@ longest\_match $\gets$ \texttt{None}\\
 This approach is not only more straight forward, but also allows modeling the lexer in a more pythonic manor. Each token is represented as a unique class with holds the regular expression pattern matching the corresponding token. Each specific token class inherits a common token class, after that, it is sufficient for the lexer to enumerate over all children of the token class and search for the one with the longest match resulting in a greedily matched token.
 
 
-\todo{mention lexer regex implementation}
+This is reflected in the \texttt{Lexer} class, which provides a stream of tokens. The class holds information about the source code, which is to be processed. This is achieved through \texttt{source} attribute and a \texttt{cursor} attribute, which is incremented as the source code is parsed. The \texttt{Lexer} class implements a \texttt{tokens} generator, which repetitively calls \texttt{advance} and yields the tokens, until all are exhausted, while discarding white space tokens, such as a new line and space tokens. 
+
+The \texttt{advance} method returns a single token, or the None value, when the end of the input is reached. Otherwise it greedily matches the longes token as described in Algorithm \ref{alg:lexer-expression-based}. This is achieved by iterating over all tokens, which are obtained by retrieving all subclasses og the \texttt{Token} class, as each individual token is a child class.
+
+The \texttt{Token} class holds information about a token, such as the name, given by the class \texttt{\_\_name\_\_} method. The lexeme pattern, used to match the token, is stored as a regular expression. The \texttt{token} class also stores the lexeme, which it matched. This is used during logging and also mainly for storing the value of literals, such a strings, integers and floats which are used during the code generation phase.
+
+
 \section{LL Parser}
+A \gls{ll} grammar was chosen due to the reasons described in \ref{grammar}, specifically a \gls{ll} (1) grammar. There are two common implementations of parsers that accept \gls{ll} (1) grammars. The first being a recursive descent parser. It is a kind of top-down parser, that models the parsed grammar in such a fashion, that each nonterminal of the grammar is represented by a procedure in code. The methods recurse and invoke each other, parsing the grammar. This is a simple procedure to implement, however often resulting in long code that is proportional to the size of the grammar, which makes it harder to comprehend and easier introduce mistakes in the implementation. This does not pair well with the future possible extensions of this transpiler to cover the entirety Lumerical's scripting language.
+
+The second method is a \gls{ll} table based parser. It is a deterministic pushdown automaton utilizing a stack and a parsing table. It continually expands the leftmost nonterminal in a derivation with a lookahead of one token to chose the correct production from the parsing table. It starts by reading a token from the lexer and looking at the top most item on the stack, in the case of a nonterminal, the corresponding production from the parsing table, given by the nonterminal and terminal, is pushed on the stack. If no production is found, a parsing error is raised. On the other hand, if the top stack symbol is a terminal, it must match the input terminal, otherwise a parsing error is raised.
+
+The theory of a parsing table is pretty straight forward. Each production in the grammar 
+In a parsing table, each row corresponds to a nonterminal and each column to a terminal. The cell at the intersection of a row and column contains the production to be applied. If no production is found, a parsing error is raised. A simple example of a \gls{ll}(1) grammar is provided in Figure \ref{tab:example-bfn-ll} and the corresponding parsing table in Table \ref{tab:example-ll-table}.
+
+%\begin{table}[H]
+%\centering
+%\begin{tabular}{l|rcl}
+%1. & stmt   & $\rightarrow$ & expr \textbf{SEMI}        \\
+%2. & expr   & $\rightarrow$ & factor \textbf{PLUS} expr \\
+%3. &        & |             & factor                    \\
+%4. & factor & $\rightarrow$ & \textbf{NUMBER}          
+%\end{tabular}
+%\caption{Simple example \gls{bnf} grammar that is not \gls{ll}(1).}
+%\label{tab:example-bfn}
+%\end{table}
+\begin{figure}[H]
+\centering
+\begin{table}[H]
+\centering
+\begin{tabular}{l|rcl}
+1. & stmt       & $\rightarrow$ & expr \textbf{SEMI}			\\
+2. & expr       & $\rightarrow$ & factor expr\_tail			\\
+3. & expr\_tail & $\rightarrow$ & \textbf{PLUS} expr			\\
+4. &            & |             & $\varepsilon$					\\
+5. & factor     & $\rightarrow$ & \textbf{NUMBER}          
+\end{tabular}
+\label{tab:example-bfn-ll}
+\end{table}
+\caption{Simple example \gls{bnf} grammar that is \gls{ll}(1).}
+\end{figure}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{|l|c|c|c|}
+\hline
+              &\textbf{SEMI}  &\textbf{PLUS}  &\textbf{NUMBER}  \\
+\hline
+  stmt        &               &               &1                \\
+\hline
+  expr        &               &               &2                \\
+\hline
+  expr\_tail  &4              &3              &                 \\
+\hline
+  factor      &               &               &5                \\
+\hline
+  \end{tabular}
+  \caption{Example \gls{ll}(1) parsing table based on the grammar in \ref{tab:example-bfn-ll}.}
+  \label{tab:example-ll-table}
+\end{table}
+
+\subsection{LL Table Construction}
+\gls{ll} (1) parse tables are constructed using the FIRST, FOLLOW and SELECT sets, which are solved for each nonterminal. The FIRST set of a nonterminal consists of all terminal symbols that can appear at the beginning of any string derivable from that nonterminal.
+
+The FIRST sets are evaluated in an iterative process for the whole grammar. The set is evaluated for each nonterminal present in the grammar, always updating the corresponding set by preforming a FIRST closure, until each nonterminal's FIRST set does not change. The theoretical approach it detailed below. In the following sections, $\varepsilon$ will be treated as a terminal symbol as a simplification, even though it is not, and LHS and RHS will correspond to. 
+
+
+\begingroup
+\vspace{1.5em}
+\begin{algorithm}[H]
+  \setlength{\algomargin}{1.5em}
+  \If{production is nullable}{
+    \Return{}
+  }
+  \For{symbol in production.RHS}{
+    \If{symbol is terminal}{
+      add symbol to first[production.LHS]\\
+      \Return{}
+    }
+    \Else{
+      add first[symbol] to first[production.LHS]\\
+      \If{symbol is not nullable}{
+        \Return{}
+      }
+    }
+  }
+
+
+\caption{The FIRST closure algorithm.}
+\label{alg:first-closure}
+\end{algorithm}
+\vspace{1.5em}
+\endgroup
+
+Algorithm \ref{alg:first-closure} corresponds to a generalized rule for calculating the FIRST set. For a production in the form of $s \rightarrow \alpha \mathcal{B} \beta$, where $s$ is the nonterminal, for which the FIRST set is being calculated, $\alpha$ are 0 or more nullable\footnote{As a reminder, a nonterminal is \emph{nullable} if it can be transformed to $\varepsilon$ by some production, i.e.\ there has to be at least one production of the form $s \rightarrow \varepsilon$, where $s$ is a nonterminal.} nonterminals, $\mathcal{B}$ is a single terminal or nonterminal and $\beta$ are multiple terminals or nonterminals. Then the FIRST$(s)$ set is the union of FIRST$(\beta)$ and FIRST$(\alpha)$ sets \cite[Chapter~4.7.1]{Holub_1990}.
+
+
+Similarly to the FIRST sets, the FOLLOW are computed incrementally, until nop change in the sets is observed. The FOLLOW contains those terminals, which may follow the nonterminal, for which the FOLLOW set is evaluated. 
+
+\begingroup
+\vspace{1.5em}
+\begin{algorithm}[H]
+  \setlength{\algomargin}{1.5em}
+  \If{production is nullable}{
+    \Return{}
+  }
+  \For{\text{symbol} in \text{production.RHS}}{
+    \If{symbol is terminal}{
+        \textbf{continue}
+    }
+    \Else{
+      \If{next\_symbol is terminal}{
+        add next\_symbol to follow[symbol]\\
+      }
+      \Else{
+        add first[next\_symbol] to follow[symbol]\\
+      }
+    }
+  }
+  \For{symbol in reversed production.RHS}{
+    \If{symbol is terminal}{
+      \textbf{break}
+    }
+    \Else{
+      last\_nonterminal = symbol\\
+      add follow[production.LHS] to follow[symbol]\\
+      \If{symbol is not nullable}{
+        \textbf{break}
+      }
+    }
+  }
+  \If{\text{last\_nonterminal}}{
+    add follow[production.LHS] to follow[last\_nonterminal]
+  }
+
+  \caption{The FOLLOW closure algorithm.}
+  \label{alg:follow-closure}
+\end{algorithm}
+\vspace{1.5em}
+\endgroup
+Algorithm \ref{alg:follow-closure} provides a general method for computing the FOLLOW set. Consider a production expressed as $s \rightarrow \dots a \alpha \mathcal{B}\dots$, where $s$ and $a$ are nonterminals, $\alpha$ is a possibly empty sequence of nullable nonterminals, and $\mathcal{B}$ is a terminal or nonterminal. FOLLOW($a$) is updated with the union of FIRST($\alpha$) and FIRST($\mathcal{B}$) \cite[Chapter~4.7.2]{Holub_1990}.
+
+Finally we need to calculate the SELECT sets (also know as PREDICT), unlike with the previous two cases, the SELECT sets ale calculated in one pass. The \gls{ll}(1) SELECT set for a production rule consists of all input symbols that can appear as the next token in the input stream when that production is correctly applied.
+
+
+
+\begingroup
+\vspace{1.5em}
+\begin{algorithm}[H]
+  \setlength{\algomargin}{1.5em}
+  \For{production in productions}{
+    \For{symbol in production.RHS}{
+      \If{symbol is nonterminal}{
+        add first[symbol] to select[production]
+      }
+      add follow[production.LHS] to select[production]\\
+      \If{symbol is nonterminal}{
+        add follow[production.LHS] to first[production]\\
+        \If{symbol is not nullable}{
+          \textbf{break}
+        }
+      }
+      \Else{
+        add symbol to select[production]\\
+        \textbf{break}
+      }
+    }
+  }
+  
+  \caption{The \gls{ll}(1) SELECT algorithm.}
+  \label{alg:select-closure}
+\end{algorithm}
+\vspace{1.5em}
+\endgroup
+
+Algorithm \ref{alg:select-closure} outlines a general procedure for computing the \gls{ll}(1) SELECT set which corresponds to the following formal definition. When dealing with a \underline{non-nullable}\footnote{The opposite of a nullable production—that is, a production whose right-hand side is not solely $\varepsilon$, nor composed entirely of symbols that can derive $\varepsilon$ through some sequence of derivations.
+} production of the form $s\rightarrow \alpha \mathcal{B} \dots$, where $s$ is a nonterminal, $\alpha$ is a sequence of one or more nullable nonterminals, and $\mathcal{B}$ is either a terminal or a non-nullable nonterminal (i.e., one that cannot derive $\varepsilon$), possibly followed by additional symbols. The \gls{ll}(1) SELECT set for this production is the union of FIRST($\alpha$) and FIRST($\mathcal{B}$).
+On the other hand, when a nullable production is encountered in the following form $s\rightarrow \alpha$, where $s$ is a nonterminal, $\alpha$ denotes a sequence comprising zero or more occurrences of nullable nonterminals. The union of FIRST($\alpha$) and FOLLOW($s$) is added to the \gls{ll}(1) SELECT set for the production \cite[Chapter~4.7.3]{Holub_1990}.
+
+
+After obtaining the \gls{ll}(1) SELECT sets for the grammar, the construction of the \gls{ll} parsing table is trivial. 
+
+\begingroup
+\vspace{1.5em}
+\begin{algorithm}[H]
+  \setlength{\algomargin}{1.5em}
+  initialize table to error states
+  \For{production in productions}{
+    \For{token in select[production]}{
+      table[production.LHS][token] = production
+    }
+  }
+  
+  \caption{Translation of \gls{ll}(1) SELECT sets to a parse table.}
+  \label{alg:select-to-table}
+\end{algorithm}
+\vspace{1.5em}
+\endgroup
+
 \todo{mention LL table calculation according to theory}
 \section{Code Generation}
 \todo{}
 \todo{handling context specific actions such as the selection -> introduction of runtime class}
 \todo{write about transformation of ast}
-
 
 
 \chapter{Evaluation of Results}
@@ -538,10 +914,3 @@ This approach is not only more straight forward, but also allows modeling the le
 \todo{compare lumerical and meep}
 \todo{test result TBD}
 
-
-
-
-%=========================================================================
-
-% For compilation piecewise (see projekt.tex), it is necessary to uncomment it
-% \end{document}

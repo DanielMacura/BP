@@ -57,6 +57,23 @@
 
 \makeglossaries 
 
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+
+
+\newtheoremstyle{break}% name
+  {9pt}%      Space above, empty = `usual value'
+  {9pt}%      Space below
+  {\itshape}% Body font
+  {}%         Indent amount (empty = no indent, \parindent = para indent)
+  {\bfseries}% Thm head font
+  {.}%        Punctuation after thm head
+  {\newline}% Space after thm head: \newline = linebreak
+  {}%         Thm head spec
+
+\theoremstyle{break}
+\newtheorem{example}{Example}[section]
+
 % Nastavení cesty k obrázkům
 % Setting of a path to the pictures
 %\graphicspath{{obrazky-figures/}{./obrazky-figures/}}
@@ -78,6 +95,9 @@
 \usepackage{url}
 \usepackage{amsmath}
 \usepackage{siunitx}
+\usepackage{simplebnf}
+\usepackage{makecell} 
+
 
 % =======================================================================
 % balíček "hyperref" vytváří klikací odkazy v pdf, pokud tedy použijeme pdflatex
@@ -206,25 +226,9 @@ Uvedl jsem všechny literární prameny, publikace a další zdroje, ze kterých
 % Nechcete-li, aby se u oboustranného tisku roztahovaly mezery pro zaplnění stránky, odkomentujte následující řádek / If you do not want enlarged spacing for filling of the pages in case of duplex printing, uncomment the following line
 % \raggedbottom
 
-\theoremstyle{definition}
-\newtheorem{definition}{Definition}[section]
 
 
-\newtheoremstyle{break}% name
-  {9pt}%      Space above, empty = `usual value'
-  {9pt}%      Space below
-  {\itshape}% Body font
-  {}%         Indent amount (empty = no indent, \parindent = para indent)
-  {\bfseries}% Thm head font
-  {.}%        Punctuation after thm head
-  {\newline}% Space after thm head: \newline = linebreak
-  {}%         Thm head spec
 
-\theoremstyle{break}
-\newtheorem{example}{Example}[section]
-
-
-\usepackage{hyperref}
 \begin{document}
   % Vysazeni titulnich stran / Typesetting of the title pages
   % ----------------------------------------------

@@ -1,0 +1,784 @@
+\glsdefs@newdocentry{cem}%
+{%
+name={\acronymfont {\glsentryshort {cem}}},%
+sort={CEM},%
+type={acronym},%
+first={CEM},%
+firstplural={CEMs},%
+text={CEM},%
+plural={CEMs},%
+description={Computational Electromagnetics},%
+descriptionplural={Computational Electromagnetics},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Computational Electromagnetics},%
+longplural={Computational Electromagneticss},%
+short={CEM},%
+shortplural={CEMs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{em}%
+{%
+name={\acronymfont {\glsentryshort {em}}},%
+sort={EM},%
+type={acronym},%
+first={EM},%
+firstplural={EMs},%
+text={EM},%
+plural={EMs},%
+description={Electro Magnetic},%
+descriptionplural={Electro Magnetic},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Electro Magnetic},%
+longplural={Electro Magnetics},%
+short={EM},%
+shortplural={EMs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{abc}%
+{%
+name={\acronymfont {\glsentryshort {abc}}},%
+sort={ABC},%
+type={acronym},%
+first={ABC},%
+firstplural={ABCs},%
+text={ABC},%
+plural={ABCs},%
+description={Absorbing Boundary Conditions},%
+descriptionplural={Absorbing Boundary Conditions},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Absorbing Boundary Conditions},%
+longplural={Absorbing Boundary Conditionss},%
+short={ABC},%
+shortplural={ABCs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{fdtd}%
+{%
+name={\acronymfont {\glsentryshort {fdtd}}},%
+sort={FDTD},%
+type={acronym},%
+first={FDTD},%
+firstplural={FDTDs},%
+text={FDTD},%
+plural={FDTDs},%
+description={Finite-Difference Time-Domain},%
+descriptionplural={Finite-Difference Time-Domain},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Finite-Difference Time-Domain},%
+longplural={Finite-Difference Time-Domains},%
+short={FDTD},%
+shortplural={FDTDs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{pml}%
+{%
+name={\acronymfont {\glsentryshort {pml}}},%
+sort={PML},%
+type={acronym},%
+first={PML},%
+firstplural={PMLs},%
+text={PML},%
+plural={PMLs},%
+description={Perfectly Matched Layer},%
+descriptionplural={Perfectly Matched Layer},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Perfectly Matched Layer},%
+longplural={Perfectly Matched Layers},%
+short={PML},%
+shortplural={PMLs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{fa}%
+{%
+name={\acronymfont {\glsentryshort {fa}}},%
+sort={FA},%
+type={acronym},%
+first={FA},%
+firstplural={FAs},%
+text={FA},%
+plural={FAs},%
+description={Finite Automaton},%
+descriptionplural={Finite Automaton},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Finite Automaton},%
+longplural={Finite Automatons},%
+short={FA},%
+shortplural={FAs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{dfa}%
+{%
+name={\acronymfont {\glsentryshort {dfa}}},%
+sort={DFA},%
+type={acronym},%
+first={DFA},%
+firstplural={DFAs},%
+text={DFA},%
+plural={DFAs},%
+description={Deterministic Finite Automaton},%
+descriptionplural={Deterministic Finite Automaton},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Deterministic Finite Automaton},%
+longplural={Deterministic Finite Automatons},%
+short={DFA},%
+shortplural={DFAs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{nfa}%
+{%
+name={\acronymfont {\glsentryshort {nfa}}},%
+sort={NFA},%
+type={acronym},%
+first={NFA},%
+firstplural={NFAs},%
+text={NFA},%
+plural={NFAs},%
+description={Nondeterministic Finite Automaton},%
+descriptionplural={Nondeterministic Finite Automaton},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Nondeterministic Finite Automaton},%
+longplural={Nondeterministic Finite Automatons},%
+short={NFA},%
+shortplural={NFAs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{fsm}%
+{%
+name={\acronymfont {\glsentryshort {fsm}}},%
+sort={FSM},%
+type={acronym},%
+first={FSM},%
+firstplural={FSMs},%
+text={FSM},%
+plural={FSMs},%
+description={Finite State Machine},%
+descriptionplural={Finite State Machine},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Finite State Machine},%
+longplural={Finite State Machines},%
+short={FSM},%
+shortplural={FSMs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{bnf}%
+{%
+name={\acronymfont {\glsentryshort {bnf}}},%
+sort={BNF},%
+type={acronym},%
+first={BNF},%
+firstplural={BNFs},%
+text={BNF},%
+plural={BNFs},%
+description={Backus-Naur form},%
+descriptionplural={Backus-Naur form},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Backus-Naur form},%
+longplural={Backus-Naur forms},%
+short={BNF},%
+shortplural={BNFs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{ebnf}%
+{%
+name={\acronymfont {\glsentryshort {ebnf}}},%
+sort={EBNF},%
+type={acronym},%
+first={EBNF},%
+firstplural={EBNFs},%
+text={EBNF},%
+plural={EBNFs},%
+description={Extended Backus-Naur form},%
+descriptionplural={Extended Backus-Naur form},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Extended Backus-Naur form},%
+longplural={Extended Backus-Naur forms},%
+short={EBNF},%
+shortplural={EBNFs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{abnf}%
+{%
+name={\acronymfont {\glsentryshort {abnf}}},%
+sort={ABNF},%
+type={acronym},%
+first={ABNF},%
+firstplural={ABNFs},%
+text={ABNF},%
+plural={ABNFs},%
+description={Augmented Backus-Naur form},%
+descriptionplural={Augmented Backus-Naur form},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Augmented Backus-Naur form},%
+longplural={Augmented Backus-Naur forms},%
+short={ABNF},%
+shortplural={ABNFs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{wsn}%
+{%
+name={\acronymfont {\glsentryshort {wsn}}},%
+sort={WSN},%
+type={acronym},%
+first={WSN},%
+firstplural={WSNs},%
+text={WSN},%
+plural={WSNs},%
+description={Wirth Syntax Notation},%
+descriptionplural={Wirth Syntax Notation},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Wirth Syntax Notation},%
+longplural={Wirth Syntax Notations},%
+short={WSN},%
+shortplural={WSNs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{peg}%
+{%
+name={\acronymfont {\glsentryshort {peg}}},%
+sort={PEG},%
+type={acronym},%
+first={PEG},%
+firstplural={PEGs},%
+text={PEG},%
+plural={PEGs},%
+description={Parsing Expression Grammar},%
+descriptionplural={Parsing Expression Grammar},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Parsing Expression Grammar},%
+longplural={Parsing Expression Grammars},%
+short={PEG},%
+shortplural={PEGs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{asdl}%
+{%
+name={\acronymfont {\glsentryshort {asdl}}},%
+sort={ASDL},%
+type={acronym},%
+first={ASDL},%
+firstplural={ASDLs},%
+text={ASDL},%
+plural={ASDLs},%
+description={Zephyr Abstract Syntax Definition Language},%
+descriptionplural={Zephyr Abstract Syntax Definition Language},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Zephyr Abstract Syntax Definition Language},%
+longplural={Zephyr Abstract Syntax Definition Languages},%
+short={ASDL},%
+shortplural={ASDLs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{cfg}%
+{%
+name={\acronymfont {\glsentryshort {cfg}}},%
+sort={CFG},%
+type={acronym},%
+first={CFG},%
+firstplural={CFGs},%
+text={CFG},%
+plural={CFGs},%
+description={Context Free Grammar},%
+descriptionplural={Context Free Grammar},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Context Free Grammar},%
+longplural={Context Free Grammars},%
+short={CFG},%
+shortplural={CFGs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{ast}%
+{%
+name={\acronymfont {\glsentryshort {ast}}},%
+sort={AST},%
+type={acronym},%
+first={AST},%
+firstplural={ASTs},%
+text={AST},%
+plural={ASTs},%
+description={Abstract Syntax Tree},%
+descriptionplural={Abstract Syntax Tree},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Abstract Syntax Tree},%
+longplural={Abstract Syntax Trees},%
+short={AST},%
+shortplural={ASTs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{ll}%
+{%
+name={\acronymfont {\glsentryshort {ll}}},%
+sort={LL},%
+type={acronym},%
+first={LL},%
+firstplural={LLs},%
+text={LL},%
+plural={LLs},%
+description={Left-to-Right, Leftmost Derivation},%
+descriptionplural={Left-to-Right, Leftmost Derivation},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Left-to-Right, Leftmost Derivation},%
+longplural={Left-to-Right, Leftmost Derivations},%
+short={LL},%
+shortplural={LLs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{lalr}%
+{%
+name={\acronymfont {\glsentryshort {lalr}}},%
+sort={LALR},%
+type={acronym},%
+first={LALR},%
+firstplural={LALRs},%
+text={LALR},%
+plural={LALRs},%
+description={Look-Ahead, Left-to-Right, Rightmost Derivation},%
+descriptionplural={Look-Ahead, Left-to-Right, Rightmost Derivation},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Look-Ahead, Left-to-Right, Rightmost Derivation},%
+longplural={Look-Ahead, Left-to-Right, Rightmost Derivations},%
+short={LALR},%
+shortplural={LALRs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{glr}%
+{%
+name={\acronymfont {\glsentryshort {glr}}},%
+sort={GLR},%
+type={acronym},%
+first={GLR},%
+firstplural={GLRs},%
+text={GLR},%
+plural={GLRs},%
+description={Generalized Left-to-Right Rightmost Derivation},%
+descriptionplural={Generalized Left-to-Right Rightmost Derivation},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Generalized Left-to-Right Rightmost Derivation},%
+longplural={Generalized Left-to-Right Rightmost Derivations},%
+short={GLR},%
+shortplural={GLRs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{1d}%
+{%
+name={\acronymfont {\glsentryshort {1d}}},%
+sort={1D},%
+type={acronym},%
+first={1D},%
+firstplural={1Ds},%
+text={1D},%
+plural={1Ds},%
+description={One Dimension},%
+descriptionplural={One Dimension},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={One Dimension},%
+longplural={One Dimensions},%
+short={1D},%
+shortplural={1Ds},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{2d}%
+{%
+name={\acronymfont {\glsentryshort {2d}}},%
+sort={2D},%
+type={acronym},%
+first={2D},%
+firstplural={2Ds},%
+text={2D},%
+plural={2Ds},%
+description={Two Dimensions},%
+descriptionplural={Two Dimensions},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Two Dimensions},%
+longplural={Two Dimensionss},%
+short={2D},%
+shortplural={2Ds},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{3d}%
+{%
+name={\acronymfont {\glsentryshort {3d}}},%
+sort={3D},%
+type={acronym},%
+first={3D},%
+firstplural={3Ds},%
+text={3D},%
+plural={3Ds},%
+description={Three Dimensions},%
+descriptionplural={Three Dimensions},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Three Dimensions},%
+longplural={Three Dimensionss},%
+short={3D},%
+shortplural={3Ds},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{cfl}%
+{%
+name={\acronymfont {\glsentryshort {cfl}}},%
+sort={CFL},%
+type={acronym},%
+first={CFL},%
+firstplural={CFLs},%
+text={CFL},%
+plural={CFLs},%
+description={Courant-Friedrichs-Lewy},%
+descriptionplural={Courant-Friedrichs-Lewy},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Courant-Friedrichs-Lewy},%
+longplural={Courant-Friedrichs-Lewys},%
+short={CFL},%
+shortplural={CFLs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{lumex}%
+{%
+name={\acronymfont {\glsentryshort {lumex}}},%
+sort={LuMeX},%
+type={acronym},%
+first={LuMeX},%
+firstplural={LuMeXs},%
+text={LuMeX},%
+plural={LuMeXs},%
+description={Lumerical Meep Exchange},%
+descriptionplural={Lumerical Meep Exchange},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Lumerical Meep Exchange},%
+longplural={Lumerical Meep Exchanges},%
+short={LuMeX},%
+shortplural={LuMeXs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{mpi}%
+{%
+name={\acronymfont {\glsentryshort {mpi}}},%
+sort={MPI},%
+type={acronym},%
+first={MPI},%
+firstplural={MPIs},%
+text={MPI},%
+plural={MPIs},%
+description={Message Passing Interface},%
+descriptionplural={Message Passing Interface},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Message Passing Interface},%
+longplural={Message Passing Interfaces},%
+short={MPI},%
+shortplural={MPIs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{lhs}%
+{%
+name={\acronymfont {\glsentryshort {lhs}}},%
+sort={LHS},%
+type={acronym},%
+first={LHS},%
+firstplural={LHSs},%
+text={LHS},%
+plural={LHSs},%
+description={Left-Hand Side},%
+descriptionplural={Left-Hand Side},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Left-Hand Side},%
+longplural={Left-Hand Sides},%
+short={LHS},%
+shortplural={LHSs},%
+counter={page},%
+parent={},%
+%
+}%
+
+\glsdefs@newdocentry{rhs}%
+{%
+name={\acronymfont {\glsentryshort {rhs}}},%
+sort={RHS},%
+type={acronym},%
+first={RHS},%
+firstplural={RHSs},%
+text={RHS},%
+plural={RHSs},%
+description={Right-Hand Side},%
+descriptionplural={Right-Hand Side},%
+symbol={\relax },%
+symbolplural={\relax },%
+user1={},%
+user2={},%
+user3={},%
+user4={},%
+user5={},%
+user6={},%
+long={Right-Hand Side},%
+longplural={Right-Hand Sides},%
+short={RHS},%
+shortplural={RHSs},%
+counter={page},%
+parent={},%
+%
+}%
+

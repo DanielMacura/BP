@@ -93,6 +93,7 @@
 
 
 
+
 \ifczech
   \main@language{czech}
 \else
@@ -1244,6 +1245,8 @@ Management}{\@fit@EN}%
 \usepackage{xcolor,colortbl}
 \usepackage{multirow}
 \usepackage{tabularx}
+\usepackage{tabularray}
+\usepackage{dirtree}
 \usepackage{graphicx}
 \usepackage{url}
 \usepackage[ruled,vlined]{algorithm2e}

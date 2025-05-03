@@ -39,7 +39,7 @@ $(CO).dvi: $(CO).tex $(CO).bib
 	latex $(CO)
 
 clean:
-	rm -f *.dvi *.log $(CO).blg $(CO).bbl $(CO).toc *.aux $(CO).out $(CO).lof $(CO).ptc
+	rm -f *.dvi *.log *.ist *.glsdefs *.gls *.glo *.glg *.alg *.acr *.acn $(CO).blg $(CO).bbl $(CO).toc *.aux $(CO).out $(CO).lof $(CO).ptc
 	rm -f $(CO).pdf
 	rm -f $(FIGURES_DIR)/*.log $(FIGURES_DIR)/*.aux $(FIGURES_DIR)/*.pdf
 	rm -f *~

@@ -149,10 +149,10 @@ class Not(Token):
     Represents the unary not operator token.
 
     :param lexeme_pattern: The regular expression pattern used to match the unary not operator.
-                            Lexeme pattern: `r"!"`
+                            Lexeme pattern: `r"\!|\~"`
     """
 
-    lexeme_pattern = r"\!"
+    lexeme_pattern = r"\!|\~"
 
 
 # Comparison operators
@@ -232,6 +232,26 @@ class LTE(Token):
 
     lexeme_pattern = r"\<\="
 
+
+class And(Token):
+    """
+    Represents the 'and' operator token.
+
+    :param lexeme_pattern: The regular expression pattern used to match the 'and' operator.
+                            Lexeme pattern: `r"&|and"`
+    """
+
+    lexeme_pattern = r"\&|and"
+
+class Or(Token):
+    """
+    Represents the 'or' operator token.
+
+    :param lexeme_pattern: The regular expression pattern used to match the 'or' operator.
+                            Lexeme pattern: `r"||or"`
+    """
+
+    lexeme_pattern = r"\||or"
 
 # Brackets
 class LeftBracket(Token):
@@ -417,6 +437,9 @@ class SetToken(Token):
 class AddRect(Token):
     lexeme_pattern = r"addrect"
 
+class AddSphere(Token):
+    lexeme_pattern = r"addsphere"
+
 class SelectAll(Token):
     lexeme_pattern = r"selectall"
 
@@ -429,3 +452,8 @@ class Select(Token):
 class ShiftSelect(Token):
     lexeme_pattern = r"shiftselect"
 
+class AddPlane(Token):
+    lexeme_pattern = r"addplane"
+
+class AddDFTMonitor(Token):
+    lexeme_pattern = r"adddftmonitor"

@@ -223,6 +223,47 @@ class StoreVariableName(Action):
         logger.info(f"Storing variable name {name.lexeme}")
         ValueStack.put(node)
 
+class LogicOperation(Action):
+    """Action for creating logical operation nodes in the AST.
+
+    Constructs :class:`ast.BoolOp` nodes for logical operations (and/or)
+    based on the operator passed during initialization.
+
+    :param op: The AST operator node to use for the logical operation.
+        Must be one of: :class:`ast.And`, :class:`ast.Or`
+    :type op: :class:`ast.operator`
+    """
+
+    def __init__(self, op: ast.operator):
+        """Initialize logical operation with specific operator.
+
+        :raises ValueError: If unsupported operator type is provided
+        """
+        if type(op) not in (ast.And, ast.Or):
+            raise ValueError("Unsupported operator type. Must be 'and' or 'or'.")
+
+        self.op = op
+
+    def call(
+        self,
+        ValueStack: LifoQueue[AST],
+        TokenStack: LifoQueue[Token],
+    ):
+        """Create and push logical operation node to ValueStack.
+
+        :param ValueStack: LIFO queue containing AST nodes in reverse order:
+
+            - Top: Right operand
+            - Next: Left operand
+
+        :param TokenStack: Not used in this action (maintained for interface consistency)
+        """
+        right = ValueStack.get()
+        left = ValueStack.get()
+
+        node = ast.BoolOp(op=self.op, values=[left, right])
+        logger.info(f"Performing logical operation {self.op} on {left} and {right}")
+        ValueStack.put(node)
 
 class BinaryOperation(Action):
     """Action for performing binary operations in the abstract syntax tree.
@@ -1221,10 +1262,164 @@ class SetProperty(Action):
                 loop_body = create_loop_body("size", components)
                 loop = create_getSelected_loop([loop_body])
                 ValueStack.put(loop)
+                
+            case "frequency":
+                # record.src.frequency = value
+                body = [
+                    ast.Assign(
+                        targets=[
+                            ast.Attribute(
+                                value=ast.Attribute(
+                                    value=ast.Name(id="record", ctx=ast.Load()),
+                                    attr="src",
+                                    ctx=ast.Load(),
+                                ),
+                                attr="frequency",
+                                ctx=ast.Store(),
+                            )
+                        ],
+                        value=value,
+                    )
+                ]
+                loop = create_getSelected_loop(body)
+                ValueStack.put(loop)
+
+            case "wavelength":
+                # record.src.frequency = 1.0 / value
+                body = [
+                    ast.Assign(
+                        targets=[
+                            ast.Attribute(
+                                value=ast.Attribute(
+                                    value=ast.Name(id="record", ctx=ast.Load()),
+                                    attr="src",
+                                    ctx=ast.Load(),
+                                ),
+                                attr="frequency",
+                                ctx=ast.Store(),
+                            )
+                        ],
+                        value=ast.BinOp(
+                            left=ast.Constant(value=1.0),
+                            op=ast.Div(),
+                            right=value,
+                        ),
+                    )
+                ]
+                loop = create_getSelected_loop(body)
+                ValueStack.put(loop)
+
+            case "component":
+                # record.component = value (expects already resolved mp.Ex / mp.Ey)
+                body = [
+                    ast.Assign(
+                        targets=[
+                            ast.Attribute(
+                                value=ast.Name(id="record", ctx=ast.Load()),
+                                attr="component",
+                                ctx=ast.Store(),
+                            )
+                        ],
+                        value=value,
+                    )
+                ]
+                loop = create_getSelected_loop(body)
+                ValueStack.put(loop)
+
+            case "direction":
+                # record.direction = mp.Vector3(...) (expects tuple/list)
+                loop_body = ast.Assign(
+                    targets=[
+                        ast.Attribute(
+                            value=ast.Name(id="record", ctx=ast.Load()),
+                            attr="direction",
+                            ctx=ast.Store(),
+                        )
+                    ],
+                    value=value  # Can wrap this in Vector3 if needed
+                )
+                loop = create_getSelected_loop([loop_body])
+                ValueStack.put(loop)
 
             case _:
                 logger.warning(f"Unsupported property: {name.value}")
                 ValueStack.put(ast.Pass())
+
+class AddDFTMonitor(Action):
+    """Action for creating and adding a basic DFT monitor to the selector.
+
+    Mimics a default Lumerical `adddftmonitor` with hardcoded field components
+    (EX, EY, EZ, HX, HY, HZ, PX, PY, PZ, POWER) and geometry.
+
+    Example generated code:
+        selector.add(Record(
+            "DFT Monitor",
+            sim.add_dft_fields([mp.Ex, mp.Ey, mp.Ez, mp.Hx, mp.Hy, mp.Hz],
+                               fcen=1.0, df=1.0, nfreq=100,
+                               center=mp.Vector3(0,0,0),
+                               size=mp.Vector3(1,1,0),
+                               yee_grid=False),
+            True
+        ))
+
+    Notes:
+    - Uses a 2D XY-plane monitor (z-span = 0) centered at origin.
+    - Default frequency range: center = 1.0, width = 1.0, points = 100
+    - Includes power monitor via `add_flux` for the same region
+    - PX/PY/PZ are assumed to be derived from E and H in post-processing
+    """
+
+    def call(self, ValueStack: LifoQueue, TokenStack: LifoQueue):
+        # Add DFT fields monitor
+        dft_fields = ast.Call(
+            func=ast.Attribute(
+                value=ast.Name(id="sim", ctx=ast.Load()),
+                attr="add_dft_fields",
+                ctx=ast.Load(),
+            ),
+            args=[
+                ast.List(
+                    elts=[
+                        ast.Attribute(value=ast.Name(id="mp", ctx=ast.Load()), attr=c, ctx=ast.Load())
+                        for c in ["Ex", "Ey", "Ez", "Hx", "Hy", "Hz"]
+                    ],
+                    ctx=ast.Load(),
+                )
+            ],
+            keywords=[
+                ast.keyword(arg="fcen", value=ast.Constant(value=1.0)),
+                ast.keyword(arg="df", value=ast.Constant(value=1.0)),
+                ast.keyword(arg="nfreq", value=ast.Constant(value=100)),
+                ast.keyword(
+                    arg="center",
+                    value=ast.Call(
+                        func=ast.Attribute(value=ast.Name(id="mp", ctx=ast.Load()), attr="Vector3", ctx=ast.Load()),
+                        args=[ast.Constant(value=0), ast.Constant(value=0), ast.Constant(value=0)],
+                        keywords=[],
+                    ),
+                ),
+                ast.keyword(
+                    arg="size",
+                    value=ast.Call(
+                        func=ast.Attribute(value=ast.Name(id="mp", ctx=ast.Load()), attr="Vector3", ctx=ast.Load()),
+                        args=[ast.Constant(value=1), ast.Constant(value=1), ast.Constant(value=0)],
+                        keywords=[],
+                    ),
+                ),
+                ast.keyword(arg="yee_grid", value=ast.Constant(value=False))
+            ]
+        )
+
+        ValueStack.put(
+            AddToSelector(
+                [
+                    ast.Constant(value="DFT Monitor"),
+                    dft_fields,
+                    ast.Constant(value=True),
+                ]
+            )
+        )
+
 
 
 def AddToSelector(args: Tuple[ast.Constant, ast.Call, ast.Constant]) -> ast.Expr:
@@ -1349,6 +1544,62 @@ class AddRect(Action):
             )
         )
 
+class AddSphere(Action):
+    """Action for creating and adding a spherical block to the selector.
+
+    Generates AST nodes to create a Meep spherical block with default size
+    and adds it to the selector using the Record pattern. This represents
+    Lumerical's sphere creation syntax with default placeholder values.
+
+    Example generated code:
+        selector.add(Record(
+            "Sphere",
+            mp.Sphere(radius=1),
+            True
+        ))
+    """
+
+    def call(self, ValueStack: LifoQueue, TokenStack: LifoQueue):
+        """Creates and pushes sphere Record addition to the value stack.
+
+        :param ValueStack: LIFO queue where the expression will be pushed
+        :param TokenStack: Not used in this action (interface consistency)
+
+        Node Structure:
+        - Creates a Record with:
+            - Name: "Sphere"
+            - Value: mp.Sphere with default radius (1)
+            - Unit: True (boolean placeholder)
+
+        Dependencies:
+        - Requires `mp` (meep) module import
+        - Requires `Record` and `selector` initialization
+
+        .. note:: Currently uses hardcoded default values. For dynamic size/materials,
+        additional processing would be needed.
+        """
+        ValueStack.put(
+            AddToSelector(
+                [
+                    ast.Constant(value="Sphere"),
+                    ast.Call(
+                        func=ast.Attribute(
+                            ast.Name(id="mp", ctx=ast.Load()),
+                            "Sphere",
+                            ctx=ast.Load(),
+                        ),
+                        args=[],
+                        keywords=[
+                            ast.keyword(
+                                arg="radius",
+                                value=ast.Constant(value=1),
+                            )
+                        ],
+                    ),
+                    ast.Constant(value=True),
+                ]
+            )
+        )
 
 class AddFDTD(Action):
     """Action for creating and adding a basic FDTD simulation region to the selector.
@@ -1420,6 +1671,101 @@ class AddFDTD(Action):
                     ast.Constant(value=True),  # selected
                 ]
             )
+        )
+
+class AddPlaneSource(Action):
+    """Action for adding a default Lumerical-like plane wave source in Meep.
+
+    Generates AST nodes to initialize a Meep continuous plane wave source with
+    Lumerical-like defaults:
+    - axis = 'z'
+    - direction = 'backward'
+    - center = (0, 0, 3e-6)
+    - size = (2e-6, 5e-6, 0)
+    - wavelength = 0.5e-6
+    - polarization = mp.Ex
+
+    Adds this source to the selector as a Record named "PlaneSource".
+
+    Example generated code:
+        selector.add(Record(
+            "PlaneSource",
+            mp.Source(...),
+            True
+        ))
+    """
+
+    def call(self, ValueStack: LifoQueue, TokenStack: LifoQueue):
+        source_call = ast.Call(
+            func=ast.Attribute(value=ast.Name(id="mp", ctx=ast.Load()), attr="Source", ctx=ast.Load()),
+            args=[],
+            keywords=[
+                ast.keyword(
+                    arg="src",
+                    value=ast.Call(
+                        func=ast.Attribute(value=ast.Name(id="mp", ctx=ast.Load()), attr="ContinuousSource", ctx=ast.Load()),
+                        args=[],
+                        keywords=[
+                            ast.keyword(
+                                arg="frequency",
+                                value=ast.BinOp(
+                                    left=ast.Constant(value=1.0),
+                                    op=ast.Div(),
+                                    right=ast.Constant(value=0.5e-6),
+                                ),
+                            )
+                        ]
+                    )
+                ),
+                ast.keyword(
+                    arg="component",
+                    value=ast.Attribute(value=ast.Name(id="mp", ctx=ast.Load()), attr="Ex", ctx=ast.Load()),
+                ),
+                ast.keyword(
+                    arg="center",
+                    value=ast.Call(
+                        func=ast.Attribute(value=ast.Name(id="mp", ctx=ast.Load()), attr="Vector3", ctx=ast.Load()),
+                        args=[
+                            ast.Constant(value=0),
+                            ast.Constant(value=0),
+                            ast.Constant(value=3e-6),
+                        ],
+                        keywords=[]
+                    )
+                ),
+                ast.keyword(
+                    arg="size",
+                    value=ast.Call(
+                        func=ast.Attribute(value=ast.Name(id="mp", ctx=ast.Load()), attr="Vector3", ctx=ast.Load()),
+                        args=[
+                            ast.Constant(value=2e-6),
+                            ast.Constant(value=5e-6),
+                            ast.Constant(value=0),
+                        ],
+                        keywords=[]
+                    )
+                ),
+                ast.keyword(
+                    arg="direction",
+                    value=ast.Call(
+                        func=ast.Attribute(value=ast.Name(id="mp", ctx=ast.Load()), attr="Vector3", ctx=ast.Load()),
+                        args=[
+                            ast.Constant(value=0),
+                            ast.Constant(value=0),
+                            ast.Constant(value=-1),
+                        ],
+                        keywords=[]
+                    )
+                ),
+            ]
+        )
+
+        ValueStack.put(
+            AddToSelector([
+                ast.Constant(value="PlaneSource"),
+                source_call,
+                ast.Constant(value=True),
+            ])
         )
 
 
