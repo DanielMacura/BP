@@ -14,6 +14,11 @@ I was expecting an "="---line 447 of file projekt-20-literatura-bibliography.bib
  :   title        = {for Script command},
 (Error may have been on previous line)
 I'm skipping whatever remains of this entry
+You're missing a field name---line 490 of file projekt-20-literatura-bibliography.bib
+ : 
+ : %  revised         = {2023-06-30},
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
 Warning--empty edition in davidson_2010
 Warning--empty edition in dirac1931monopole
 Warning--empty edition in staelin2009electromagnetics
@@ -31,45 +36,45 @@ Warning--empty title in ansys_for_command
 Warning--empty year in ansys_for_command
 Warning--empty edition in wirth_webber
 Warning--empty edition in Holub_1990
-You've used 18 entries,
+You've used 20 entries,
             3768 wiz_defined-function locations,
-            900 strings with 8129 characters,
-and the built_in function-call counts, 5912 in all, are:
-= -- 438
-> -- 158
-< -- 23
-+ -- 56
-- -- 37
-* -- 302
-:= -- 671
-add.period$ -- 64
-call.type$ -- 18
-change.case$ -- 55
-chr.to.int$ -- 27
-cite$ -- 35
-duplicate$ -- 438
-empty$ -- 853
-format.name$ -- 27
-if$ -- 1497
+            917 strings with 8547 characters,
+and the built_in function-call counts, 6608 in all, are:
+= -- 490
+> -- 182
+< -- 28
++ -- 71
+- -- 49
+* -- 330
+:= -- 755
+add.period$ -- 73
+call.type$ -- 20
+change.case$ -- 62
+chr.to.int$ -- 32
+cite$ -- 37
+duplicate$ -- 492
+empty$ -- 946
+format.name$ -- 29
+if$ -- 1667
 int.to.chr$ -- 0
-int.to.str$ -- 18
+int.to.str$ -- 20
 missing$ -- 0
-newline$ -- 123
-num.names$ -- 18
-pop$ -- 185
+newline$ -- 138
+num.names$ -- 20
+pop$ -- 205
 preamble$ -- 1
 purify$ -- 4
 quote$ -- 0
-skip$ -- 260
+skip$ -- 286
 stack$ -- 0
-substring$ -- 208
-swap$ -- 89
-text.length$ -- 10
+substring$ -- 224
+swap$ -- 100
+text.length$ -- 13
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 17
-while$ -- 35
-width$ -- 20
-write$ -- 225
-(There was 1 error message)
+while$ -- 41
+width$ -- 22
+write$ -- 254
+(There were 2 error messages)

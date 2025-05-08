@@ -1,0 +1,33 @@
+\documentclass[tikz,border=2mm]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,decorations.markings,patterns,patterns.meta}
+
+\begin{document}
+\begin{tikzpicture}[>=Latex, scale=1]
+
+
+  \fill[cyan!20] (-4,0) rectangle (4,-2);
+  \fill[pattern={Lines[angle=45,distance=4pt,line width=0.3pt]}, pattern color=black] (-4,0) rectangle (4,-0.5);
+
+
+  \draw[dashed] (0,0) -- (0,1.2);
+
+  \draw[red, thick, ->] (-2,2) -- (0,0);
+  \draw[red, thick, ->] (0,0) -- (2,2);
+
+
+  \node at (-3, 0.5) {$n_{\mathrm{air}}$};
+  \node at (-3, -1.0) {$n_{\mathrm{perfect\ mirror}}$};
+
+
+
+  \draw (0,0) ++(135:0.5) arc (135:90:0.5)   node[above left=0.2cm] {$\theta_i$};
+  \draw (0,0) ++(45:0.7) arc (45:90:0.7)   node[above right=0.2cm] {$\theta_r$};
+
+
+  \draw[thick] (-4,0) -- (4,0);
+
+
+
+\end{tikzpicture}
+\end{document}

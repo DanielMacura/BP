@@ -221,7 +221,7 @@ autosaveon\\
 49. & \texttt{logic\_and}         & $\rightarrow$ & \texttt{logic\_or} \texttt{logic\_and\_prime} \\
 50. & \texttt{logic\_and\_prime}  & $\rightarrow$ & \textbf{AND} \texttt{equality} \emph{actions.LogicOperation(ast.And())} \texttt{logic\_and\_prime} \\
 51. &                             & $|$           & $\varepsilon$ \\
-52. & \texttt{logic\_or}          & $\rightarrow$ & \texttt{comparison} \texttt{logic\_or\_prime} \\
+52. & \texttt{logic\_or}          & $\rightarrow$ & \texttt{equality} \texttt{logic\_or\_prime} \\
 53. & \texttt{logic\_or\_prime}   & $\rightarrow$ & \textbf{OR} \texttt{equality} \emph{actions.LogicOperation(ast.Or())} \texttt{logic\_or\_prime} \\
 54. &                             & $|$           & $\varepsilon$ \\
 55. & \texttt{equality}           & $\rightarrow$ & \texttt{comparison} \texttt{equality\_prime} \\

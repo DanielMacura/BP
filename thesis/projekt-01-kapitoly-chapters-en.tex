@@ -61,7 +61,7 @@ This thesis explores the possibility of translating simulation code between two 
 \chapter{Review of Relevant Concepts}
 This chapter aims to give the reader a broader understanding of the relevant subject matter. It provides an overview of the physics behind the aforementioned simulations and an introduction to the basic concepts of compiler design and the underlying formal language theory. This chapter will not delve into the specifics of each subject at hand but will rather provide the reader with the foundations necessary to comprehend the remaining parts of this thesis.
 
-\section{Computational Electromagnetics}
+\section{Computational Electromagnetics}\label{sec:cem}
 As this thesis focuses on the implementation of a transpiler, an intricate grasp of \gls{cem} is not required; however, a surface-level explanation may benefit the reader, and thus it is provided below.
 
 As explained earlier, \gls{cem} is a branch of electromagnetics that focuses on computational methods. This process involves modeling the interactions of \gls{em} fields with objects, typically with the computation of the $\mathbf{E}$ (electric) and $\mathbf{H}$ (magnetic) fields or the surface current, in the case of Method of Moments, across the simulation domain. These methods discretize the fields in a step called \emph{meshing}, resulting in the subdivision of the problem domain into many smaller elements. Depending on the simulation method and number of dimensions, this may result in a three-dimensional grid, two-dimensional patches or one-dimensional segments. There are multiple different methods, that each have specific use cases, Finite Element Method is useful when facing arbitrary geometry or objects that do not align properly in the Cartesian grid. Method of Moments is a surface-based method that converts integral forms of Maxwell's equations into matrix equations. \gls{fdtd} solves Maxwell's equations in the time domain and it is one of the most commonly used methods and also a key part of this thesis, so it will be introduced in more detail in the following sections~\cite{davidson_2010}.
@@ -70,7 +70,7 @@ As explained earlier, \gls{cem} is a branch of electromagnetics that focuses on 
 \begin{figure}[H]\label{fig:double-slit}
   \centering
   \includegraphics[width=0.75\textwidth]{obrazky-figures/double-slit.pdf}
-  \caption{Visualization of the electrical field in the famous double slit experiment.}
+  \caption{Visualization of the electrical field in the famous double slit experiment adapted from~\cite{taylor_meep_double_slit}.}
 \end{figure}
 
 
@@ -182,7 +182,62 @@ The basic flow of the \gls{fdtd} algorithm is as follows:
 \subsection{Boundary Conditions}
 \todo{this}
 
-\section{Meep}
+\section{Optics}
+A brief introduction to optics is required to understand the analitical methods used as the ground truth during the evaluation in \cref{sec:results}. The following section will introduce the basic concepts of optics, such as reflection, refraction, interference and diffraction.
+
+When discussing optics, terms such as a medium, ray and interface often arise. A \emph{medium} is a material through which light travels. Mediums may simply be divided into \emph{conductors}, \emph{nonconductors} and \emph{dielectics}, the latter of which will be utilized further on. A \emph{dielectric} medium does not conduct electricity, however it may be polarized by an electric field. This leads to further categorization of dielectics into \emph{polarized} and \emph{nonpolarized} dielectics. Polarized dielectics are materials that have a permanent dipole moment, such as water, while nonpolarized dielectics do not have a permanent dipole moment, such as glass. The polarization of a dielectric is the separation of positive and negative charges within the material, which occurs when an external electric field is applied. This polarization leads to the formation of electric dipoles within the material, which can affect the propagation of light through it. The degree of polarization depends on the strength of the electric field and the material's properties~\cite[Chapter~6]{cermak}.
+
+An \emph{interface} is the boundary between two different media, such as air and glass. A \emph{ray} is an idealized model of light propagation, represented as a straight line in the direction of the light's travel. During the travel of a ray through a interface, the ray may experience multiple phenomena which are described in the following sections.
+
+
+
+\subsection{Reflection}
+Reflection is the act of light bouncing back off a surface. The most common example of reflection is a mirror, where rays strike the surface and bounces back causing reflected objects to be seen. The law of reflection states that the angle of incidence ($\theta_i$) is equal to the angle of reflection ($\theta_r$). This means that if a light ray strikes a surface at a certain angle, it will bounce off at the same angle. This can be expressed mathematically as:
+\begin{equation}
+  \theta_i = \theta_r
+  \end{equation}
+
+This is show in \cref{fig:mirror}.
+\begin{figure}[H]\label{fig:mirror}
+  \centering
+  \includegraphics[width=0.75\textwidth]{figures/mirror.pdf}
+  \caption{A single ray of light striking a perfect mirror.}
+\end{figure}
+
+\subsection{Transmission}
+Transmission is the act of light passing through a medium. The most common example of transmission is a window, where rays strike the surface and pass through causing objects behind the window to be seen. Snell's law states that the angle of incidence ($\theta_i$) is related to the angle of refraction ($\theta_t$). This means that if a light ray strikes a surface at a certain angle, it will bend as it passes through the surface. This can be expressed mathematically as:
+\begin{equation}
+  n_1 \sin(\theta_i) = n_2 \sin(\theta_t)
+  \end{equation}
+
+Where $n_1$ and $n_2$ are the refractive indices of the two media. The \emph{refractive index} is a measure of how much light slows down as it passes through a medium. This is shown in \cref{fig:single-layer}.
+\begin{figure}[H]\label{fig:single-layer}
+  \centering
+  \includegraphics[width=0.75\textwidth]{figures/single-layer.pdf}
+  \caption{Description of the Yee cell.}
+\end{figure}
+
+
+
+
+WIKIKIKIKIKIIK
+
+Solving Maxwell's equations for a light ray striking a boundary allows the derivation of the Fresnel equations,
+
+In fact, reflection of light may occur whenever light travels from a medium of a given refractive index into a medium with a different refractive index. In the most general case, a certain fraction of the light is reflected from the interface, and the remainder is refracted. Solving Maxwell's equations for a light ray striking a boundary allows the derivation of the Fresnel equations, which can be used to predict how much of the light is reflected, and how much is refracted in a given situation. This is analogous to the way impedance mismatch in an electric circuit causes reflection of signals. Total internal reflection of light from a denser medium occurs if the angle of incidence is greater than the critical angle. 
+WIKIKIKIKIKIIK
+
+
+\begin{figure}[H]\label{fig:thin-film}
+  \centering
+  \includegraphics[width=0.75\textwidth]{figures/thin-film.pdf}
+  \caption{Description of the Yee cell.}
+\end{figure}
+
+
+
+
+\section{Meep}\label{sec:meep}
 Meep --- MIT Electromagnetic Equation Propagation --- is an open-source program for \gls{em} simulations distributed under the GNU General Public License v2.0. It is a scriptable software package using Python, Scheme or C++ APIs, however it lacks a graphical user interface. Nonetheless this allows the combination of multiple computation and a multi-parameter optimization, even in parallel. Meep handles paralelization across multiple cores and systems using the \gls{mpi}\footnote{\url{https://www.mpi-forum.org/}}. 
 
 Meep allows simulating in \gls{1d}, \gls{2d}, \gls{3d} and cylindrical coordinates. It can handle arbitrary geometries and materials such as anisotropic, dispersive, nonlinear and gyrotropic materials. It also supports a variety of boundary conditions, including Bloch-periodic, perfect-conductor boundary conditions and perfectly matched layers. 
@@ -190,12 +245,12 @@ Meep allows simulating in \gls{1d}, \gls{2d}, \gls{3d} and cylindrical coordinat
 Meep offers the ability to exploit symmetries to reduce the computational time and memory requirements. The $\mathbf{E}$ and $\mathbf{H}$ fields may be exported and loaded using the HDF5 file format. These may be converted to other formats, such as VTK and visualized using ParaView\footnote{\url{https://www.paraview.org/}}. 
 \todo{expand}
 
-\section{Ansys Lumerical}
+\section{Ansys Lumerical}\label{sec:lumerical}
 Ansys Lumerical FDTD\copyright \ is a photonics simulation tool that combines \gls{fdtd}, Optical Multilayer Solvers, Rigorously Coupled-Wave Analysis Solvers, Waveguide Solvers, Finite-difference Eingenmode Solvers and others within a unified design environment\footnote{Any and all ANSYS, Inc. brand, product, service and feature names, logos and slogans such as Ansys Lumerical are registered trademarks or trademarks of ANSYS, Inc. or its subsidiaries in the United States or other countries. All other brand, product, service and feature names or trademarks are the property of their respective owners.}.
 \todo{expand}
 
 
-\section{Formal Language Theory}
+\section{Formal Language Theory}\label{sec:formal-language-theory}
 We use languages like English, Czech, or Slovak in everyday communication exchanges, and these languages are commonly referred to as \emph{natural languages}. The Oxford English Dictionary defines language as a system of spoken or written communication used by a particular country, people or community. How-ever, a more rigorous definition of languages and the tools to operate within them is required. These aspects of language will be tackled in the notion of formal language, which is introduced in the below sections.
 
 \subsection{Alphabets and Languages}
@@ -434,9 +489,7 @@ Thus we have show that all 3 devices are equivalent and may be used to describe 
   
 
 
-\section{Compilers}
-
-
+\section{Compilers}\label{sec:compilers}
 Today's world relies on software more than ever before. It is imperative for developers to be able to write software efficiently. Software today is written in programming languages, high-level human-readable notations for defining how a program should run. However, before a program can be run on a system, it has to be translated (or compiled) into low-level machine code, which computers can run. The computer program that facilitates this translation is called a \emph{compiler}. See \cref{fig:compiler}.
 
 \begin{figure}[H]\label{fig:compiler}
@@ -475,12 +528,14 @@ The first stage of a compiler is lexical analysis, also known as a \emph{lexer} 
 \subsection*{Code Generation}
 
 
-\chapter{Transpiler Implementation}
+\chapter{Transpiler Implementation}\label{sec:transpiler-implementation}
 This chapter introduces the implementation of the source to source compiler designed to convert Lumerical's scripting language to Python combined with the Meep library. 
 \section{Choice of Tools}
 When writing any program, it is important to choose the right tools for the job. This comes down not only to choosing the programming language but also what libraries and packages to utilize and which components to implement to better suit the project's constraints. The source language, Lumerical's scripting language, allows you to automate tasks and analysis such as manipulating simulation objects, launching simulations, and analyzing results~\cite{ansys_lsf}. This language how-ever, is not suitable for implementing a transpiler. Looking at the target language, Python is a general-purpose high-level interpreted language. Writing the transpiler in Python will allow for easier editing and debugging due to it's high-level nature. Consequently, and owing to the fact that the implementation language is the same as the target language, this will also allow us to use built in modules for generating the target code. Python's ecosystem also includes the tools such as Sphinx and Pytest for writing technical documentation and tests respectively.
 
 \subsection{Implementation Overview}
+
+The transpiler is implemented in Python 3.13.3. The transpiler is a command line tool that takes a Lumerical scripting language file as input and generates a Python equivalent in an output directory.
 
 The figure bellow describes the layout of the submitted work. \todo{make more verbose}
 
@@ -737,7 +792,7 @@ For loops are supported for both notation conventions, i.e. \texttt{for(x=1:2:10
 47.& \texttt{logic\_and}        & $\rightarrow$ & \texttt{logic\_or} \texttt{logic\_and\_prime} \\
 48.& \texttt{logic\_and\_prime} & $\rightarrow$ & \textbf{AND} \texttt{equality} \texttt{logic\_and\_prime} \\
 49.&                            & $|$           & $\varepsilon$ \\
-50.& \texttt{logic\_or}         & $\rightarrow$ & \texttt{comparison} \texttt{logic\_or\_prime} \\
+50.& \texttt{logic\_or}         & $\rightarrow$ & \texttt{equality} \texttt{logic\_or\_prime} \\
 51.& \texttt{logic\_or\_prime}  & $\rightarrow$ & \textbf{OR} \texttt{equality} \texttt{logic\_or\_prime} \\
 52.&                            & $|$           & $\varepsilon$ \\
 53.& \texttt{equality}          & $\rightarrow$ & \texttt{comparison} \texttt{equality\_prime} \\
@@ -1678,18 +1733,177 @@ The \texttt{Select} action is used to generate an AST node that calls the \textt
 \todo{write about transformation of ast}
 
 
-\chapter{Evaluation of Results}
+\chapter{Evaluation of Results}\label{sec:results}
 Thus far, the thesis has shown the threoretical and practical acspects of the transpilation process while dealing with key intricacies of the Lumerical scripting language and Meep. The following part of this thesis moves on to describe in greater detail the transpilation process applied on examples and compares Lumerical and Meep simulations to analytically obtained results.
 \section{Transpilation}
 
+\subsection{General language constructs}
+\begin{figure}[H]\label{fig:lumerical-pyhton-expression}
+  \centering
+
+  \begin{subfigure}[t]{0.4\textwidth}
+    \begin{lstlisting}[style=lumerical]
+x = (-1 * (2 - 3)) / 2;
+    \end{lstlisting}
+    \caption{Lumerical scripting language}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.4\textwidth}
+    \begin{lstlisting}[style=python]
+x = -1 * (2 - 3) / 2
+    \end{lstlisting}
+    \caption{Transpiled Python code}
+  \end{subfigure}
+
+  \caption{Translation of simple expression.}
+  
+\end{figure}
+
+
+
+
+
+\begin{figure}[H]\label{fig:lumerical-pyhton-expression}
+  \centering
+
+  \begin{subfigure}[t]{0.4\textwidth}
+    \begin{lstlisting}[style=lumerical]
+if(x < 5){
+  y = 2;
+}
+else if (x > 3 and x < 10){
+  y = 1;
+  if(x > 5){
+    ?x;
+  }
+}
+else if (x > 30){
+  y = 10;
+}
+else{
+  y = 0;
+}
+    \end{lstlisting}
+    \caption{Lumerical scripting language}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.4\textwidth}
+    \begin{lstlisting}[style=python]
+if x < 5:
+  y = 2
+elif x > 3 and x < 10:
+  y = 1
+  if x > 5:
+    print(x)
+elif x > 30:
+  y = 10
+else:
+  y = 0
+    \end{lstlisting}
+    \caption{Transpiled Python code}
+  \end{subfigure}
+
+  \caption{Translation of nested contitional statements.}
+\end{figure}
+
+
+
+
+\begin{figure}[H]\label{fig:lumerical-pyhton-expression}
+  \centering
+
+  \begin{subfigure}[t]{0.4\textwidth}
+    \begin{lstlisting}[style=lumerical]
+for(x=1:2:10){
+  ?x;
+  if(x==5){
+    break;
+  }
+}
+    \end{lstlisting}
+    \caption{Lumerical scripting language}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{0.4\textwidth}
+    \begin{lstlisting}[style=python]
+x = 1
+while x <= 10:
+  print(x)
+  if x == 5:
+    break
+  x += 2
+    \end{lstlisting}
+    \caption{Transpiled Python code}
+  \end{subfigure}
+
+  \caption{Translation of a for loop.}
+\end{figure}
+
+\subsection{\gls{fdtd} language constructs}
+
+
 \section{Comparison of Lumerical and Meep}
 
+
+
+\begin{figure}[H]\label{fig:yee}
+  \centering
+  \includegraphics[width=0.5\textwidth]{obrazky-figures/sim-layout.pdf}
+  \caption{Description of the Yee cell.}
+\end{figure}
+
+
+
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[b]{0.45\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{obrazky-figures/Transmission_eps25.0_h0.3_r50.pdf}
+      \caption{Image A}
+      \label{fig:subfig1}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.45\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{obrazky-figures/Transmission_eps25.0_h0.3_r100.pdf}
+      \caption{Image B}
+      \label{fig:subfig2}
+  \end{subfigure}
+  
+  \vspace{0.5cm}
+  
+  \begin{subfigure}[b]{0.45\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{obrazky-figures/Transmission_eps25.0_h0.3_r150.pdf}
+      \caption{Image C}
+      \label{fig:subfig3}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.45\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{obrazky-figures/Transmission_eps25.0_h0.3_r200.pdf}
+      \caption{Image D}
+      \label{fig:subfig4}
+  \end{subfigure}
+  
+  \caption{A 2x2 grid of subfigures.}
+  \label{fig:2x2grid}
+\end{figure}
 
 \todo{talk about methodology}
 \todo{show comparison of leumerical code, generated python and handwritten -> conclusion probably not best method}
 \todo{test examples analytic vs FDTD}
 \chapter{Conclusion}
+This thesis explored the feasibility of automating the translation of simulation scripts between two \gls{fdtd} tools by studying their structures, languages, and underlying computational principles as well as comparing their perfomance. These goals were successfuly achieved. 
+
+
+The thesis began by exploring the underlaying \gls{fdtd} principles in \cref{sec:cem}, followed by a detailed description of the Lumerical and Meep tools in \cref{sec:lumerical} and \cref{sec:meep}. Following that, the thesis presented an introduction of formal language theory in \cref{sec:formal-language-theory} which built the foundational knowledge for the discussion about the construction of a compiler in \cref{sec:compilers}.
+
+
+The transpiler implementation followed in \cref{sec:transpiler-implementation}, where the Lumerical scripting language was described in detail, including the creation its grammar which is available in \cref{appendix:two}. Following that, the lexical analysis and parsing was described for the chosen greedy regular expression based parser. 
+
+
 \todo{compare lumerical and meep}
 \todo{test result TBD}
 
-\texttt{\tiny{ast.}}

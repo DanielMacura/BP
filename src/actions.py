@@ -2,7 +2,6 @@ from ast import AST, USub
 import ast
 from queue import LifoQueue
 from symbol import Action
-from symtable import SymbolTable
 from tokens import Token
 from typing import Literal, Tuple, List
 import logging
@@ -736,10 +735,10 @@ class HandleAllLoops(Action):
         # First push the starting variable value above the While loop
         # ValueStack.put(loop_data["start"])
         ValueStack.put(start_node)
-        StoreToBody().call(ValueStack, TokenStack, SymbolTable)
+        StoreToBody().call(ValueStack, TokenStack)
         ValueStack.put(while_node)
         ValueStack.put(increment_node)
-        StoreToBody().call(ValueStack, TokenStack, SymbolTable)
+        StoreToBody().call(ValueStack, TokenStack)
 
 
 class CreateRangeCondition(Action):
@@ -1719,6 +1718,51 @@ class AddFDTD(Action):
                 ]
             )
         )
+
+class Run(Action):
+    def call(self, ValueStack: LifoQueue, TokenStack: LifoQueue):
+        selector_ref = ast.Name(id="selector", ctx=ast.Load())
+
+        # Get all geometry
+        geometry = ast.Assign(
+            targets=[ast.Name(id="geometry", ctx=ast.Store())],
+            value=ast.Call(
+                func=ast.Attribute(
+                    value=ast.Name(id="selector", ctx=ast.Load()),
+                    attr="getGeometry",
+                    ctx=ast.Load(),
+                ),
+                args=[],
+                keywords=[],
+            ),
+        )
+        # Assign geometry variable to all Simulations from Selector
+        assign_geometry = ast.For(
+                target=ast.Name(id="record", ctx=ast.Store()),
+                iter=ast.Call(
+                    func=ast.Attribute(selector_ref, "getSimulation", ctx=ast.Load()),
+                    args=[],
+                    keywords=[],
+                ),
+                body=[ast.Assign(
+                        targets=[
+                            ast.Attribute(
+                                value=ast.Name(id="record", ctx=ast.Load()),
+                                attr="geometry",
+                                ctx=ast.Store(),
+                            )
+                        ],
+                        value=ast.Name(id="geometry", ctx=ast.Load()),
+                    )],
+                orelse=[],
+            )c
+        
+
+        ValueStack.put(geometry)
+        StoreToBody().call(ValueStack, TokenStack)
+        ValueStack.put(assign_geometry)
+
+
 
 class AddPlaneSource(Action):
     """Action for adding a default Lumerical-like plane wave source in Meep.

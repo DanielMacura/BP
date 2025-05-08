@@ -5,8 +5,8 @@ import scienceplots
 from copy import deepcopy
 
 # Simulation parameters
-dimensions = 2          # 2D simulation
-resolution = 100           # grid points per μm (>=10 per smallest λ)
+dimensions = 3          # 2D simulation
+resolution = 50           # grid points per μm (>=10 per smallest λ)
 sx = 3.0                  # x-width (μm) of cell (thin periodic domain)
 sy = 20.0                 # y-height (μm) of cell
 dpml = 3.0                # PML thickness (μm)
@@ -44,15 +44,14 @@ sources = [mp.Source(mp.GaussianSource(frequency=fcen, fwidth=df, is_integrated=
 # Boundary conditions: PML top/bottom, periodic sides
 pml_layers = [mp.PML(dpml, direction=mp.Y, side=mp.Low),
               mp.PML(dpml, direction=mp.Y, side=mp.High),
-
-              mp.PML(dpml, direction=mp.Z, side=mp.Low),
-              mp.PML(dpml, direction=mp.Z, side=mp.High)]
+]
 sim = mp.Simulation(cell_size=mp.Vector3(sx, sy, sx),
                     geometry=[],
                     sources=sources,
                     boundary_layers=pml_layers,
                     resolution=resolution,
-                    dimensions=dimensions)
+                    dimensions=dimensions,
+                    k_point=mp.Vector3(0, 0, 0))
 
 flux_y = -4  # μm (just above bottom PML)
 tran_flux = sim.add_flux(fcen, df, nfreq, 
@@ -71,7 +70,8 @@ sim = mp.Simulation(cell_size=mp.Vector3(sx, sy, sx),
                     sources=sources,
                     boundary_layers=pml_layers,
                     resolution=resolution,
-                    dimensions=dimensions)
+                    dimensions=dimensions,
+                    k_point=mp.Vector3(0, 0, 0))
 tran_flux = sim.add_flux(fcen, df, nfreq, 
                          mp.FluxRegion(center=mp.Vector3(0, flux_y, 0), size=mp.Vector3(sx,0,sx)))
 sim.run(until=50)

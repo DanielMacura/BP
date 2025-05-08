@@ -457,3 +457,6 @@ class AddPlane(Token):
 
 class AddDFTMonitor(Token):
     lexeme_pattern = r"adddftmonitor"
+
+class Run(Token):
+    lexeme_pattern = r"run"

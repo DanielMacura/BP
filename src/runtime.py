@@ -24,6 +24,12 @@ class Selector:
     def getSelectedRecord(self) -> List[Record]:
         return [record for record in self.records if record.selected]
 
+    def getGeometry(self) -> List[Record]:
+        return [record.body for record in self.records if record.record_type in ["Block", "Cylinder", "Sphere"]]
+    
+    def getSimulation(self) -> List[Record]:
+        return [record.body for record in self.records if record.record_type == "Simulation"]
+
     def unselectAll(self) -> None:
         for record in self.records:
             record.selected = False
