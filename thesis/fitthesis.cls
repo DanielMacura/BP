@@ -86,9 +86,7 @@
 \usepackage{color}
 \usepackage{etoolbox}
 \usepackage{enumitem}
-\usepackage{color}
-\usepackage[unicode,colorlinks,hyperindex,plainpages=false,pdftex]{hyperref}
-\usepackage{cleveref}
+%\usepackage[unicode,colorlinks,hyperindex,plainpages=false,pdftex]{hyperref}
 \usepackage{booktabs}
 
 
@@ -177,11 +175,11 @@
 % Sazebni obrazec / Page layout
 %-----------------------------------------------------------------------------
 \iftwoside
-%  \usepackage[left=3.46cm, text={15.2cm,23.47cm}, top=2.5cm, marginparwidth=50pt]{geometry}
-  \usepackage[a4paper, showframe]{geometry}	%ADDED showframe
-  \newgeometry{left=3.46cm, text={15.2cm,23.47cm}, top=2.5cm, marginparwidth=50pt}
+  \usepackage[left=3.46cm, text={15.2cm,23.47cm}, top=2.5cm, marginparwidth=50pt]{geometry}
+  %\usepackage[a4paper, showframe]{geometry}	%ADDED showframe
+  %\newgeometry{left=3.46cm, text={15.2cm,23.47cm}, top=2.5cm, marginparwidth=50pt}
 \else
-  \usepackage[showframe]{geometry} %ADDED whole line
+  %\usepackage[showframe]{geometry} %ADDED whole line
   \setlength{\hoffset}{-0.7cm}
   \setlength{\voffset}{-1.5cm}
   \setlength{\textheight}{23.0cm}
@@ -1247,8 +1245,10 @@ Management}{\@fit@EN}%
 \usepackage{tabularx}
 \usepackage{tabularray}
 \usepackage{dirtree}
+\usepackage{xparse}
 \usepackage{graphicx}
 \usepackage{url}
+\usepackage{subcaption}
 \usepackage[ruled,vlined]{algorithm2e}
 \DeclareUrlCommand\url{\def\UrlLeft{<}\def\UrlRight{>} \urlstyle{tt}}
 \def\UrlBreaks{\do\/\do-}
@@ -1372,6 +1372,24 @@ Management}{\@fit@EN}%
 }
 
 %END Jan Pluskal (ipluskal) listings
+
+\lstdefinestyle{python}{
+  language=Python,
+  showspaces=false,
+  showtabs=false,
+  breaklines=true,
+  showstringspaces=false,
+  breakatwhitespace=true,
+  escapeinside={(*@}{@*)},
+  commentstyle=\color{greencomments},
+  keywordstyle=\color{bluekeywords},
+  stringstyle=\color{redstrings},
+  basicstyle=\ttfamily,
+  captionpos=b,
+  numbers=left,
+  frame=single,
+  morekeywords={self, class, def, None, True, False, lambda},
+}
 
 
 % Příkazy pro TODO (3 alternativy - lze zvolit preferovanou)

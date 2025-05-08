@@ -673,12 +673,12 @@ parent={},%
 \glsdefs@newdocentry{lumex}%
 {%
 name={\acronymfont {\glsentryshort {lumex}}},%
-sort={LuMeX},%
+sort={LUMEX},%
 type={acronym},%
-first={LuMeX},%
-firstplural={LuMeXs},%
-text={LuMeX},%
-plural={LuMeXs},%
+first={LUMEX},%
+firstplural={LUMEXs},%
+text={LUMEX},%
+plural={LUMEXs},%
 description={Lumerical Meep Exchange},%
 descriptionplural={Lumerical Meep Exchange},%
 symbol={\relax },%
@@ -691,8 +691,8 @@ user5={},%
 user6={},%
 long={Lumerical Meep Exchange},%
 longplural={Lumerical Meep Exchanges},%
-short={LuMeX},%
-shortplural={LuMeXs},%
+short={LUMEX},%
+shortplural={LUMEXs},%
 counter={page},%
 parent={},%
 %

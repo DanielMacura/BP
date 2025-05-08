@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import re
+import scienceplots
+
 
 # Raw data as a string
 data = """freq=1.250 (1/μm), T=0.525901
@@ -123,12 +125,14 @@ n2 = eps**0.5
 T_fresnel = (4*n1*n2)/((n1+n2)**2)
 
 # Plotting
+plt.style.use('science')
 plt.figure()
+
 plt.plot(wavelengths, transmissions, label='Meep', color='blue')
 plt.axhline(y=T_fresnel, color='red', linestyle='--', label='Fresnel')
 # set y to 0 to 1
 plt.ylim(0, 1)
-plt.xlabel('Wavelength (μm)')
+plt.xlabel('Wavelength (um)')
 plt.ylabel('Transmission')
 plt.title('Transmission Spectrum')
 plt.legend()

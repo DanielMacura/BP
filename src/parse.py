@@ -21,7 +21,7 @@ class Parser:
     :param lexer: The lexer provides a stream of tokens to be processed.
     :param table: The LL table.
     :param stack: The stack holds Terminals and NonTerminals, they are added and removed in a FIFO order. They guide the order of the parsing process.
-    :param valueStack: The valueStack holds AST nodes, that have been encountederd and will be consumed by actions at a later point.
+    :param valueStack: The valueStack holds AST nodes, that have been encountered and will be consumed by actions at a later point.
     :param tokenStack: The tokenStack holds already accepted tokens so they can be used in actions.
     :param ast: Stores the abstract syntax tree, used for resulting code generation.
     :param current_token: The current input token, call next(Lexer.tokens()) to update. 
@@ -49,9 +49,9 @@ class Parser:
         logger.info("Initialized Parser")
 
     def parse(self):
-        """This method runs the entire parsing process. A parse tree is generated uppon success.
+        """This method runs the entire parsing process. A parse tree is generated upon success.
 
-        :raises TypeError: A incorrect object type was encountederd on the stack.
+        :raises TypeError: A incorrect object type was encountered on the stack.
         """
         logger.info("START parsing")
         while not self.stack.empty():
@@ -96,7 +96,7 @@ class Parser:
         else:
             logger.error(f"Failed parsing input Terminal, {top, self.current_token}")
             raise ValueError(
-                f"Cannont parse input, failed at {top, self.current_token}"
+                f"Cannot parse input, failed at {top, self.current_token}"
             )
 
     def handleAction(self, top: Action):

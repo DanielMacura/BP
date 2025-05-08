@@ -1,0 +1,69 @@
+\documentclass[tikz,border=5mm]{standalone}
+\usepackage[edges]{forest}
+
+\begin{document}
+\begin{forest}
+%   for tree={
+%     font=\small,
+%     %grow=south,
+%     %parent anchor=south,
+%     %child anchor=north,
+%     edge path={\noexpand\path[\forestoption{edge}] (\forestOve{\forestove{@parent}}{name}.parent anchor) -- +(0,-12pt)-| (\forestove{name}.child anchor)\forestoption{edge label};}
+%     l sep=1cm,
+%     s sep=7mm,
+%     %parent anchor=south, 
+%     %child anchor=north
+%   },z
+forked edges,
+  [expression
+    [term
+      [factor
+        [unary
+          [primary
+            [2, tier=word]
+          ]
+        ]
+        [factor\_prime
+          [*, tier=word, parent anchor=west]
+          [unary
+            [primary
+              [(, tier=word]
+              [expression
+                [term
+                  [factor
+                    [unary
+                      [primary
+                        [1, tier=word]
+                      ]
+                    ]
+                  ]
+                  [term\_prime
+                    [+, tier=word]
+                    [factor
+                      [unary
+                        [primary
+                          [3, tier=word]
+                        ]
+                      ]
+                    ]
+                    [term\_prime
+                      [$\varepsilon$, tier=word]
+                    ]
+                  ]
+                ]
+              ]
+              [), tier=word]
+            ]
+          ]
+          [factor\_prime
+            [$\varepsilon$, tier=word]
+          ]
+        ]
+      ]
+      [term\_prime
+        [$\varepsilon$, tier=word]
+      ]
+    ]
+  ]
+\end{forest}
+\end{document}

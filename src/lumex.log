@@ -8,49 +8,49 @@ INFO:parse:Initialized Parser
 INFO:parse:START parsing
 DEBUG:parse:Current iteration, top root, input token AddFDTD
 DEBUG:parse:Queue []
-DEBUG:parse:valueStack [<ast.Module object at 0x7b6dda2e8350>]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>]
 
 
 DEBUG:parse:Pushing [NonTerminal(name='body'), StoreToBody(name=''), CreateSelector(name=''), StoreToBody(name=''), Imports(name='')]
 DEBUG:parse:Current iteration, top Imports(name=''), input token AddFDTD
 DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), CreateSelector(name=''), StoreToBody(name='')]
-DEBUG:parse:valueStack [<ast.Module object at 0x7b6dda2e8350>]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>]
 
 
 DEBUG:parse:Applying action Imports
 DEBUG:parse:Current iteration, top StoreToBody(name=''), input token AddFDTD
 DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), CreateSelector(name='')]
-DEBUG:parse:valueStack [<ast.Module object at 0x7b6dda2e8350>, <ast.ImportFrom object at 0x7b6dda11f250>]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>, <ast.ImportFrom object at 0x7025ce1278d0>]
 
 
 DEBUG:parse:Applying action StoreToBody
 DEBUG:parse:Current iteration, top CreateSelector(name=''), input token AddFDTD
 DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name='')]
-DEBUG:parse:valueStack [<ast.Module object at 0x7b6dda2e8350>]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>]
 
 
 DEBUG:parse:Applying action CreateSelector
 DEBUG:parse:Current iteration, top StoreToBody(name=''), input token AddFDTD
 DEBUG:parse:Queue [NonTerminal(name='body')]
-DEBUG:parse:valueStack [<ast.Module object at 0x7b6dda2e8350>, <ast.Assign object at 0x7b6dda2d7590>]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>, <ast.Assign object at 0x7025ce125e10>]
 
 
 DEBUG:parse:Applying action StoreToBody
 DEBUG:parse:Current iteration, top body, input token AddFDTD
 DEBUG:parse:Queue []
-DEBUG:parse:valueStack [<ast.Module object at 0x7b6dda2e8350>]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>]
 
 
 DEBUG:parse:Pushing [NonTerminal(name='body'), StoreToBody(name=''), NonTerminal(name='statement')]
 DEBUG:parse:Current iteration, top statement, input token AddFDTD
 DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name='')]
-DEBUG:parse:valueStack [<ast.Module object at 0x7b6dda2e8350>]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>]
 
 
 DEBUG:parse:Pushing [Semicolon(), AddFDTD(name=''), AddFDTD()]
 DEBUG:parse:Current iteration, top AddFDTD, input token AddFDTD
 DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), Semicolon(), AddFDTD(name='')]
-DEBUG:parse:valueStack [<ast.Module object at 0x7b6dda2e8350>]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>]
 
 
 DEBUG:lex:Matched ;
@@ -58,13 +58,13 @@ DEBUG:lex:So far longest match is ;
 INFO:lex:Advanced lexer with token Semicolon matching ;
 DEBUG:parse:Current iteration, top AddFDTD(name=''), input token Semicolon
 DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), Semicolon()]
-DEBUG:parse:valueStack [<ast.Module object at 0x7b6dda2e8350>]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>]
 
 
 DEBUG:parse:Applying action AddFDTD
 DEBUG:parse:Current iteration, top Semicolon, input token Semicolon
 DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name='')]
-DEBUG:parse:valueStack [<ast.Module object at 0x7b6dda2e8350>, <ast.Expr object at 0x7b6dda11e790>]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>, <ast.Expr object at 0x7025ce125b50>]
 
 
 DEBUG:lex:Matched 
@@ -73,45 +73,176 @@ DEBUG:lex:So far longest match is
 
 INFO:lex:Advanced lexer with token NewLine matching 
 
-DEBUG:lex:Matched addplane
-DEBUG:lex:So far longest match is addplane
-DEBUG:lex:Matched addplane
-INFO:lex:Advanced lexer with token AddPlane matching addplane
-DEBUG:parse:Current iteration, top StoreToBody(name=''), input token AddPlane
+DEBUG:lex:Matched set
+DEBUG:lex:So far longest match is set
+DEBUG:lex:Matched set
+INFO:lex:Advanced lexer with token SetToken matching set
+DEBUG:parse:Current iteration, top StoreToBody(name=''), input token SetToken
 DEBUG:parse:Queue [NonTerminal(name='body')]
-DEBUG:parse:valueStack [<ast.Module object at 0x7b6dda2e8350>, <ast.Expr object at 0x7b6dda11e790>]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>, <ast.Expr object at 0x7025ce125b50>]
 
 
 DEBUG:parse:Applying action StoreToBody
-DEBUG:parse:Current iteration, top body, input token AddPlane
+DEBUG:parse:Current iteration, top body, input token SetToken
 DEBUG:parse:Queue []
-DEBUG:parse:valueStack [<ast.Module object at 0x7b6dda2e8350>]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>]
 
 
 DEBUG:parse:Pushing [NonTerminal(name='body'), StoreToBody(name=''), NonTerminal(name='statement')]
-DEBUG:parse:Current iteration, top statement, input token AddPlane
+DEBUG:parse:Current iteration, top statement, input token SetToken
 DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name='')]
-DEBUG:parse:valueStack [<ast.Module object at 0x7b6dda2e8350>]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>]
 
 
-DEBUG:parse:Pushing [Semicolon(), AddPlaneSource(name=''), AddPlane()]
-DEBUG:parse:Current iteration, top AddPlane, input token AddPlane
-DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), Semicolon(), AddPlaneSource(name='')]
-DEBUG:parse:valueStack [<ast.Module object at 0x7b6dda2e8350>]
+DEBUG:parse:Pushing [Semicolon(), RightBracket(), SetProperty(name=''), NonTerminal(name='expression'), Comma(), StoreLiteral(name=''), String(), LeftBracket(), SetToken()]
+DEBUG:parse:Current iteration, top SetToken, input token SetToken
+DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), Semicolon(), RightBracket(), SetProperty(name=''), NonTerminal(name='expression'), Comma(), StoreLiteral(name=''), String(), LeftBracket()]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>]
+
+
+DEBUG:lex:Matched (
+DEBUG:lex:So far longest match is (
+INFO:lex:Advanced lexer with token LeftBracket matching (
+DEBUG:parse:Current iteration, top LeftBracket, input token LeftBracket
+DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), Semicolon(), RightBracket(), SetProperty(name=''), NonTerminal(name='expression'), Comma(), StoreLiteral(name=''), String()]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>]
+
+
+DEBUG:lex:Matched "dimension"
+DEBUG:lex:So far longest match is "dimension"
+INFO:lex:Advanced lexer with token String matching "dimension"
+DEBUG:parse:Current iteration, top String, input token String
+DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), Semicolon(), RightBracket(), SetProperty(name=''), NonTerminal(name='expression'), Comma(), StoreLiteral(name='')]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>]
+
+
+DEBUG:lex:Matched ,
+DEBUG:lex:So far longest match is ,
+INFO:lex:Advanced lexer with token Comma matching ,
+DEBUG:parse:Current iteration, top StoreLiteral(name=''), input token Comma
+DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), Semicolon(), RightBracket(), SetProperty(name=''), NonTerminal(name='expression'), Comma()]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>]
+
+
+DEBUG:parse:Applying action StoreLiteral
+INFO:actions:Storing str literal: dimension
+DEBUG:parse:Current iteration, top Comma, input token Comma
+DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), Semicolon(), RightBracket(), SetProperty(name=''), NonTerminal(name='expression')]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>, <ast.Constant object at 0x7025ce125c10>]
+
+
+DEBUG:lex:Matched  
+DEBUG:lex:So far longest match is  
+INFO:lex:Advanced lexer with token Space matching  
+DEBUG:lex:Matched 2
+DEBUG:lex:So far longest match is 2
+INFO:lex:Advanced lexer with token Integer matching 2
+DEBUG:parse:Current iteration, top expression, input token Integer
+DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), Semicolon(), RightBracket(), SetProperty(name='')]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>, <ast.Constant object at 0x7025ce125c10>]
+
+
+DEBUG:parse:Pushing [NonTerminal(name='logic_and')]
+DEBUG:parse:Current iteration, top logic_and, input token Integer
+DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), Semicolon(), RightBracket(), SetProperty(name='')]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>, <ast.Constant object at 0x7025ce125c10>]
+
+
+DEBUG:parse:Pushing [NonTerminal(name='logic_and_prime'), NonTerminal(name='logic_or')]
+DEBUG:parse:Current iteration, top logic_or, input token Integer
+DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), Semicolon(), RightBracket(), SetProperty(name=''), NonTerminal(name='logic_and_prime')]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>, <ast.Constant object at 0x7025ce125c10>]
+
+
+DEBUG:parse:Pushing [NonTerminal(name='logic_or_prime'), NonTerminal(name='comparison')]
+DEBUG:parse:Current iteration, top comparison, input token Integer
+DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), Semicolon(), RightBracket(), SetProperty(name=''), NonTerminal(name='logic_and_prime'), NonTerminal(name='logic_or_prime')]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>, <ast.Constant object at 0x7025ce125c10>]
+
+
+DEBUG:parse:Pushing [NonTerminal(name='comparison_prime'), NonTerminal(name='term')]
+DEBUG:parse:Current iteration, top term, input token Integer
+DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), Semicolon(), RightBracket(), SetProperty(name=''), NonTerminal(name='logic_and_prime'), NonTerminal(name='logic_or_prime'), NonTerminal(name='comparison_prime')]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>, <ast.Constant object at 0x7025ce125c10>]
+
+
+DEBUG:parse:Pushing [NonTerminal(name='term_prime'), NonTerminal(name='factor')]
+DEBUG:parse:Current iteration, top factor, input token Integer
+DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), Semicolon(), RightBracket(), SetProperty(name=''), NonTerminal(name='logic_and_prime'), NonTerminal(name='logic_or_prime'), NonTerminal(name='comparison_prime'), NonTerminal(name='term_prime')]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>, <ast.Constant object at 0x7025ce125c10>]
+
+
+DEBUG:parse:Pushing [NonTerminal(name='factor_prime'), NonTerminal(name='unary')]
+DEBUG:parse:Current iteration, top unary, input token Integer
+DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), Semicolon(), RightBracket(), SetProperty(name=''), NonTerminal(name='logic_and_prime'), NonTerminal(name='logic_or_prime'), NonTerminal(name='comparison_prime'), NonTerminal(name='term_prime'), NonTerminal(name='factor_prime')]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>, <ast.Constant object at 0x7025ce125c10>]
+
+
+DEBUG:parse:Pushing [NonTerminal(name='primary')]
+DEBUG:parse:Current iteration, top primary, input token Integer
+DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), Semicolon(), RightBracket(), SetProperty(name=''), NonTerminal(name='logic_and_prime'), NonTerminal(name='logic_or_prime'), NonTerminal(name='comparison_prime'), NonTerminal(name='term_prime'), NonTerminal(name='factor_prime')]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>, <ast.Constant object at 0x7025ce125c10>]
+
+
+DEBUG:parse:Pushing [StoreLiteral(name=''), Integer()]
+DEBUG:parse:Current iteration, top Integer, input token Integer
+DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), Semicolon(), RightBracket(), SetProperty(name=''), NonTerminal(name='logic_and_prime'), NonTerminal(name='logic_or_prime'), NonTerminal(name='comparison_prime'), NonTerminal(name='term_prime'), NonTerminal(name='factor_prime'), StoreLiteral(name='')]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>, <ast.Constant object at 0x7025ce125c10>]
+
+
+DEBUG:lex:Matched )
+DEBUG:lex:So far longest match is )
+INFO:lex:Advanced lexer with token RightBracket matching )
+DEBUG:parse:Current iteration, top StoreLiteral(name=''), input token RightBracket
+DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), Semicolon(), RightBracket(), SetProperty(name=''), NonTerminal(name='logic_and_prime'), NonTerminal(name='logic_or_prime'), NonTerminal(name='comparison_prime'), NonTerminal(name='term_prime'), NonTerminal(name='factor_prime')]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>, <ast.Constant object at 0x7025ce125c10>]
+
+
+DEBUG:parse:Applying action StoreLiteral
+INFO:actions:Storing int literal: 2
+DEBUG:parse:Current iteration, top factor_prime, input token RightBracket
+DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), Semicolon(), RightBracket(), SetProperty(name=''), NonTerminal(name='logic_and_prime'), NonTerminal(name='logic_or_prime'), NonTerminal(name='comparison_prime'), NonTerminal(name='term_prime')]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>, <ast.Constant object at 0x7025ce125c10>, <ast.Constant object at 0x7025ce2d62d0>]
+
+
+DEBUG:parse:Current iteration, top term_prime, input token RightBracket
+DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), Semicolon(), RightBracket(), SetProperty(name=''), NonTerminal(name='logic_and_prime'), NonTerminal(name='logic_or_prime'), NonTerminal(name='comparison_prime')]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>, <ast.Constant object at 0x7025ce125c10>, <ast.Constant object at 0x7025ce2d62d0>]
+
+
+DEBUG:parse:Current iteration, top comparison_prime, input token RightBracket
+DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), Semicolon(), RightBracket(), SetProperty(name=''), NonTerminal(name='logic_and_prime'), NonTerminal(name='logic_or_prime')]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>, <ast.Constant object at 0x7025ce125c10>, <ast.Constant object at 0x7025ce2d62d0>]
+
+
+DEBUG:parse:Current iteration, top logic_or_prime, input token RightBracket
+DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), Semicolon(), RightBracket(), SetProperty(name=''), NonTerminal(name='logic_and_prime')]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>, <ast.Constant object at 0x7025ce125c10>, <ast.Constant object at 0x7025ce2d62d0>]
+
+
+DEBUG:parse:Current iteration, top logic_and_prime, input token RightBracket
+DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), Semicolon(), RightBracket(), SetProperty(name='')]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>, <ast.Constant object at 0x7025ce125c10>, <ast.Constant object at 0x7025ce2d62d0>]
+
+
+DEBUG:parse:Current iteration, top SetProperty(name=''), input token RightBracket
+DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), Semicolon(), RightBracket()]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>, <ast.Constant object at 0x7025ce125c10>, <ast.Constant object at 0x7025ce2d62d0>]
+
+
+DEBUG:parse:Applying action SetProperty
+DEBUG:actions:Processing property dimension with value <ast.Constant object at 0x7025ce2d62d0>
+DEBUG:parse:Current iteration, top RightBracket, input token RightBracket
+DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), Semicolon()]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>, <ast.For object at 0x7025ce124690>]
 
 
 DEBUG:lex:Matched ;
 DEBUG:lex:So far longest match is ;
 INFO:lex:Advanced lexer with token Semicolon matching ;
-DEBUG:parse:Current iteration, top AddPlaneSource(name=''), input token Semicolon
-DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name=''), Semicolon()]
-DEBUG:parse:valueStack [<ast.Module object at 0x7b6dda2e8350>]
-
-
-DEBUG:parse:Applying action AddPlaneSource
 DEBUG:parse:Current iteration, top Semicolon, input token Semicolon
 DEBUG:parse:Queue [NonTerminal(name='body'), StoreToBody(name='')]
-DEBUG:parse:valueStack [<ast.Module object at 0x7b6dda2e8350>, <ast.Expr object at 0x7b6dda13c9d0>]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>, <ast.For object at 0x7025ce124690>]
 
 
 DEBUG:lex:Matched 
@@ -119,19 +250,19 @@ DEBUG:lex:So far longest match is
 INFO:lex:Advanced lexer with token EndOfFile matching 
 DEBUG:parse:Current iteration, top StoreToBody(name=''), input token EndOfFile
 DEBUG:parse:Queue [NonTerminal(name='body')]
-DEBUG:parse:valueStack [<ast.Module object at 0x7b6dda2e8350>, <ast.Expr object at 0x7b6dda13c9d0>]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>, <ast.For object at 0x7025ce124690>]
 
 
 DEBUG:parse:Applying action StoreToBody
 DEBUG:parse:Current iteration, top body, input token EndOfFile
 DEBUG:parse:Queue []
-DEBUG:parse:valueStack [<ast.Module object at 0x7b6dda2e8350>]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>]
 
 
 DEBUG:parse:Pushing [EndOfFile()]
 DEBUG:parse:Current iteration, top EndOfFile, input token EndOfFile
 DEBUG:parse:Queue []
-DEBUG:parse:valueStack [<ast.Module object at 0x7b6dda2e8350>]
+DEBUG:parse:valueStack [<ast.Module object at 0x7025ce2c11d0>]
 
 
 INFO:__main__:Python AST dump
@@ -180,87 +311,32 @@ Module(
                                                 Constant(value=1),
                                                 Constant(value=1)]))]),
                             Constant(value=True)])])),
-        Expr(
-            value=Call(
+        For(
+            target=Name(id='record', ctx=Store()),
+            iter=Call(
                 func=Attribute(
                     value=Name(id='selector', ctx=Load()),
-                    attr='add',
-                    ctx=Load()),
-                args=[
-                    Call(
-                        func=Name(id='Record', ctx=Load()),
-                        args=[
-                            Constant(value='PlaneSource'),
-                            Call(
-                                func=Attribute(
-                                    value=Name(id='mp', ctx=Load()),
-                                    attr='Source',
-                                    ctx=Load()),
-                                keywords=[
-                                    keyword(
-                                        arg='src',
-                                        value=Call(
-                                            func=Attribute(
-                                                value=Name(id='mp', ctx=Load()),
-                                                attr='ContinuousSource',
-                                                ctx=Load()),
-                                            keywords=[
-                                                keyword(
-                                                    arg='frequency',
-                                                    value=BinOp(
-                                                        left=Constant(value=1.0),
-                                                        op=Div(),
-                                                        right=Constant(value=5e-07)))])),
-                                    keyword(
-                                        arg='component',
-                                        value=Attribute(
-                                            value=Name(id='mp', ctx=Load()),
-                                            attr='Ex',
-                                            ctx=Load())),
-                                    keyword(
-                                        arg='center',
-                                        value=Call(
-                                            func=Attribute(
-                                                value=Name(id='mp', ctx=Load()),
-                                                attr='Vector3',
-                                                ctx=Load()),
-                                            args=[
-                                                Constant(value=0),
-                                                Constant(value=0),
-                                                Constant(value=3e-06)])),
-                                    keyword(
-                                        arg='size',
-                                        value=Call(
-                                            func=Attribute(
-                                                value=Name(id='mp', ctx=Load()),
-                                                attr='Vector3',
-                                                ctx=Load()),
-                                            args=[
-                                                Constant(value=2e-06),
-                                                Constant(value=5e-06),
-                                                Constant(value=0)])),
-                                    keyword(
-                                        arg='direction',
-                                        value=Call(
-                                            func=Attribute(
-                                                value=Name(id='mp', ctx=Load()),
-                                                attr='Vector3',
-                                                ctx=Load()),
-                                            args=[
-                                                Constant(value=0),
-                                                Constant(value=0),
-                                                Constant(value=-1)]))]),
-                            Constant(value=True)])]))])
+                    attr='getSelected',
+                    ctx=Load())),
+            body=[
+                Assign(
+                    targets=[
+                        Attribute(
+                            value=Name(id='record', ctx=Load()),
+                            attr='dimensions',
+                            ctx=Store())],
+                    value=Constant(value=2))])])
 
 INFO:__main__:Lumerical source
 addfdtd;
-addplane;
+set("dimension", 2);
 
 INFO:__main__:Transpiled Python
 import meep as mp
 from runtime import Selector, Record
 selector = Selector()
 selector.add(Record('Simulation', mp.Simulation(cell_size=mp.Vector3(1, 1, 1)), True))
-selector.add(Record('PlaneSource', mp.Source(src=mp.ContinuousSource(frequency=1.0 / 5e-07), component=mp.Ex, center=mp.Vector3(0, 0, 3e-06), size=mp.Vector3(2e-06, 5e-06, 0), direction=mp.Vector3(0, 0, -1)), True))
+for record in selector.getSelected():
+    record.dimensions = 2
 
 INFO:__main__:SUCCESS LUMEX

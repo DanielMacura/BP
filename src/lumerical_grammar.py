@@ -49,6 +49,8 @@ lumerical_grammar.append(Production(root, [actions.Imports(), actions.StoreToBod
 
 lumerical_grammar.append(Production(body, [statement, actions.StoreToBody(), body]))
 lumerical_grammar.append(Production(body, [function, body, EndOfFile()]))
+lumerical_grammar.append(Production(body, Epsilon()))
+lumerical_grammar.append(Production(body, [EndOfFile()]))
 lumerical_grammar.append(
     Production(
         function,
@@ -64,8 +66,7 @@ lumerical_grammar.append(
         ],
     )
 )
-lumerical_grammar.append(Production(body, Epsilon()))
-lumerical_grammar.append(Production(body, [EndOfFile()]))
+
 
 lumerical_grammar.append(
     Production(

@@ -161,3 +161,93 @@ autosaveoff\\
 autosaveon\\
 \end{longtblr}
 
+
+\chapter{Full implemented Lumerical grammar}\label{appendix:two}
+
+\begin{longtblr}[\label{tab:full-grammar}
+  caption = {Complete Grammar with Actions},
+  label = {tab:full-commands}
+]{
+  colspec = {l|rcl}
+}
+ 1. & \texttt{root}               & $\rightarrow$ & \emph{actions.Imports()} \emph{actions.StoreToBody()} \emph{actions.CreateSelector()} \emph{actions.StoreToBody()} \texttt{body} \\
+ 2. & \texttt{body}               & $\rightarrow$ & \texttt{statement} \emph{actions.StoreToBody()} \texttt{body} \\
+ 3. &                             & $|$           & \texttt{function} \texttt{body} \textbf{EOF} \\
+ 4. &                             & $|$           & $\varepsilon$ \\
+ 5. &                             & $|$           & \textbf{EOF} \\
+ 6. & \texttt{function}           & $\rightarrow$ & \textbf{FUNCTION} \textbf{IDENTIFIER} \textbf{(} \texttt{parameter\_list} \textbf{)} \textbf{\{} \texttt{nested\_body} \textbf{\}} \\
+ 7. & \texttt{nested\_body}       & $\rightarrow$ & \texttt{statement} \emph{actions.StoreToBody()} \texttt{nested\_body} \\
+ 8. &                             & $|$           & $\varepsilon$ \\
+ 9. & \texttt{nested\_else\_body} & $\rightarrow$ & \texttt{statement} \emph{actions.StoreToElse()} \texttt{nested\_else\_body} \\
+10. &                             & $|$           & $\varepsilon$ \\
+11. & \texttt{statement}          & $\rightarrow$ & \textbf{IDENTIFIER} \emph{actions.StoreVariableName()} \texttt{identifier\_action} \\
+12. &                             & $|$           & \texttt{control\_structure} \\
+13. &                             & $|$           & \texttt{selection} \\
+14. &                             & $|$           & \textbf{?} \texttt{expression} \emph{actions.Print()} \textbf{;} \\
+15. &                             & $|$           & \textbf{ADDFDTD} \emph{actions.AddFDTD()} \textbf{;} \\
+16. &                             & $|$           & \textbf{ADDRECT} \emph{actions.AddRect()} \textbf{;} \\
+17. &                             & $|$           & \textbf{ADDSPHERE} \emph{actions.AddSphere()} \textbf{;} \\
+18. &                             & $|$           & \textbf{ADDPLANE} \emph{actions.AddPlaneSource()} \textbf{;} \\
+19. &                             & $|$           & \textbf{ADDDFTMONITOR} \emph{actions.AddDFTMonitor()} \textbf{;} \\
+20. &                             & $|$           & \textbf{SET} \textbf{(} \textbf{STRING} \emph{actions.StoreLiteral("str")} \texttt{expression} \emph{actions.SetProperty()} \textbf{)} \textbf{;} \\
+21. &                             & $|$           & \textbf{BREAK} \emph{actions.Break()} \textbf{;} \\
+22. & \texttt{selection}          & $\rightarrow$ & \textbf{SELECTALL} \emph{actions.SelectAll()} \textbf{;} \\
+23. &                             & $|$           & \textbf{UNSELECTALL} \emph{actions.UnselectAll()} \textbf{;} \\
+24. &                             & $|$           & \textbf{SELECT} \textbf{(} \textbf{STRING} \emph{actions.StoreLiteral("str")} \emph{actions.Select()} \textbf{)} \textbf{;} \\
+25. &                             & $|$           & \textbf{SHIFTSELECT} \textbf{(} \textbf{STRING} \emph{actions.StoreLiteral("str")} \emph{actions.ShiftSelect()} \textbf{)} \textbf{;} \\
+26. & \texttt{identifier\_action} & $\rightarrow$ & \texttt{assignment} \\
+27. &                             & $|$           & \texttt{function\_call} \\
+28. & \texttt{assignment}         & $\rightarrow$ & \textbf{=} \texttt{expression} \emph{actions.AssignToVariable()} \textbf{;} \\
+29. & \texttt{function\_call}     & $\rightarrow$ & \textbf{(} \texttt{parameter\_list} \textbf{)} \textbf{;} \\
+30. & \texttt{parameter\_list}    & $\rightarrow$ & \textbf{IDENTIFIER} \texttt{parameter\_list\_prime} \\
+31. &                             & $|$           & $\varepsilon$ \\
+32. & \texttt{parameter\_list\_prime} & $\rightarrow$ & \textbf{,} \textbf{IDENTIFIER} \texttt{parameter\_list\_prime} \\
+33. &                             & $|$           & $\varepsilon$ \\
+34. & \texttt{argument\_list}     & $\rightarrow$ & \texttt{expression} \texttt{argument\_list\_prime} \\
+35. &                             & $|$           & $\varepsilon$ \\
+36. & \texttt{argument\_list\_prime} & $\rightarrow$ & \textbf{,} \texttt{expression} \texttt{argument\_list\_prime} \\
+37. &                             & $|$           & $\varepsilon$ \\
+38. & \texttt{control\_structure} & $\rightarrow$ & \textbf{IF} \textbf{(} \texttt{expression} \textbf{)} \textbf{\{} \emph{actions.If()} \texttt{nested\_body} \textbf{\}} \texttt{elseNT} \\
+39. &                             & $|$           & \textbf{FOR} \emph{actions.CreateEmptyWhile()} \textbf{(} \textbf{IDENTIFIER} \emph{actions.StoreVariableName()} \textbf{=} \texttt{expression} \emph{actions.AssignToVariable()} \texttt{loop\_condition} \textbf{)} \textbf{\{} \texttt{nested\_body} \emph{actions.HandleAllLoops()} \textbf{\}} \\
+40. & \texttt{loop\_condition}     & $\rightarrow$ & \textbf{:} \texttt{expression} \emph{actions.CreateRangeCondition()} \texttt{range\_step} \\
+41. &                             & $|$           & \textbf{;} \texttt{expression} \textbf{;} \texttt{expression} \emph{actions.CreateWhileCondition()} \\
+42. & \texttt{range\_step}        & $\rightarrow$ & \textbf{:} \texttt{expression} \emph{actions.ExtendRangeCondition()} \\
+43. &                             & $|$           & $\varepsilon$ \\
+44. & \texttt{elseNT}             & $\rightarrow$ & \textbf{ELSE} \texttt{elifNT} \textbf{\{} \emph{actions.HandleElse()} \texttt{nested\_else\_body} \emph{actions.CleanUpElse()} \textbf{\}} \texttt{elseNT} \\
+45. &                             & $|$           & $\varepsilon$ \\
+46. & \texttt{elifNT}             & $\rightarrow$ & \textbf{IF} \textbf{(} \texttt{expression} \textbf{)} \\
+47. &                             & $|$           & $\varepsilon$ \\
+48. & \texttt{expression}         & $\rightarrow$ & \texttt{logic\_and} \\
+49. & \texttt{logic\_and}         & $\rightarrow$ & \texttt{logic\_or} \texttt{logic\_and\_prime} \\
+50. & \texttt{logic\_and\_prime}  & $\rightarrow$ & \textbf{AND} \texttt{equality} \emph{actions.LogicOperation(ast.And())} \texttt{logic\_and\_prime} \\
+51. &                             & $|$           & $\varepsilon$ \\
+52. & \texttt{logic\_or}          & $\rightarrow$ & \texttt{comparison} \texttt{logic\_or\_prime} \\
+53. & \texttt{logic\_or\_prime}   & $\rightarrow$ & \textbf{OR} \texttt{equality} \emph{actions.LogicOperation(ast.Or())} \texttt{logic\_or\_prime} \\
+54. &                             & $|$           & $\varepsilon$ \\
+55. & \texttt{equality}           & $\rightarrow$ & \texttt{comparison} \texttt{equality\_prime} \\
+56. & \texttt{equality\_prime}    & $\rightarrow$ & \textbf{!=} \texttt{comparison} \emph{actions.Comparison(ast.NotEq())} \texttt{equality\_prime} \\
+57. &                             & $|$           & \textbf{==} \texttt{comparison} \emph{actions.Comparison(ast.Eq())} \texttt{equality\_prime} \\
+58. &                             & $|$           & $\varepsilon$ \\
+59. & \texttt{comparison}         & $\rightarrow$ & \texttt{term} \texttt{comparison\_prime} \\
+60. & \texttt{comparison\_prime}  & $\rightarrow$ & \textbf{>} \texttt{term} \emph{actions.Comparison(ast.Gt())} \texttt{comparison\_prime} \\
+61. &                             & $|$           & \textbf{>=} \texttt{term} \emph{actions.Comparison(ast.GtE())} \texttt{comparison\_prime} \\
+62. &                             & $|$           & \textbf{<} \texttt{term} \emph{actions.Comparison(ast.Lt())} \texttt{comparison\_prime} \\
+63. &                             & $|$           & \textbf{<=} \texttt{term} \emph{actions.Comparison(ast.LtE())} \texttt{comparison\_prime} \\
+64. &                             & $|$           & $\varepsilon$ \\
+65. & \texttt{term}               & $\rightarrow$ & \texttt{factor} \texttt{term\_prime} \\
+66. & \texttt{term\_prime}        & $\rightarrow$ & \textbf{-} \texttt{factor} \emph{actions.BinaryOperation(ast.Sub())} \texttt{term\_prime} \\
+67. &                             & $|$           & \textbf{+} \texttt{factor} \emph{actions.BinaryOperation(ast.Add())} \texttt{term\_prime} \\
+68. &                             & $|$           & $\varepsilon$ \\
+69. & \texttt{factor}             & $\rightarrow$ & \texttt{unary} \texttt{factor\_prime} \\
+70. & \texttt{factor\_prime}      & $\rightarrow$ & \textbf{/} \texttt{unary} \emph{actions.BinaryOperation(ast.Div())} \texttt{factor\_prime} \\
+71. &                             & $|$           & \textbf{*} \texttt{unary} \emph{actions.BinaryOperation(ast.Mult())} \texttt{factor\_prime} \\
+72. &                             & $|$           & $\varepsilon$ \\
+73. & \texttt{unary}              & $\rightarrow$ & \textbf{NOT} \texttt{unary} \\
+74. &                             & $|$           & \textbf{-} \texttt{unary} \emph{actions.UnarySubtract()} \\
+75. &                             & $|$           & \texttt{primary} \\
+76. & \texttt{primary}            & $\rightarrow$ & \textbf{INTEGER} \emph{actions.StoreLiteral("int")} \\
+77. &                             & $|$           & \textbf{FLOAT} \emph{actions.StoreLiteral("float")} \\
+78. &                             & $|$           & \textbf{STRING} \emph{actions.StoreLiteral("str")} \\
+79. &                             & $|$           & \textbf{IDENTIFIER} \emph{actions.StoreVariableName()} \\
+80. &                             & $|$           & \textbf{(} \texttt{expression} \textbf{)} \\
+\end{longtblr}

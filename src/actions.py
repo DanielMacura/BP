@@ -324,6 +324,11 @@ class BinaryOperation(Action):
 
 
 class UnarySubtract(Action):
+    """Action for creating unary subtraction nodes in the AST.
+    Constructs an :class:`ast.UnaryOp` node with the :class:`ast.USub` operator
+    to represent unary negation. This is typically used for expressions
+    like `-x` or `-5`.
+    """
     def call(
         self,
         ValueStack: LifoQueue[AST],
@@ -333,7 +338,7 @@ class UnarySubtract(Action):
         print(operand)
 
         node = ast.UnaryOp(op=USub(), operand=operand)
-        logger.info(f"Unary subract {operand}")
+        logger.info(f"Unary subtract {operand}")
         ValueStack.put(node)
 
 
@@ -1066,8 +1071,8 @@ class Imports(Action):
         )
 
         ValueStack.put(import_meep)
-        StoreToBody().call(ValueStack, TokenStack)
-        ValueStack.put(import_selector)
+        StoreToBody().call(ValueStack, TokenStack)      # Called from here to ensure there aren't two imports because the 
+        ValueStack.put(import_selector)                 # actions.StoreToBody() needs a body to store to.
 
 
 class CreateSelector(Action):
@@ -1245,7 +1250,7 @@ class SetProperty(Action):
 
             case span if span.endswith(" span"):
                 axis = span.split()[0]
-                components = [
+                components_block = [
                     value
                     if a == axis
                     else ast.Attribute(
@@ -1259,7 +1264,36 @@ class SetProperty(Action):
                     )
                     for a in ["x", "y", "z"]
                 ]
-                loop_body = create_loop_body("size", components)
+                components_cell = [
+                    value
+                    if a == axis
+                    else ast.Attribute(
+                        ast.Attribute(
+                            ast.Name(id="record", ctx=ast.Load()),
+                            "cell_size",
+                            ctx=ast.Load(),
+                        ),
+                        a,
+                        ctx=ast.Load(),
+                    )
+                    for a in ["x", "y", "z"]
+                ]
+                #if the records name is "sim" then use "cell_size" instead of "size"
+                loop_body = ast.If(
+                    test=ast.Compare(
+                        left=ast.Attribute(
+                            value=ast.Name(id="record", ctx=ast.Load()),
+                            attr="record_type",
+                            ctx=ast.Load(),
+                        ),
+                        ops=[ast.Eq()],
+                        comparators=[ast.Constant(value="Simulation")],
+                    ),
+                    body=[
+                         create_loop_body("cell_size", components_cell)
+                    ],
+                    orelse=[ create_loop_body("size", components_block)],
+                )
                 loop = create_getSelected_loop([loop_body])
                 ValueStack.put(loop)
                 
@@ -1285,7 +1319,6 @@ class SetProperty(Action):
                 ValueStack.put(loop)
 
             case "wavelength":
-                # record.src.frequency = 1.0 / value
                 body = [
                     ast.Assign(
                         targets=[
@@ -1310,7 +1343,6 @@ class SetProperty(Action):
                 ValueStack.put(loop)
 
             case "component":
-                # record.component = value (expects already resolved mp.Ex / mp.Ey)
                 body = [
                     ast.Assign(
                         targets=[
@@ -1327,7 +1359,6 @@ class SetProperty(Action):
                 ValueStack.put(loop)
 
             case "direction":
-                # record.direction = mp.Vector3(...) (expects tuple/list)
                 loop_body = ast.Assign(
                     targets=[
                         ast.Attribute(
@@ -1336,9 +1367,25 @@ class SetProperty(Action):
                             ctx=ast.Store(),
                         )
                     ],
-                    value=value  # Can wrap this in Vector3 if needed
+                    value=value
                 )
                 loop = create_getSelected_loop([loop_body])
+                ValueStack.put(loop)
+
+            case "dimension":
+                body = [
+                    ast.Assign(
+                        targets=[
+                            ast.Attribute(
+                                value=ast.Name(id="record", ctx=ast.Load()),
+                                attr="dimensions",
+                                ctx=ast.Store(),
+                            )
+                        ],
+                        value=value,
+                    )
+                ]
+                loop = create_getSelected_loop(body)
                 ValueStack.put(loop)
 
             case _:

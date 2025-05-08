@@ -9,6 +9,11 @@ Reallocated singl_function (elt_size=8) to 100 items from 50.
 Reallocated singl_function (elt_size=8) to 100 items from 50.
 Reallocated singl_function (elt_size=8) to 100 items from 50.
 Database file #1: projekt-20-literatura-bibliography.bib
+I was expecting an "="---line 447 of file projekt-20-literatura-bibliography.bib
+ :   
+ :   title        = {for Script command},
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
 Warning--empty edition in davidson_2010
 Warning--empty edition in dirac1931monopole
 Warning--empty edition in staelin2009electromagnetics
@@ -22,47 +27,49 @@ Warning--empty url in docutils_rst
 Warning--empty editor and organization in asdl
 Warning--empty isbn and issn in asdl
 Warning--empty url in ansys_lsf_commands
-Warning--empty url in ansys_for_command
+Warning--empty title in ansys_for_command
+Warning--empty year in ansys_for_command
+Warning--empty edition in wirth_webber
 Warning--empty edition in Holub_1990
-You've used 17 entries,
+You've used 18 entries,
             3768 wiz_defined-function locations,
-            893 strings with 8000 characters,
-and the built_in function-call counts, 5502 in all, are:
-= -- 416
-> -- 146
-< -- 19
-+ -- 53
-- -- 35
-* -- 273
-:= -- 627
-add.period$ -- 61
-call.type$ -- 17
-change.case$ -- 58
-chr.to.int$ -- 21
-cite$ -- 32
-duplicate$ -- 412
-empty$ -- 795
-format.name$ -- 25
-if$ -- 1392
+            900 strings with 8129 characters,
+and the built_in function-call counts, 5912 in all, are:
+= -- 438
+> -- 158
+< -- 23
++ -- 56
+- -- 37
+* -- 302
+:= -- 671
+add.period$ -- 64
+call.type$ -- 18
+change.case$ -- 55
+chr.to.int$ -- 27
+cite$ -- 35
+duplicate$ -- 438
+empty$ -- 853
+format.name$ -- 27
+if$ -- 1497
 int.to.chr$ -- 0
-int.to.str$ -- 17
+int.to.str$ -- 18
 missing$ -- 0
-newline$ -- 117
-num.names$ -- 17
-pop$ -- 176
+newline$ -- 123
+num.names$ -- 18
+pop$ -- 185
 preamble$ -- 1
-purify$ -- 3
+purify$ -- 4
 quote$ -- 0
-skip$ -- 231
+skip$ -- 260
 stack$ -- 0
-substring$ -- 183
-swap$ -- 86
-text.length$ -- 9
+substring$ -- 208
+swap$ -- 89
+text.length$ -- 10
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
-warning$ -- 15
-while$ -- 30
-width$ -- 19
-write$ -- 216
-(There were 15 warnings)
+warning$ -- 17
+while$ -- 35
+width$ -- 20
+write$ -- 225
+(There was 1 error message)
