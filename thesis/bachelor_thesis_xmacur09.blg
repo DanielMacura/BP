@@ -19,10 +19,17 @@ You're missing a field name---line 490 of file projekt-20-literatura-bibliograph
  : %  revised         = {2023-06-30},
 (Error may have been on previous line)
 I'm skipping whatever remains of this entry
+You're missing a field name---line 553 of file projekt-20-literatura-bibliography.bib
+ :   
+ :   %revised         = {2025-05-05},
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
 Warning--empty edition in davidson_2010
 Warning--empty edition in dirac1931monopole
 Warning--empty edition in staelin2009electromagnetics
 Warning--empty isbn in staelin2009electromagnetics
+Warning--empty edition in BERENGER1994185
+Warning--empty edition in Teixeira2023
 Warning--empty edition in Linz2016Introduction
 Warning--empty edition in Salomaa1987Formal
 Warning--empty edition in chomsky1956three
@@ -36,45 +43,45 @@ Warning--empty title in ansys_for_command
 Warning--empty year in ansys_for_command
 Warning--empty edition in wirth_webber
 Warning--empty edition in Holub_1990
-You've used 20 entries,
+You've used 23 entries,
             3768 wiz_defined-function locations,
-            917 strings with 8547 characters,
-and the built_in function-call counts, 6608 in all, are:
-= -- 490
-> -- 182
-< -- 28
-+ -- 71
-- -- 49
-* -- 330
-:= -- 755
-add.period$ -- 73
-call.type$ -- 20
-change.case$ -- 62
-chr.to.int$ -- 32
-cite$ -- 37
-duplicate$ -- 492
-empty$ -- 946
-format.name$ -- 29
-if$ -- 1667
+            942 strings with 9268 characters,
+and the built_in function-call counts, 7930 in all, are:
+= -- 572
+> -- 240
+< -- 42
++ -- 103
+- -- 76
+* -- 402
+:= -- 928
+add.period$ -- 84
+call.type$ -- 23
+change.case$ -- 67
+chr.to.int$ -- 50
+cite$ -- 42
+duplicate$ -- 578
+empty$ -- 1110
+format.name$ -- 36
+if$ -- 1982
 int.to.chr$ -- 0
-int.to.str$ -- 20
+int.to.str$ -- 23
 missing$ -- 0
-newline$ -- 138
-num.names$ -- 20
-pop$ -- 205
+newline$ -- 158
+num.names$ -- 23
+pop$ -- 240
 preamble$ -- 1
 purify$ -- 4
 quote$ -- 0
-skip$ -- 286
+skip$ -- 335
 stack$ -- 0
-substring$ -- 224
-swap$ -- 100
-text.length$ -- 13
+substring$ -- 282
+swap$ -- 121
+text.length$ -- 19
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
-warning$ -- 17
-while$ -- 41
-width$ -- 22
-write$ -- 254
-(There were 2 error messages)
+warning$ -- 19
+while$ -- 54
+width$ -- 25
+write$ -- 291
+(There were 3 error messages)

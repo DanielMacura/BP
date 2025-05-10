@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2025.3.24)  8 MAY 2025 21:15
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2026/dev/Arch Linux) (preloaded format=pdflatex 2025.3.24)  11 MAY 2025 01:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -421,7 +421,7 @@ L3 programming layer <2025-01-18>
 Here is how much of TeX's memory you used:
  13258 strings out of 474532
  278675 string characters out of 5749514
- 647821 words of memory out of 5000000
+ 647820 words of memory out of 5000000
  36091 multiletter control sequences out of 15000+600000
  558837 words of font info for 36 fonts, out of 8000000 for 9000
  360 hyphenation exceptions out of 8191

@@ -30,11 +30,13 @@
 
 
 
-\chapter{Note to the Reader}
-The following notation conventions apply throughout the thesis if not explicitly stated otherwise.  In the context pertaining to physics, symbols in \textbf{bold} represent vectors and symbols in \emph{italics} represent scalars, unless stated differently.
-The del operator denoted by the nabla symbol $\nabla$ is used with the dot product and cross product to denote divergence: $\nabla \cdot v$ and the curl: $\nabla \times v$.
-The expression "iff" refers to "if and only if".
+\chapter{Preface}
+The following notation conventions apply throughout the thesis if not explicitly stated otherwise.  In the context pertaining to physics, symbols in \textbf{bold} represent vectors and symbols in \emph{italics} represent scalars, unless stated differently. The del operator denoted by the nabla symbol $\pmb{\nabla}$ is used with the dot product and cross product to denote divergence: $\pmb{\nabla} \cdot \mathbf{v}$ and the curl: $\pmb{\nabla} \times \mathbf{v}$, this is explaind more in \cref{sec:operators}.
+
+
 In the context of regular languages, lower case Latin alphabet letters, such as $a, b, c, \dots$, refer to terminal symbols. Upper case Latin alphabet letters, such as $A, B, C,\dots$, denote nonterminal symbols.
+The expression "iff" refers to "if and only if".
+
 
 Otherwise fairly standard notation in the applicable fields is used throughout the rest of the thesis. 
 
@@ -47,18 +49,16 @@ The electromagnetic field theory is the underpinning framework for studying the 
 
 However, with the rapid increase of available computational power, the use of analytically simple but computationally taxing methods was given an extra boost as they became more available. Compared to their counterparts, these methods provide solutions to more general problems. The branch of electromagnetics that focuses on such methods is termed \gls{cem}. \gls{cem} allows us to simulate more complex problems and verify designs before the production of prototypes. They also provide key insight into the operation of electromagnetic devices and even reveal certain information that may be unattainable by classical analytical methods. Moreover, with the ability to tweak the parameters and re-simulate, \gls{cem} has caused the advent of design optimization in electromagnetic devices.
 
-\todo{motivation for use in company}
-\todo{-> use mainly for 3d pohotonics, focus on that}
-Today, many such tools and software packages exist, some commercial and others open-source. It is important to be able to verify the results against other implementations, which allows the researchers to verify whether the results are mere artifacts of a particular solver or physically meaningful. Furthermore, the tools may offer different features and constraints, and their interoperability is desired. 
+Thus \gls{cem} tools have become an indespensable part of the design process in many fields. Today, many such tools and software packages exist, some commercial and others open-source. However when workflows are built around a specific tool, it may be difficult to switch to another tool. This is especially true when the tool is proprietary and the source code is not available. It is important to be able to verify the results against other implementations, which allows the researchers to verify whether the results are mere artifacts of a particular solver or physically meaningful. Furthermore, the tools may offer different features and constraints making their interoperability desired. 
 
-This thesis explores the possibility of translating simulation code between two such tools, Ansys Lumerical\copyright and Meep. To address these challenges, this thesis develops \gls{lumex}, a tool that provides a framework for the translation of Lumerical Scripting Language to Meep.
+This thesis explores the possibility of translating simulation code between two such tools, Ansys Lumerical\copyright\ and Meep. To address these challenges, this thesis first introduces relevant concepts in \cref{chap:review} followed by the development of \gls{lumex} in \cref{chap:transpiler-implementation}, a tool that provides a framework for the translation of Lumerical Scripting Language to Meep. Examples of the translation process are provided in \cref{chap:results}
 
 
 
   
   
 
-\chapter{Review of Relevant Concepts}
+\chapter{Review of Relevant Concepts}\label{chap:review}
 This chapter aims to give the reader a broader understanding of the relevant subject matter. It provides an overview of the physics behind the aforementioned simulations and an introduction to the basic concepts of compiler design and the underlying formal language theory. This chapter will not delve into the specifics of each subject at hand but will rather provide the reader with the foundations necessary to comprehend the remaining parts of this thesis.
 
 \section{Computational Electromagnetics}\label{sec:cem}
@@ -75,12 +75,61 @@ As explained earlier, \gls{cem} is a branch of electromagnetics that focuses on 
 
 
 
+\subsection{Vector Calculus}
+A basic understanding of vector calculus is required to understand the equations used in \gls{cem}. Vector calculus operates on \emph{vector fields}, which can be imagined as a \gls{3d} space, where every point has a \emph{vector} (represented by three numbers) associated with it. In practice these fields are discretized into a grid of points, however we typically assume that the tracnsition between vectors at different points is continuous, smooth, and differentiable. 
+\begin{figure}[H]\label{fig:vector-circle}
+  \centering
+  \includegraphics[width=0.75\textwidth]{figures/vector-circle.pdf}
+  \caption{An example of a \gls{2d} vector field. The arrows represent the direction and magnitude of the vector at each point in the field.}
+\end{figure}
 
-\subsection*{Curl theorem}
-\todo{ask if should omit}
-\subsection*{Divergence theorem}
-\todo{ask if should omit}
-\subsection*{Maxwell's equations}
+\subsubsection{Operators}\label{sec:operators}
+Operators in general are mappings, in this case from one vector field to another. A common operator in \gls{cem} is the \emph{nabla operator}, denoted by the symbol $\pmb{\nabla}$. Note that the nabla operator is represented in bold, as it is a vector operator. The nabla operator is defined as:
+\begin{equation}
+  \pmb{\nabla} = \left( \frac{\partial}{\partial x}, \frac{\partial}{\partial y}, \frac{\partial}{\partial z} \right)
+\end{equation} 
+
+The nabla operator can be used to define several important operations in vector calculus, such as the \emph{gradient}, \emph{divergence}, and \emph{curl}.
+
+\paragraph{Gradient}
+The gradient of a scalar field $f(x,y,z)$ is a vector field that points in the direction of the steepest increase of the scalar field. The gradient is defined as:
+\begin{equation}
+  \pmb{\nabla} f = \left( \frac{\partial f}{\partial x}, \frac{\partial f}{\partial y}, \frac{\partial f}{\partial z} \right)
+\end{equation}
+
+\paragraph{Divergence}
+The divergence of a vector field $\mathbf{F} = (F_x, F_y, F_z)$ is a scalar field that measures the rate at which the vector field spreads out from a point. The divergence is defined as:
+\begin{equation}
+  \pmb{\nabla} \cdot \mathbf{F} = \frac{\partial F_x}{\partial x} + \frac{\partial F_y}{\partial y} + \frac{\partial F_z}{\partial z}
+\end{equation}
+
+\paragraph{Curl}
+The curl of a vector field $\mathbf{F} = (F_x, F_y, F_z)$ is a vector field that measures the rotation of the vector field around a point. The curl is defined as:
+\begin{equation}
+  \pmb{\nabla} \times \mathbf{F} = \left( \frac{\partial F_z}{\partial y} - \frac{\partial F_y}{\partial z}, \frac{\partial F_x}{\partial z} - \frac{\partial F_z}{\partial x}, \frac{\partial F_y}{\partial x} - \frac{\partial F_x}{\partial y} \right)
+\end{equation}
+
+
+
+\subsection{Divergence theorem}\label{sec:divergence-theorem}
+The divergence theorem states that the sum of the sources and sinks of a vector field within a volume $V$ is equal to the flux of the vector field through the surface $S$ that bounds the volume. 
+\begin{equation}
+  \iiint_V \left( \pmb{\nabla} \cdot \mathbf{F} \right) \text{d}v = \oiint_S \mathbf{F} \cdot \text{d}\mathbf{s}
+\end{equation}
+
+Let's unwrap this a bit. The left side of the equation is the volume integral of the divergence of a vector field $\mathbf{F}$ over a volume $V$. The divergence of a vector field measures the rate at which the field spreads out from a point. The right side of the equation is the surface integral of the vector field $\mathbf{F}$ over the surface $S$ that bounds the volume $V$. The surface integral measures the total flux of the vector field through the surface. The divergence theorem states that these two quantities are equal, meaning that the total flux through the surface is equal to the sum of the sources and sinks within the volume.
+
+\subsection{Curl theorem}\label{sec:curl-theorem}
+The curl theorem, also knows as the Stokes' theorem states that The line integral of a vector field around a closed loop $L$ equals the surface integral of its curl over the surface $S$ bounded by the loop.
+
+\begin{equation}
+  \iint_S \left( \pmb{\nabla} \times \mathbf{F} \right) \text{d}s = \oint_L \mathbf{F} \cdot \text{d}\mathbf{l}
+\end{equation}
+
+On the right hand side the vector field $\mathbf{F}$ integrated over a closed loop $L$, this is the rotation of the vector field around the closed surface $S$. On the left hand side, the curl of the vector field $\mathbf{F}$ is integrated over the surface $S$. The curl of a vector field measures the rotation of the field around a point. The curl theorem states that these two quantities are equal, meaning that the total rotation around the closed loop is equal to the sum of the rotations within the surface.
+
+
+\subsection{Maxwell's equations}
 
 In the 19th century, James Clerk Maxwell formulated a set of four equations that underpin classical electromagnetic and form a coherent theoretical structure. 
 Maxwell's equations in the integral form tend to be used in the calculation of symmetric problems, such as finding the electric field of a charged plane, sphere, etc., whereas the differential form is more suitable for the calculation of numerical problems as it is simple to obtain the magnetic and electric fields at a single point. The Ampère-Maxwell law states that magnetic fields are generated by electric currents and a change of the electric field over time. Faraday's law states that a changing magnetic field produces a rotating electric field and the other way around. Gauss's law for electric flux states that electric charges generate an electric field. Gauss's law for magnetic flux postulates the nonexistence of magnetic charge, i.e., magnetic monopoles. In 1931, Dirac proposed that the discovery of magnetic charge (a magnetic monopole) would require a modification of Gauss's law for magnetic flux~\cite{dirac1931monopole}. \todo{ask if this citation is OK} Despite extensive searches, magnetic monopoles have yet to be detected experimentally. 
@@ -88,44 +137,43 @@ Maxwell's equations in the integral form tend to be used in the calculation of s
 
 Ampère-Maxwell law
 \begin{equation}
-\nabla \times \mathbf{H} =\mathbf{J} + \frac{\partial \mathbf{D}}{\partial t}
-%\nabla \times \mathbf{B} =\mu_0\mathbf{J} + \mu_0 \epsilon_0 \frac{\partial \mathbf{D}}{\partial t}
+  \pmb{\nabla} \times \mathbf{H} =\mathbf{J} + \frac{\partial \mathbf{D}}{\partial t}
+%\nabla \times \mathbf{B} =\mu_0\mathbf{J} + \mu_0 \varepsilon_0 \frac{\partial \mathbf{D}}{\partial t}
 \end{equation}
 
 Faraday's law
 \begin{equation}
-\nabla \times \mathbf{E} = - \frac{\partial \mathbf{B}}{\partial t}
+  \pmb{\nabla} \times \mathbf{E} = - \frac{\partial \mathbf{B}}{\partial t}
 %\nabla \times \mathbf{E} = - \frac{\partial \mathbf{B}}{\partial t}
 \end{equation}
 
 Gauss's law for electric flux
 \begin{equation}
-\nabla \cdot \mathbf{D} = \rho
-%\nabla \cdot \mathbf{E} = \frac{\rho}{\epsilon_0}
+  \pmb{\nabla} \cdot \mathbf{D} = \rho
+%\nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0}
 \end{equation}
 
 Gauss's law for magnetic flux
 \begin{equation}
-\nabla \cdot \mathbf{B} = 0
+\pmb{\nabla} \cdot \mathbf{B} = 0
 \end{equation}
 
 %= 4\pi\cdot 10^{-7} \si{\volt\second}/\si{\ampere\meter}
 
 
-%Where $\mathbf{B}$ is the magnetic field, $\mathbf{E}$ is the electric field, $\mathbf{J}$ the current density, $\mu_0$ the vacuum permeability, $\epsilon_0 = $ the vacuum permittivity. It also holds that the speed of light $c=\left(\epsilon_0\mu_0\right)^{-\frac{1}{2}}$.
+%Where $\mathbf{B}$ is the magnetic field, $\mathbf{E}$ is the electric field, $\mathbf{J}$ the current density, $\mu_0$ the vacuum permeability, $\varepsilon_0 = $ the vacuum permittivity. It also holds that the speed of light $c=\left(\varepsilon_0\mu_0\right)^{-\frac{1}{2}}$.
 
-The above equations are in the differential form, and they are first-order linearly coupled. They also have equivalent integral forms, which may be produced by applying the divergence integral theorem and curl integral theorem. Readers are directed to~\cite[Chapter~2.4]{staelin2009electromagnetics} for more details. \todo{ask if okay}
-
+The above equations are in the differential form, and they are first-order linearly coupled. They also have equivalent integral forms, which may be produced by applying the divergence integral theorem and curl integral theorem, see sections~\ref{sec:divergence-theorem} and~\ref{sec:curl-theorem}. Readers are directed to~\cite[Chapter~2.4]{staelin2009electromagnetics} for more details about this process.
 
 
 
 \subsubsection*{Constitutive Relations}
 Since Maxwell's equations contain more unknowns than equations, as shown above, they are undetermined. This is where constitutive relations between field intensities $\mathbf{E},\mathbf{H}$ and the flux densities $\mathbf{D},\mathbf{B}$ come into play. 
-For simple mediums, which are \emph{linear}, \emph{isotropic}, and \emph{non-dispersive}, the following equations hold.
+For simple mediums (materials through which light travels), which are \emph{linear}, \emph{isotropic}, and \emph{non-dispersive}, the following equations hold.
 
 
 \begin{equation}
-\mathbf{D} = \epsilon \mathbf{E}
+\mathbf{D} = \varepsilon \mathbf{E}
 \end{equation}
 \begin{equation}
 \mathbf{B} = \mu \mathbf{H}
@@ -134,13 +182,13 @@ For simple mediums, which are \emph{linear}, \emph{isotropic}, and \emph{non-dis
 \mathbf{J} = \sigma \mathbf{E}
 \end{equation}
 
-Where $\epsilon$, the permittivity of a medium, is given by the permittivity of free space and the relative permittivity respectively $\epsilon = \epsilon_0\epsilon_r$. Similarly, $\mu$, the permeability of a medium, is given by the permeability of free space and the relative permeability $\mu = \mu_0\mu_r$. A medium is often defined by its \emph{constitutive parameters} $\epsilon$, $\mu$, $\sigma$. A good illustration of this is that a medium is \emph{isotropic} if $\epsilon$ does not change with direction, \emph{homogeneous} if $\epsilon$ does not change between two different points in space. Another example is that a material is \emph{linear} if $\mathbf{D} = \epsilon \mathbf{E}$ holds and $\epsilon$ does not change in respect to $\mathbf{E}$.
+Where $\varepsilon$, the permittivity of a medium, is given by the permittivity of free space and the relative permittivity respectively $\varepsilon = \varepsilon_0\varepsilon_r$. Similarly, $\mu$, the permeability of a medium, is given by the permeability of free space and the relative permeability $\mu = \mu_0\mu_r$. A medium is often defined by its \emph{constitutive parameters} $\varepsilon$, $\mu$, $\sigma$. A good illustration of this is that a medium is \emph{isotropic} if $\varepsilon$ does not change with direction, \emph{homogeneous} if $\varepsilon$ does not change between two different points in space. Another example is that a material is \emph{linear} if $\mathbf{D} = \varepsilon \mathbf{E}$ holds and $\varepsilon$ does not change in respect to $\mathbf{E}$.
 
 
 
 
 
-\subsection*{Finite Difference Time Domain}
+\subsection{Finite Difference Time Domain}
 The \gls{fdtd} method is a staple among finite difference techniques. Finite difference methods are numerical techniques that approximate derivatives directly using finite difference quotients. This class of methods is widespread due to its implied simplicity and is widely used for scientific computation. 
 
 
@@ -150,7 +198,7 @@ It is suitable for problems where the electromagnetic wavelengths, along with th
 The user must keep in mind that such a method will never give a precise answer. The accuracy of the simulation is dictated by the resolution. A general rule of thumb in the \gls{cem} community is to use at least 10 samples (cells) per the shortest wavelength. Similarly, Dennis M. Sullivan's book Electromagnetic Simulation Using the FDTD Method states: “A good rule of thumb is 10 points per wavelength. Experience has shown this to be adequate, with inaccuracies appearing as soon as the sampling drops below this rate.”~\cite[p.10]{sullivan2013fdtd}.\todo{ask if this citation is OK}
 
 
-\gls{fdtd} provides second-order accuracy with the use of first-order numerical differentiation. Thus the error may be defined as $\text{Error} \propto (\Delta h)^2$. For example, in a \gls{3d} simulation, if the spatial (and thus time) resolution is increased twofold, the accuracy increases 4 times. This is due to the fact Maxwell’s curl equations are discretized using central difference approximations, which are inherently second-order accurate.
+\gls{fdtd} provides second-order accuracy with the use of first-order numerical differentiation. Thus the error may be defined as $\text{Error} \propto (\Delta h)^2$. For example, in a \gls{3d} simulation, if the spatial (and thus time) resolution is increased twofold, the accuracy increases 4 times. This is due to the fact Maxwell's curl equations are discretized using central difference approximations, which are inherently second-order accurate.
 
 
 Another vital part is the staggered grid it self. Kane S. Yee introduced a system of calculating the $\mathbf{E}$ and $\mathbf{H}$ fields using the aforementioned central differences in an offset pair of grids. The $\mathbf{E}$ fields are defined at the edges of a cell while the $\mathbf{H}$ fields are stored at the centers of the faces, thus offset spatially by $\frac{h}{2}$.  However since the $\mathbf{E}$ and $\mathbf{H}$ fields are defined at different locations, the time step must be staggered as well. The $\mathbf{E}$ field is calculated at time $t$ and the $\mathbf{H}$ field at $t + \frac{\Delta t}{2}$. This is known as the Yee cell, and it is a cornerstone of \gls{fdtd} methods. The Yee cell is shown in \cref{fig:yee}.
@@ -163,31 +211,52 @@ Another vital part is the staggered grid it self. Kane S. Yee introduced a syste
 \end{figure}
 
 The basic flow of the \gls{fdtd} algorithm is as follows:
-\begin{enumerate}
-\item Divide the solution region into a grid of nodes (the Yee cell grid).
-\item Approximate the derivatives in Maxwell's equations using finite differences at these nodes.
-\item Set the initial conditions for the electric and magnetic fields.
-\item Loop over time steps using the "leapfrogging" technique:
-\begin{enumerate}
-  \item Update the electric field components using values of the magnetic field from the previous half time step.
-  \item Update the magnetic field components using the newly computed values of the electric field.
-\end{enumerate}
-\item Apply boundary conditions during each time step.
-\item Store the field values at desired time points for later analysis.
-\item Continue time marching until the desired simulation time is reached.
-\end{enumerate}
+\begin{figure}[H]\label{fig:fdtd-algorithm}
+  \centering
+  \begin{enumerate}
+  \item Divide the solution region into a grid of nodes (the Yee cell grid).
+  \item Approximate the derivatives in Maxwell's equations using finite differences at these nodes.
+  \item Set the initial conditions for the electric and magnetic fields.
+  \item Loop over time steps using the "leapfrogging" technique:
+  \begin{enumerate}
+    \item Update the electric field components using values of the magnetic field from the previous half time step.
+    \item Update the magnetic field components using the newly computed values of the electric field.
+  \end{enumerate}
+  \item Apply boundary conditions during each time step.\label{item:bc}
+  \item Store the field values at desired time points for later analysis.
+  \item Continue time marching until the desired simulation time is reached.
+  \end{enumerate}
+  \caption{Basic flow of the \gls{fdtd} algorithm.}
+\end{figure}
 
 
 
 \subsection{Boundary Conditions}
-\todo{this}
+As already hinted at in step~\ref{item:bc} of the \gls{fdtd} algorithm, boundary conditions are a crutial component of \gls{fdtd} simulations. Boundary conditions dictate the rules of terminating the simualtion domain. There are multiple such types, e.g. \emph{perfect electric conductor} (PEC) and \emph{perfect magnetic conductor} (PMC) both acting as mirros, reflecting their corresponding component of \gls{em} waves. \emph{Periodic boundaries} set in place the assumption, that one edge of the region matches to the opposite edge, thus creting an inifinite repeating simulation in that direction.
 
-\section{Optics}
-A brief introduction to optics is required to understand the analitical methods used as the ground truth during the evaluation in \cref{sec:results}. The following section will introduce the basic concepts of optics, such as reflection, refraction, interference and diffraction.
+However, the most used boundary condition is the \gls{pml}, which was originally introduced in~\cite{BERENGER1994185}. This is due to its efficiency, good performance in minimizing reflections and its overall flexibility~\cite{Teixeira2023}. The \gls{pml} is how ever better thought of as a region rather than a boundary condition as it requires a cerain thickness. According to Meep documentation, a good rule of thumb is to use a thickness of around half the largest wavelength in the simulation~\cite{meep_pml_ruleofthumb}.
 
-When discussing optics, terms such as a medium, ray and interface often arise. A \emph{medium} is a material through which light travels. Mediums may simply be divided into \emph{conductors}, \emph{nonconductors} and \emph{dielectics}, the latter of which will be utilized further on. A \emph{dielectric} medium does not conduct electricity, however it may be polarized by an electric field. This leads to further categorization of dielectics into \emph{polarized} and \emph{nonpolarized} dielectics. Polarized dielectics are materials that have a permanent dipole moment, such as water, while nonpolarized dielectics do not have a permanent dipole moment, such as glass. The polarization of a dielectric is the separation of positive and negative charges within the material, which occurs when an external electric field is applied. This polarization leads to the formation of electric dipoles within the material, which can affect the propagation of light through it. The degree of polarization depends on the strength of the electric field and the material's properties~\cite[Chapter~6]{cermak}.
+\section{Optics}\label{sec:optics}
+A brief introduction to optics is required to understand the analitical methods used as the ground truth during the evaluation in \cref{chap:results}. The following section will introduce the basic concepts of optics, such as reflection, refraction, interference and diffraction.
 
-An \emph{interface} is the boundary between two different media, such as air and glass. A \emph{ray} is an idealized model of light propagation, represented as a straight line in the direction of the light's travel. During the travel of a ray through a interface, the ray may experience multiple phenomena which are described in the following sections.
+When discussing optics, terms such as a medium, ray and interface often arise. A \emph{medium}, as mentioned above, is a material through which light travels. Mediums may simply be divided into \emph{conductors}, \emph{nonconductors} and \emph{dielectics}, the latter of which will be utilized further on. A \emph{dielectric} medium does not conduct electricity, however it may be polarized by an electric field. This leads to further categorization of dielectics into \emph{polarized} and \emph{nonpolarized} dielectics. Polarized dielectics are materials that have a permanent dipole moment, such as water, while nonpolarized dielectics do not have a permanent dipole moment, such as glass. The polarization of a dielectric is the separation of positive and negative charges within the material, which occurs when an external electric field is applied. This polarization leads to the formation of electric dipoles within the material, which can affect the propagation of light through it. The degree of polarization depends on the strength of the electric field and the material's properties~\cite[Chapter~6]{cermak}.
+
+Not only dielectrics, but also light it self may be polarized. Light is an \gls{em} wave, where polarization refers to the direction of oscilation of the electric field vector. Light may be polarized in a single direction, such as \emph{linear} polarization, or it may be \emph{circularly} polarized, where the electric field vector rotates in a circular motion as the wave propagates. This thesis will utilize the former of the two. When light consists of equally many polarized waves in all directions, it is reffered to as \emph{unpolarized} light. 
+
+To simplify calculations of a waves's reflection, polarization is often divided into two states:
+\begin{itemize}
+  \item \emph{p polarization} (from German \emph{parallel}), where the electric field vector is \emph{parallel} to the plane of incidence.
+  \item \emph{s polarization} (from German \emph{senkrecht}), where the electric field vector is \emph{perpendicular} to the plane of incidence.
+\end{itemize}
+
+\begin{figure}[H]\label{fig:polarization}
+  \centering
+  \includegraphics[width=0.75\textwidth]{figures/polarization.pdf}
+  \caption{Description of the Yee cell.}
+\end{figure}
+
+
+How ever it is also beneficial to think of light as \emph{rays}, which are an idealized model of light propagation, represented as a straight line in the direction of the light's travel. During the travel of a ray through a \emph{interface} (the boundary between two different media, such as air and glass), the ray may experience multiple phenomena which are described in the following sections.
 
 
 
@@ -197,7 +266,6 @@ Reflection is the act of light bouncing back off a surface. The most common exam
   \theta_i = \theta_r
   \end{equation}
 
-This is show in \cref{fig:mirror}.
 \begin{figure}[H]\label{fig:mirror}
   \centering
   \includegraphics[width=0.75\textwidth]{figures/mirror.pdf}
@@ -214,19 +282,72 @@ Where $n_1$ and $n_2$ are the refractive indices of the two media. The \emph{ref
 \begin{figure}[H]\label{fig:single-layer}
   \centering
   \includegraphics[width=0.75\textwidth]{figures/single-layer.pdf}
-  \caption{Description of the Yee cell.}
+  \caption{}
+\end{figure}
+
+Using Snell's law, we can calculate the angle of refraction ($\theta_t$), with both angles we and apply Fresnel's equations to calculate the reflectance for p and s polarization:
+\begin{equation}
+  R_p = \left| \frac{n_1 \cos(\theta_i) - n_2 \cos(\theta_t)}{n_1 \cos(\theta_i) + n_2 \cos(\theta_t)} \right|^2
+\end{equation}
+\begin{equation}
+  R_s = \left| \frac{n_1 \cos(\theta_t) - n_2 \cos(\theta_i)}{n_1 \cos(\theta_t) + n_2 \cos(\theta_i)} \right|^2
+\end{equation}
+
+Due to conservation of energy, the sum of the reflectance and transmittance must equal 1. This means that the transmittance can be calculated as:
+\begin{equation}
+  T = 1 - R
+\end{equation}
+
+
+A spetial case if at normal incidence, where $\theta_i = 0$, $\theta_t = 0$ and there is no difference between the two polarizations. In this case, the reflectance can be calculated as:
+\begin{equation}
+  R = \left| \frac{n_1 - n_2}{n_1 + n_2} \right|^2
+\end{equation}
+
+
+
+
+\subsection{Internal Reflection}
+Intenal reflection occures when light travels from a medium with a higher refractive index to a medium with a lower refractive index. The angle of incidence must be greater than the critical angle ($\theta_c$) for total internal reflection to occur. The critical angle can be calculated using Snell's law:
+\begin{equation}
+  \theta_c = \arcsin\left(\frac{n_2}{n_1}\right)
+  \end{equation}
+
+Where $n_1$ is the refractive index of the first medium and $n_2$ is the refractive index of the second medium. This is shown in \cref{fig:snell} bellow.
+
+\begin{figure}[H]\label{fig:snell}
+  \centering
+  \includegraphics[width=0.75\textwidth]{figures/snell.pdf}
+  \caption{}
 \end{figure}
 
 
+\subsection{Thin film interference}
+The previous sections were building up to the calculation of thin film interference, which will be used as the ground truth in the percision tests in \cref{chap:results}. Thin film interference occurs when light waves reflect off the top and bottom surfaces of a thin film which causes the two reflected waves to interfere with each other, leading to constructive or destructive interference depending on the thickness of the film and the wavelength of the light. For the following example and further tests, we will assume that the light is incident on the thin film, which will simplify the calculations. 
 
+We first begin by calculating the Fresnel coefficients to get the reflectance of the interfaces.
 
-WIKIKIKIKIKIIK
+\begin{equation}
+  r_{12}=\frac{n_1-n_2}{n_1+n_2},\quad r_{23}=\frac{n_2-n_3}{n_2+n_3}
+\end{equation}
 
-Solving Maxwell's equations for a light ray striking a boundary allows the derivation of the Fresnel equations,
+Following that, since the \gls{em} wave may change phase when it reflects off a medium, we need to calculate the phase shift. The phase shift is given by:
+\begin{equation}
+  \delta = \frac{2\pi n_2 d}{\lambda}
+\end{equation}
 
-In fact, reflection of light may occur whenever light travels from a medium of a given refractive index into a medium with a different refractive index. In the most general case, a certain fraction of the light is reflected from the interface, and the remainder is refracted. Solving Maxwell's equations for a light ray striking a boundary allows the derivation of the Fresnel equations, which can be used to predict how much of the light is reflected, and how much is refracted in a given situation. This is analogous to the way impedance mismatch in an electric circuit causes reflection of signals. Total internal reflection of light from a denser medium occurs if the angle of incidence is greater than the critical angle. 
-WIKIKIKIKIKIIK
+Where $d$ is the thickness of the film, $\lambda$ is the wavelength of the light in vacuum and $n_2$ is the refractive index of the film.
 
+The total complex amplitude of the reflected wave is given by:
+\begin{equation}
+  r_{total} = \frac{r_{12} + r_{23} e^{2 i \delta}}{1+ r_{12} r_{23} e^{2 i \delta}}
+\end{equation}
+Where $r_{12}$ is the Fresnel coefficient for the first interface, $r_{23}$ is the Fresnel coefficient for the second interface and $\delta$ is the phase shift.
+
+The intensity of the reflected wave is given by:
+\begin{equation}
+  I_{total} = \left|r_{total}\right|^2
+\end{equation}
 
 \begin{figure}[H]\label{fig:thin-film}
   \centering
@@ -247,7 +368,19 @@ Meep offers the ability to exploit symmetries to reduce the computational time a
 
 \section{Ansys Lumerical}\label{sec:lumerical}
 Ansys Lumerical FDTD\copyright \ is a photonics simulation tool that combines \gls{fdtd}, Optical Multilayer Solvers, Rigorously Coupled-Wave Analysis Solvers, Waveguide Solvers, Finite-difference Eingenmode Solvers and others within a unified design environment\footnote{Any and all ANSYS, Inc. brand, product, service and feature names, logos and slogans such as Ansys Lumerical are registered trademarks or trademarks of ANSYS, Inc. or its subsidiaries in the United States or other countries. All other brand, product, service and feature names or trademarks are the property of their respective owners.}.
+
+Lumerical provides a computer aided design-like graphical user interface, which is easy to comprehend to engineers coving over from different tools compared to Meep's steeper learning curve. It also provides a Python API and Lumerical scripting language, which both allow for the automation of simulations. Lumerical also provides a library of materials. 
+
+Lumerical is capable of attaining normalization of the fields in a single run, where as Meep requires two runs to normalize the monitors for calculation of the reflectance and transmittance. Lumerical also provides the possibility to exploit symmetries to reduce the computational time and memory requirements. Further more Lumerical allows for setting a non-uniform mesh, which is useful for simulating structures with a large refractive index difference, such as the ones used in this thesis. 
 \todo{expand}
+
+
+\begin{figure}[H]\label{fig:thin-film}
+  \centering
+  \includegraphics[width=0.75\textwidth]{obrazky-figures/placeholder.pdf}
+  \caption{Screenshot of Lumerical graphical user interface.}
+\end{figure}
+
 
 
 \section{Formal Language Theory}\label{sec:formal-language-theory}
@@ -255,7 +388,7 @@ We use languages like English, Czech, or Slovak in everyday communication exchan
 
 \subsection{Alphabets and Languages}
 
-\todo{add text about languages and alphabets, use English as example}
+
 Languages, both natural and formal, are constructed from a basic set of elements. In the case of English, these elements are the letters A to Z, which form the English alphabet. From this alphabet, we can produce words, which in turn form sentences and larger linguistic structures. Similarly, in formal language theory, we start with an alphabet from which we build sequences known as words. These words serve as the foundational units of formal languages, just as words do in natural languages.
 
 \begin{definition}[Alphabet]\label{def:alphabet}
@@ -263,15 +396,15 @@ Let $\Sigma$ be an \emph{alphabet}, a finite nonempty set of symbols, letters. T
 $$w= a_1 a_2 a_3 \dots a_{n-1} a_n, \in \Sigma \text{ for } n \in \mathbb{N}$$
 \end{definition}
 
-The sequence of symbols $w$ is called a \emph{word}. Word length is given by the number of symbols $a$, and symbolically annotated as $|w| = n$. The word with a length of 0 is called an \emph{empty word} denoted as $\epsilon$.
+The sequence of symbols $w$ is called a \emph{word}. Word length is given by the number of symbols $a$, and symbolically annotated as $|w| = n$. The word with a length of 0 is called an \emph{empty word} denoted as $\varepsilon$.
 
 \begin{definition}[Language]\label{def:language}
 The set $L$ where $L\subseteq \Sigma^{*}$ is defined as a \emph{formal language} over the alphabet $\Sigma$. 
 \end{definition}
-The words $L = \left\lbrace \epsilon, a, b, aa, ab, bb \right\rbrace$ are examples of words in language $L$ over the alphabet $\Sigma=\left\lbrace a,b \right\rbrace$.
+The words $L = \left\lbrace \varepsilon, a, b, aa, ab, bb \right\rbrace$ are examples of words in language $L$ over the alphabet $\Sigma=\left\lbrace a,b \right\rbrace$.
 Other examples of languages over the alphabet $\Sigma=\left\lbrace a,b \right\rbrace$ might include:
 \begin{itemize}
-\item $L_1 = \left\lbrace \epsilon \right\rbrace$
+\item $L_1 = \left\lbrace \varepsilon \right\rbrace$
 \item $L_2 = \left\lbrace a \right\rbrace$
 \item $L_3 = \left\lbrace aaa \right\rbrace$
 \item $L_4 = \left\lbrace a^i,b^i; i \in \mathbb{N} \right\rbrace$
@@ -285,20 +418,20 @@ Other examples of languages over the alphabet $\Sigma=\left\lbrace a,b \right\rb
 
 
 \begin{itemize}
-\item Iteration\\
+\item \textbf{Iteration}\\
   Let $a^i; a \in \Sigma \text{ and } i \in \mathbb{Z}$ be the \emph{iteration} of a character $a$, where $|a^i| = i$.\\
 Examples bellow:
 
 
 \begin{itemize}
-\item $a^0 = \epsilon$
+\item $a^0 = \varepsilon$
 \item $a^1 = a$
 \item $a^2 = aa$
 \item $a^i = a_0 a_1 a_2 \dots a_i; i \in \mathbb{N}$
 \end{itemize}
 
 
-\item Concatenation\\
+\item \textbf{Concatenation}\\
   Let $w \cdot w^{'}; w, w^{'} \in \Sigma^{*}$ be the \emph{concatenation} of the words $w$ and $w^{'}$.
 
 $w = a_1 a_2 a_3 \dots a_n ; w^{'} = a^{'}_1 a^{'}_2 a^{'}_3 \dots a^{'}_m; n,m \in \mathbb{Z}$ then  
@@ -306,14 +439,14 @@ $w = a_1 a_2 a_3 \dots a_n ; w^{'} = a^{'}_1 a^{'}_2 a^{'}_3 \dots a^{'}_m; n,m 
 $w\cdot w^{'} = w w^{'} = a_1 a_2 a_3 \dots a_n a^{'}_1 a^{'}_2 a^{'}_3 \dots a^{'}_m$
 
 
-\item Kleene star\\
+\item \textbf{Kleene star}\\
   Let $L \subseteq \Sigma^{*}$ be a language. The \emph{Kleene star} of $L$, denoted $L^{*}$, is defined as
   \[
     L^{*} \;=\; \bigcup_{i=0}^{\infty} L^{i},
   \]
-  where $L^{0} = \{\epsilon\}$ and $L^{i+1} = L \cdot L^{i}$.  Equivalently, $L^{*}$ is the set of all finite concatenations of zero or more words from $L$.\\
+  where $L^{0} = \{\varepsilon\}$ and $L^{i+1} = L \cdot L^{i}$.  Equivalently, $L^{*}$ is the set of all finite concatenations of zero or more words from $L$.\\
 
-\item Symbol count\\
+\item \textbf{Symbol count}\\
 The number of occurrences of $a$ in $w$, where $a \in \Sigma, w \in \Sigma^{*}$, noted as $|w|_{a}$.
 
 \end{itemize}
@@ -378,24 +511,6 @@ When working with formal grammars, the need to compare their expressive power ar
 
 The intricacies of each of said classes are not necessary in the context of this thesis, how-ever regular and context free languages will be used heavily throughout the rest of this thesis, and explained more in depth.
 
-\begin{table}[h]\label{tab:chomsky-hierarchy}
-\centering
-\begin{tabular}{|ccl|}
-\hline
-Grammar         & Language               & Restrictions \\ 
-\hline
-$\mathcal{L}_3$ & Regular                & \todo{todo}             \\
-\hline
-$\mathcal{L}_2$ & Context Free           &              \\
-\hline
-$\mathcal{L}_1$ & Context Sensitive      &              \\
-\hline
-$\mathcal{L}_0$ & Recursively Enumerable &              \\ 
-\hline
-\end{tabular}
-\caption{An overview of the Chomsky hierarchy classes.}
-\end{table}
-
 
 \subsection{Regular Languages}
 As shown above, regular languages are the inner most part of the Chomsky hierarchy, thus they are the most constricted. How-ever, regular languages play a crucial role in lexical analysis, more precisely, in pattern matching. These constrictions lead to many useful closure properties and decisability properties, mainly membership, which will be introduced shortly.
@@ -447,7 +562,7 @@ An example of a \gls{dfa} that accepts only even binary numbers is provided abov
 \hline
 a                          & $\{\text{"a"}\}$          & \makecell{The set containing a single\\ character "a"} \\
 \hline
-$\epsilon$                  & $\{\text{""}\}$           & The set containing the empty string \\
+$\varepsilon$                  & $\{\text{""}\}$           & The set containing the empty string \\
 \hline
 s|t                         & $L(s) \cup L(t)$            & Strings from both languages, union \\
 \hline
@@ -482,6 +597,7 @@ Thus we have show that all 3 devices are equivalent and may be used to describe 
 
 \subsection{Context Free Languages} 
 
+
 \subsubsection{LL Languages}
 
 
@@ -509,34 +625,29 @@ Compilers are complex programs. It is helpful to break them down into parts, eac
   \caption{Overview of relevant compiler stages.}
 \end{figure}
 
-\subsection*{Lexical Analysis}
+\subsection{Lexical Analysis}
 The first stage of a compiler is lexical analysis, also known as a \emph{lexer} or \emph{tokenizer}. For the remainder of this thesis, the term \emph{lexer} will refer to the lexical analysis stage of a compiler. The lexer consumes a stream of characters, or the \emph{source code}, and returns a stream of \emph{tokens}. A \emph{token} is a lexically indivisible unit, for example, the Python keyword \texttt{return}, cannot be divided any further, e.g. into \texttt{re} \texttt{turn}. Each token is comprised of characters. The rule that defines which combination of characters constitutes a given token is called a \emph{pattern}. The sequence of characters matching a pattern is called a \emph{lexeme}, which is stored along with the token as a value.
 
-%Lexical analysis may be further divided into two distinct stages, however they are often implemented together. These stages are the \emph{scanner} and \emph{evaluator}.
+\subsection{Syntactic Analysis}
+The second stage recieves tokens produced by the lexer and validates the syntax. This is done checking the input tokens against the grammar, this parts of the compiler is called the \emph{parser}. The parser checks if the tokens form valid sentences in the language, this is called an \emph{acceptor}. The parser may also produce a \emph{parse tree} or \gls{ast}, which is a representation of the parsing steps taken and which rules were applied.
 
+\subsection{Semantic Analysis}\label{sem-analysis}
+The third stage of a compiler is semantic analysis, how ever in pracise it is often not a separate stage, but rather intertwined with the parser. This process often involves checking the types and values of variables, ensuring that variable and function names are declared before use, and checking for other semantic errors. This stage how ever was ommited, as it brings little value, since it i sexpected that the user will provide valid code, which he may test by first executing it in Lumerical.
 
-\subsubsection*{Regular Expressions}
-\emph{Regular expressions}, which were introduced in \cref{def:regular_exp} are a compact way to represent the patterns accepting tokens. Regular expressions are an algebraic definition of patterns; they specify \emph{regular languages}, $\mathcal{L}_3$
+\subsection{Code Generation}
+The last stage of a compiler is code generation. The \gls{ast} is processed and it is converted into the target language. This is done via traversal of the \gls{ast} and generating code for each node or group of nodes.  
 
-\subsection*{Syntactic Analysis}
-
-\subsubsection*{LL Parser}
-
-\subsection*{Semantic Analysis}\label{sem-analysis}
-\todo{talk about it being skipped and correct input code is relied on}
-
-\subsection*{Code Generation}
-
-
-\chapter{Transpiler Implementation}\label{sec:transpiler-implementation}
-This chapter introduces the implementation of the source to source compiler designed to convert Lumerical's scripting language to Python combined with the Meep library. 
+\chapter{Transpiler Implementation}\label{chap:transpiler-implementation}
+This chapter introduces the implementation of the source to source compiler, \gls{lumex}, which is designed to convert Lumerical's scripting language to Python combined with the Meep library. 
 \section{Choice of Tools}
 When writing any program, it is important to choose the right tools for the job. This comes down not only to choosing the programming language but also what libraries and packages to utilize and which components to implement to better suit the project's constraints. The source language, Lumerical's scripting language, allows you to automate tasks and analysis such as manipulating simulation objects, launching simulations, and analyzing results~\cite{ansys_lsf}. This language how-ever, is not suitable for implementing a transpiler. Looking at the target language, Python is a general-purpose high-level interpreted language. Writing the transpiler in Python will allow for easier editing and debugging due to it's high-level nature. Consequently, and owing to the fact that the implementation language is the same as the target language, this will also allow us to use built in modules for generating the target code. Python's ecosystem also includes the tools such as Sphinx and Pytest for writing technical documentation and tests respectively.
 
 \subsection{Implementation Overview}
 
-The transpiler is implemented in Python 3.13.3. The transpiler is a command line tool that takes a Lumerical scripting language file as input and generates a Python equivalent in an output directory.
+The \gls{lumex} is implemented in Python 3.13.3. It is a command line tool that takes a Lumerical scripting language file as input and generates a Python equivalent in an output directory. Meep is not necessary for the functionality of \gls{lumex}, however it is required for the generated code to run. 
 
+
+\gls{lumex} 
 The figure bellow describes the layout of the submitted work. \todo{make more verbose}
 
 \begin{figure}[H]\label{fig:project-structure}
@@ -570,9 +681,7 @@ Sphinx is a tool that automatically generates documentation by converting plain 
 
 This is instrumental in providing the user with the necessary insight into the technical operation of the transpiler, and allows us to search and view information in a concise manner withot the need to direcly inspect the source code. The documentation is made available to the reader at the following address \footnote{\url{https://www.macura.sk/LUMEX/}}.
 
-\begin{figure}[H]
-
-  \label{fig:shpinx}
+\begin{figure}[H]\label{fig:shpinx}
   \centering
   \includegraphics[width=\textwidth]{obrazky-figures/sphinx-lumex.png}
   \caption{Screen-capture of the resulting documentation.}
@@ -1733,9 +1842,10 @@ The \texttt{Select} action is used to generate an AST node that calls the \textt
 \todo{write about transformation of ast}
 
 
-\chapter{Evaluation of Results}\label{sec:results}
+\chapter{Evaluation of Results}\label{chap:results}
 Thus far, the thesis has shown the threoretical and practical acspects of the transpilation process while dealing with key intricacies of the Lumerical scripting language and Meep. The following part of this thesis moves on to describe in greater detail the transpilation process applied on examples and compares Lumerical and Meep simulations to analytically obtained results.
 \section{Transpilation}
+This section will show the transpilation process in action on short examples. A longer example will be provided in Appendix~\ref{appendix:three}, as if the code encounters a unsupported command, the transpilation halts.
 
 \subsection{General language constructs}
 \begin{figure}[H]\label{fig:lumerical-pyhton-expression}
@@ -1844,13 +1954,34 @@ while x <= 10:
 
 \section{Comparison of Lumerical and Meep}
 
+An integral part of this thesis is the comparison of accuracy and performace of the two \gls{fdtd} tools. For this task the following approach was chosen; for both tests, an identical simulation in each tool was created, each with a plane wave source, frequency domain monitor and a dielectric block with a constant $\varepsilon$. The only difference being that one test contained a single interface, while the other contained a thin film like interface, see \cref{fig:sim-layout}. Lumerical code was first transpiled to meep code, then commands unsuported by \gls{lumex} were added by hand to ensure parity. 
+
+While Lumerical offers more advance meshing options, a simple uniform rectangular mesh was chosen to keep parity with the Meep simulation. The same resolution i.e. grid size was chosen for both simulations, continuing that the simulations were set up to complete the same number of steps (achieved by setting the \texttt{dt stability factor} until $\text{d}t$ matched $\text{d}t$ in Meep with a Courant facotr of $0.5$), frequency range and number of sampling points were chosen. Further more both simulations were forced to compute complex fields. These following results do not rule out the influence of other factors during simulations, further more it is important to bear in mind that Lumerical may be able to achive better results with different settings, how ever the goal of this comparison is the evaluation of the implementations of the underlaying \gls{fdtd} algorithm.
+
+Due to the inate nature of hardware, absolute timings are of little use, thus relative timings are presented. All simulations were run using \gls{mpi} version 4.1 on the same x86\_64 host machine with a Intel\copyright\ Xeon\copyright\ Gold 6354 CPU clocked at 3.0 GHz.
+
+All following simulations were run with white light sources, with a wavelength range of $0.4$ to $0.8$ micrometers.
 
 
-\begin{figure}[H]\label{fig:yee}
+\subsection{Single Interface}
+A simulation size of $1 \times 20 \times 0.1$ (x,y,z respectively) was chosen, with a resolution of $50$ points per $1$ unit of distance. An incident planewave source was placed at $y=5$, a monitor at $y=-5$. A linear homogeneous nondispersive dielectric medium spanned from $y=0$ to $y=-10$ with a permitivity of $n=1.4$. \gls{pml} layers were placed on eigher end. The simulations were run for $20000$ steps, with a time step of $0.01$ and a Courant factor of $0.5$, and an end time of $200$. Following that, two more simulations were run at a resolution of $100$ and $25$. The simulations were run on a single core. The results are shown in \cref{fig:layout-single-interface}.
+\begin{figure}[H]\label{fig:layout-single-interface}
   \centering
-  \includegraphics[width=0.5\textwidth]{obrazky-figures/sim-layout.pdf}
-  \caption{Description of the Yee cell.}
+  \includegraphics[width=0.3\textwidth]{obrazky-figures/sim-layout-si.pdf}
+  \caption{XY view of the single interface simulation layout.}
 \end{figure}
+
+
+
+\begin{figure}[H]\label{fig:single-interface}
+  \centering
+  \includegraphics[width=1\textwidth]{obrazky-figures/single-interface.pdf}
+  \caption{Description of the single interface simulation.}
+\end{figure}
+
+It may be observed that the results are converging to the analytical solution. With an increase in resolution, the results are more accurate. However, on average Lumerical is $1.37$ times faster at 25 resolution and up to $3.03$ and $4.42$ at 50 and 100 respectively. This discrepancy in speed could be attributed to the fact that Meep needs to run two simulations to obtain the normalization. The results are shown in \cref{fig:single-interface}.
+
+\todo{It is also possible that the observed increase in computational time could be attributed to }
 
 
 
@@ -1891,18 +2022,36 @@ while x <= 10:
   \label{fig:2x2grid}
 \end{figure}
 
+
+\subsection{Thin Film}
+A simulation size of $1 \times 20 \times 0.1$ (x,y,z respectively) was chosen, with a resolution of $25$, $50$ and $100$ points per $1$ unit of distance per each test. An incident planewave source was placed at $y=5$, a monitor at $y=-5$. A A linear homogeneous nondispersive dielectric medium with a permitivity of $n=1.4$ with a thickness of $0.2$ was placed at $y=0$. \gls{pml} layers were placed on eigher end. The simulations were run for $20000$ steps, with a time step of $0.01$ and a Courant factor of $0.5$, and an end time of $200$. The simulations were run on a single core. The results are shown in \cref{fig:layout-single-interface}.
+\begin{figure}[H]\label{fig:layout-double-interface}
+  \centering
+  \includegraphics[width=0.3\textwidth]{obrazky-figures/sim-layout-di.pdf}
+  \caption{XY view of the single interface simulation layout.}
+\end{figure}
+
+
+
+
 \todo{talk about methodology}
 \todo{show comparison of leumerical code, generated python and handwritten -> conclusion probably not best method}
 \todo{test examples analytic vs FDTD}
-\chapter{Conclusion}
-This thesis explored the feasibility of automating the translation of simulation scripts between two \gls{fdtd} tools by studying their structures, languages, and underlying computational principles as well as comparing their perfomance. These goals were successfuly achieved. 
+\chapter{Conclusion}\label{chap:conclusion}
+This thesis explored the feasibility of automating the translation of simulation scripts between two \gls{fdtd} tools by studying their structures, languages, and underlying computational principles as well as comparing their perfomance and precision. These goals were successfuly achieved. 
 
 
-The thesis began by exploring the underlaying \gls{fdtd} principles in \cref{sec:cem}, followed by a detailed description of the Lumerical and Meep tools in \cref{sec:lumerical} and \cref{sec:meep}. Following that, the thesis presented an introduction of formal language theory in \cref{sec:formal-language-theory} which built the foundational knowledge for the discussion about the construction of a compiler in \cref{sec:compilers}.
+The thesis began by exploring the underlaying \gls{fdtd} principles in \cref{sec:cem} and provided a background in optics in \cref{sec:optics}. This followed by a detailed description of Lumerical and Meep tools in \cref{sec:lumerical} and \cref{sec:meep}. Following that, the thesis presented an introduction of formal language theory in \cref{sec:formal-language-theory} which built the foundational knowledge for the discussion about the construction of a compiler in \cref{sec:compilers}.
 
 
-The transpiler implementation followed in \cref{sec:transpiler-implementation}, where the Lumerical scripting language was described in detail, including the creation its grammar which is available in \cref{appendix:two}. Following that, the lexical analysis and parsing was described for the chosen greedy regular expression based parser. 
+The transpiler implementation followed in \cref{chap:transpiler-implementation} which described the creation of the grammar, lexer, parser and code generator. \cref{chap:results} presented the evaluation of \gls{lumex} as well as the comparison of Lumerical and Meep in terms of performance and accuracy. 
 
+
+
+\section{Future Work}
+\todo{implement more commands}
+\todo{error recovery}
+\todo{abstract more code into runtime}
 
 \todo{compare lumerical and meep}
 \todo{test result TBD}

@@ -75,6 +75,8 @@
   \PassOptionsToPackage{main=english}{babel}
 \fi
 \usepackage{amsmath}
+\usepackage{esint}
+\usepackage{siunitx}
 \usepackage{amsthm}
 \usepackage{amssymb}
 \usepackage[czech,slovak,english]{babel}
@@ -175,11 +177,10 @@
 % Sazebni obrazec / Page layout
 %-----------------------------------------------------------------------------
 \iftwoside
-  \usepackage[left=3.46cm, text={15.2cm,23.47cm}, top=2.5cm, marginparwidth=50pt]{geometry}
-  %\usepackage[a4paper, showframe]{geometry}	%ADDED showframe
-  %\newgeometry{left=3.46cm, text={15.2cm,23.47cm}, top=2.5cm, marginparwidth=50pt}
+%  \usepackage[left=3.46cm, text={15.2cm,23.47cm}, top=2.5cm, marginparwidth=50pt]{geometry}
+  \usepackage[a4paper]{geometry}
+  \newgeometry{left=3.46cm, text={15.2cm,23.47cm}, top=2.5cm, marginparwidth=50pt}
 \else
-  %\usepackage[showframe]{geometry} %ADDED whole line
   \setlength{\hoffset}{-0.7cm}
   \setlength{\voffset}{-1.5cm}
   \setlength{\textheight}{23.0cm}
@@ -1249,6 +1250,7 @@ Management}{\@fit@EN}%
 \usepackage{graphicx}
 \usepackage{url}
 \usepackage{subcaption}
+\usepackage{bm}
 \usepackage[ruled,vlined]{algorithm2e}
 \DeclareUrlCommand\url{\def\UrlLeft{<}\def\UrlRight{>} \urlstyle{tt}}
 \def\UrlBreaks{\do\/\do-}

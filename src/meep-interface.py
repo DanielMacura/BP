@@ -5,8 +5,8 @@ import scienceplots
 from copy import deepcopy
 
 # Simulation parameters
-dimensions = 3            # 2D simulation
-resolution = 50           # grid points per μm (>=10 per smallest λ)
+dimensions = 2            # 2D simulation
+resolution = 25           # grid points per μm (>=10 per smallest λ)
 sx = 3.0                  # x-width (μm) of cell (thin periodic domain)
 sy = 20.0                 # y-height (μm) of cell
 dpml = 3.0                # PML thickness (μm)
@@ -17,16 +17,16 @@ fmax = 1/wvl_min        # max frequency
 fcen = 0.5*(fmin+fmax)  # center frequency
 df = fmax-fmin          # frequency width
 nfreq = 1000            # number of frequency bins
-eps = 1.4**2
+eps = 3**2
 
 n1 = 1.0  # refractive index of air
 n2 = eps**0.5  # refractive index of block
-n3 = eps**0.5 
+n3 = eps**0.5
 
 # Geometry: dielectric block
-block_height = sy/2#12#0.3
-block_center = -5#-6#0
-source_height = 6
+block_height = 10
+block_center = -5
+source_height = 5
 
 
 ###########################################################################
@@ -54,7 +54,7 @@ sim = mp.Simulation(cell_size=mp.Vector3(sx, sy, sx),
                     k_point=mp.Vector3(0, 1, 0)
                     )
 
-flux_y = -4  # μm (just above bottom PML)
+flux_y = -source_height  # μm (just above bottom PML)
 tran_flux = sim.add_flux(fcen, df, nfreq, 
                          mp.FluxRegion(center=mp.Vector3(0, flux_y, 0), size=mp.Vector3(sx,0,sx)))
 # Reference (empty) simulation for incident power
@@ -97,6 +97,9 @@ r12 = (n2 - n3) / (n2 + n3)
 
 # Phase difference
 delta = (2 * np.pi * n2 * block_height) / wavelengths
+print("delta=", delta)
+print("r01=", r01)
+print("r12=", r12)
 
 # Complex reflection amplitude
 numerator = r01 + r12 * np.exp(2j * delta)
@@ -147,10 +150,10 @@ block_top = block_center + block_height/2
 ax.fill_between([-sx/2, sx/2], block_bottom, block_top, color='blue', alpha=0.4, label='Dielectric block')
 
 # Plot source
-ax.axhline(y=source_height, color='red', linestyle='--', linewidth=1.5, label='Source')
+ax.axhline(y=source_height, color='red', linestyle='--', linewidth=3, label='Source')
 
 # Plot flux monitor
-ax.axhline(y=flux_y, color='green', linestyle=':', linewidth=2, label='Flux Monitor')
+ax.axhline(y=flux_y, color='green', linestyle=':', linewidth=3, label='Flux Monitor')
 
 # Format the plot
 ax.set_xlim(-sx/2, sx/2)
